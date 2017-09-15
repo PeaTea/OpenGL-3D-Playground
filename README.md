@@ -5,3 +5,6 @@ This code can get messy and hard to read, since I always fill it with ideas, ple
 
 You're free to download the source code of my playground, even use some ideas in your programs, if you like, just remember to credit me.
 I'm not responsible for any damage that could be caused by my code.
+
+Have fun,
+Peter
