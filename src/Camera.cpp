@@ -39,16 +39,16 @@ void Camera::process_keyboard(CameraMovement direction, float dt, const RenderGa
 	switch(direction)
 	{
 	case FORWARD:
-		position += front * vel * Collision::in_level(render_game.levels[0], RG_GB::TEX_SIZE, position);
+		position += front * vel;// * Collision::in_level(render_game.levels[0], RG_GB::TEX_SIZE, position);
 		break;
 	case BACKWARD:
-		position -= front * vel * Collision::in_level(render_game.levels[0], RG_GB::TEX_SIZE, position);
+		position -= front * vel;// * Collision::in_level(render_game.levels[0], RG_GB::TEX_SIZE, position);
 		break;
 	case RIGHT:
-		position += right * (vel * 0.5f) * Collision::in_level(render_game.levels[0], RG_GB::TEX_SIZE, position);
+		position += right * (vel * 0.5f);// * Collision::in_level(render_game.levels[0], RG_GB::TEX_SIZE, position);
 		break;
 	case LEFT:
-		position -= right * (vel * 0.5f) * Collision::in_level(render_game.levels[0], RG_GB::TEX_SIZE, position);
+		position -= right * (vel * 0.5f);// * Collision::in_level(render_game.levels[0], RG_GB::TEX_SIZE, position);
 		break;
 	case UP:
 		position.y += (SPEED * 5) * vel;
