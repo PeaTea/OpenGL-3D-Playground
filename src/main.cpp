@@ -19,7 +19,7 @@ namespace PC
 	constexpr int WIDTH = 800;
 	constexpr int HEIGHT = 600;
 #endif
-	const std::string TITLE = "CompleteN00B's Wolfenstein3D";
+	const std::string TITLE = "PeaTea's OpenGL Scratchpad";
 }
 
 
