@@ -7,5 +7,13 @@ You're free to download the source code of my playground, even use some ideas in
 
 I'm not responsible for any damage that could be caused by my code.
 
+
+If you want to build this, you'll need the following:
+  OpenGL  (3.0+)
+  SDL     (Version 2.4.2)
+  GLEW    (Version 2.0)
+  GLM     (Version 0.9.7.6)
+  
+
 Have fun,
 Peter
