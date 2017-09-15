@@ -101,5 +101,5 @@ void Display::close()
 void Display::switch_wireframe(bool wireframe)
 {
 	if(wireframe)	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	else			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	else		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
