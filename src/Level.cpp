@@ -5,7 +5,7 @@
 #include <ctime>
 
 /*
-´==============	Level notes	==============
+Â´==============	Level notes	==============
 levels[0] = Tutorial:
 	Starting Positions:	-2000.0f, PlayerSize / 2, -200.0f
 */
@@ -72,43 +72,43 @@ void Level::draw(std::vector<GLTexture>& textures)
 	{	for(unsigned int j = 0; j < height; j++)
 		{
 			sf::Color color = image.getPixel(i, j);
-			sf::Color wcolor_xl = image.getPixel(i, (j == 0) ? j : j - 1);				//Wall Color x left
+			sf::Color wcolor_xl = image.getPixel(i, (j == 0) ? j : j - 1);		//Wall Color x left
 			sf::Color wcolor_xr = image.getPixel(i, (j + 1 == height) ? j : j + 1);	//Wall Color x right
-			sf::Color wcolor_yl = image.getPixel((i == 0) ? i : i - 1, j);				//Wall Color y left
+			sf::Color wcolor_yl = image.getPixel((i == 0) ? i : i - 1, j);		//Wall Color y left
 			sf::Color wcolor_yr = image.getPixel((i + 1 == width) ? i : i + 1, j);	//Wall Color y right
 
 			if(color == sf::Color::White)
 			{
 				//Floor
 				Renderer::draw_sprite(textures[FLOOR_TEXTURE].id(),
-									  glm::vec3(RG_GB::TEX_SIZE.x * i, -PLAYER_SIZE / 2, RG_GB::TEX_SIZE.y * j - 200.0f),
-	    							  RG_GB::TEX_SIZE, 90.0f, glm::vec3(1, 0, 0), FLOOR_COLOR);
+						      glm::vec3(RG_GB::TEX_SIZE.x * i, -PLAYER_SIZE / 2, RG_GB::TEX_SIZE.y * j - 200.0f),
+	    					      RG_GB::TEX_SIZE, 90.0f, glm::vec3(1, 0, 0), FLOOR_COLOR);
 
 				//Ceiling
 				Renderer::draw_sprite(textures[CEILING_TEXTURE].id(),
-									  glm::vec3(RG_GB::TEX_SIZE.x * i, PLAYER_SIZE / 2, RG_GB::TEX_SIZE.y * j - 200.0f),
-									  RG_GB::TEX_SIZE, 90.0f, glm::vec3(1, 0, 0), CEILING_COLOR);
+						      glm::vec3(RG_GB::TEX_SIZE.x * i, PLAYER_SIZE / 2, RG_GB::TEX_SIZE.y * j - 200.0f),
+						      RG_GB::TEX_SIZE, 90.0f, glm::vec3(1, 0, 0), CEILING_COLOR);
 
 				//Walls 
 				if(wcolor_xl == sf::Color::Black)
 					Renderer::draw_sprite(textures[WALL_TEXTURE].id(),
-										  glm::vec3(RG_GB::TEX_SIZE.x * i, 0, RG_GB::TEX_SIZE.y * j - 200.0f - RG_GB::TEX_SIZE.x / 2),
-										  RG_GB::TEX_SIZE, 180.0f, glm::vec3(0, 1, 0), WALL_COLOR);
+							      glm::vec3(RG_GB::TEX_SIZE.x * i, 0, RG_GB::TEX_SIZE.y * j - 200.0f - RG_GB::TEX_SIZE.x / 2),
+							      RG_GB::TEX_SIZE, 180.0f, glm::vec3(0, 1, 0), WALL_COLOR);
 
 				if(wcolor_xr == sf::Color::Black)
 					Renderer::draw_sprite(textures[WALL_TEXTURE].id(),
-										  glm::vec3(RG_GB::TEX_SIZE.x * i, 0, RG_GB::TEX_SIZE.y * j - (200.0f - RG_GB::TEX_SIZE.x) - RG_GB::TEX_SIZE.x / 2),
-										  RG_GB::TEX_SIZE, 0.0f, glm::vec3(1, 0, 0), WALL_COLOR);
+							      glm::vec3(RG_GB::TEX_SIZE.x * i, 0, RG_GB::TEX_SIZE.y * j - (200.0f - RG_GB::TEX_SIZE.x) - RG_GB::TEX_SIZE.x / 2),
+							      RG_GB::TEX_SIZE, 0.0f, glm::vec3(1, 0, 0), WALL_COLOR);
 				
 				if(wcolor_yl == sf::Color::Black)
 					Renderer::draw_sprite(textures[WALL_TEXTURE].id(),
-										  glm::vec3(RG_GB::TEX_SIZE.x * i - RG_GB::TEX_SIZE.x / 2, 0, RG_GB::TEX_SIZE.y * j - (200.0f - RG_GB::TEX_SIZE.y / 2) - RG_GB::TEX_SIZE.x / 2),
-										  RG_GB::TEX_SIZE, 270.0f, glm::vec3(0, 1, 0), WALL_COLOR);
+							      glm::vec3(RG_GB::TEX_SIZE.x * i - RG_GB::TEX_SIZE.x / 2, 0, RG_GB::TEX_SIZE.y * j - (200.0f - RG_GB::TEX_SIZE.y / 2) - RG_GB::TEX_SIZE.x / 2),
+							      RG_GB::TEX_SIZE, 270.0f, glm::vec3(0, 1, 0), WALL_COLOR);
 
 				if(wcolor_yr == sf::Color::Black)
 					Renderer::draw_sprite(textures[WALL_TEXTURE].id(),
-										  glm::vec3(RG_GB::TEX_SIZE.x * i + RG_GB::TEX_SIZE.x / 2, 0, RG_GB::TEX_SIZE.y * j - (200.0f - RG_GB::TEX_SIZE.y / 2) - RG_GB::TEX_SIZE.x / 2),
-										  RG_GB::TEX_SIZE, 90.0f, glm::vec3(0, 1, 0), WALL_COLOR);
+							      glm::vec3(RG_GB::TEX_SIZE.x * i + RG_GB::TEX_SIZE.x / 2, 0, RG_GB::TEX_SIZE.y * j - (200.0f - RG_GB::TEX_SIZE.y / 2) - RG_GB::TEX_SIZE.x / 2),
+							      RG_GB::TEX_SIZE, 90.0f, glm::vec3(0, 1, 0), WALL_COLOR);
 
 				//END
 			}
@@ -121,8 +121,8 @@ void Level::draw(std::vector<GLTexture>& textures)
 	for(int i = 40; i > 0; i--)
 	{
 		Renderer::draw_sprite(textures[TRANSPARENCY_TEST].id(),
-							  glm::vec3(RG_GB::TEX_SIZE.x * 15.5f - 2000.0f, 0.0f, RG_GB::TEX_SIZE.y * i - 200.0f),
-							  ENTITY_TEX_SIZE, 180.0f, glm::vec3(1, 0, 0), glm::vec4(1, 1, 1, 1));
+				      glm::vec3(RG_GB::TEX_SIZE.x * 15.5f - 2000.0f, 0.0f, RG_GB::TEX_SIZE.y * i - 200.0f),
+				      ENTITY_TEX_SIZE, 180.0f, glm::vec3(1, 0, 0), glm::vec4(1, 1, 1, 1));
 	}
 
 }
