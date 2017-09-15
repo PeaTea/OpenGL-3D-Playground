@@ -6,8 +6,8 @@ static Camera camera(glm::vec3(2000.0f, 0.0f, 200.0f));
 
 Display::Display(int width, int height, std::string title, sf::Uint32 style)
 	:	should_close	{false}
-	,	last_mousex		{width / 2.0f}
-	,	last_mousey		{height / 2.0f}
+	,	last_mousex	{width / 2.0f}
+	,	last_mousey	{height / 2.0f}
 {
 	sf::ContextSettings settings;
 	settings.minorVersion = 3;
