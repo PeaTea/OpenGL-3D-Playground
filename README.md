@@ -15,5 +15,5 @@ If you want to build this, you'll need the following: <br />
   GLM     (Version 0.9.7.6)                           <br />
   
 <br />
-Have fun,
+Have fun,<br />
 Peter
