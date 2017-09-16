@@ -3,7 +3,7 @@
 This is a personal playground for myself to check out some cool OpenGL 3D stuff and for general testing purposes.
 This code can get messy and hard to read, since I always fill it with ideas - please don't mind that.
 
-You're free to download the source code of my playground, even use some ideas in your programs, if you like - just remember to credit me.
+You're free to download the source code of my playground, even use some ideas in your programs, if you like - just remember to credit me, if it's a part of my program, that I came up with, for example level generation.
 
 I'm not responsible for any damage that could be caused by my code.
 
