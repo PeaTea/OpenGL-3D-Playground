@@ -9,7 +9,7 @@ I'm not responsible for any damage that could be caused by my code.
 
 
 If you want to build this, you'll need the following: <br />
-  OpenGL  (3.0+)                                      <br />
+  OpenGL  (3.3+)                                      <br />
   SDL     (Version 2.4.2)                             <br />
   GLEW    (Version 2.0)                               <br />
   GLM     (Version 0.9.7.6)                           <br />
