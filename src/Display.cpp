@@ -2,12 +2,12 @@
 #include <iostream>
 #include "Camera.h"
 
-static Camera camera(glm::vec3(2000.0f, 0.0f, 200.0f));
+static Camera camera(glm::vec3(2000.0f, 0.0f, 456.0f));
 
 Display::Display(int width, int height, std::string title, sf::Uint32 style)
 	:	should_close	{false}
-	,	last_mousex	{width / 2.0f}
-	,	last_mousey	{height / 2.0f}
+	,	last_mousex		{width / 2.0f}
+	,	last_mousey		{height / 2.0f}
 {
 	sf::ContextSettings settings;
 	settings.minorVersion = 3;
@@ -29,6 +29,7 @@ Display::Display(int width, int height, std::string title, sf::Uint32 style)
 	}
 
 	render_game = new RenderGame(width, height);
+	//sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2));
 }
 
 Display::~Display()
@@ -52,25 +53,52 @@ void Display::render()
 	render_game->render(camera);
 }
 
-void Display::process_keyboard_input(float deltatime)
+void Display::render_transparent()
+{
+	render_game->render_transparent();
+}
+
+void Display::process_keyboard_input(float deltatime, bool collision)
 {
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 	{
 		close();
 	}
 
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-	{	camera.process_keyboard(CameraMovement::FORWARD, deltatime, *render_game);
-	} if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-		camera.process_keyboard(CameraMovement::LEFT, deltatime, *render_game);
-	} if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-		camera.process_keyboard(CameraMovement::BACKWARD, deltatime, *render_game);
-	} if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		camera.process_keyboard(CameraMovement::RIGHT, deltatime, *render_game);
-	} if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-		camera.process_keyboard(CameraMovement::UP, deltatime, *render_game);
-	} if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
-		camera.process_keyboard(CameraMovement::DOWN, deltatime, *render_game);
+	if(!collision) 
+	{
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		{
+			camera.process_keyboard(CameraMovement::FORWARD, deltatime, *render_game);
+		} if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+			camera.process_keyboard(CameraMovement::LEFT, deltatime, *render_game);
+		} if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+			camera.process_keyboard(CameraMovement::BACKWARD, deltatime, *render_game);
+		} if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			camera.process_keyboard(CameraMovement::RIGHT, deltatime, *render_game);
+		} if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+			camera.process_keyboard(CameraMovement::UP, deltatime, *render_game);
+		} if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+			camera.process_keyboard(CameraMovement::DOWN, deltatime, *render_game);
+		}
+	}
+
+	else 
+	{
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		{
+			camera.process_keyboard_collision(CameraMovement::FORWARD, deltatime, *render_game);
+		} if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+			camera.process_keyboard_collision(CameraMovement::LEFT, deltatime, *render_game);
+		} if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+			camera.process_keyboard_collision(CameraMovement::BACKWARD, deltatime, *render_game);
+		} if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			camera.process_keyboard_collision(CameraMovement::RIGHT, deltatime, *render_game);
+		} if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+			camera.process_keyboard_collision(CameraMovement::UP, deltatime, *render_game);
+		} if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+			camera.process_keyboard_collision(CameraMovement::DOWN, deltatime, *render_game);
+		}
 	}
 }
 
@@ -89,7 +117,7 @@ void Display::process_mouse_movement(float deltatime)
 
 	camera.process_mouse_movement(xoffset, yoffset);
 
-	sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2));
+	sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2), window);
 }
 
 void Display::close()
@@ -101,5 +129,5 @@ void Display::close()
 void Display::switch_wireframe(bool wireframe)
 {
 	if(wireframe)	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	else		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	else			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

@@ -1,24 +1,27 @@
 #include "Collision.h"
 
-glm::vec3 Collision::in_level(const Level& level, const glm::vec2& texture_size, glm::vec3& camera_pos)
+/*
+	Somewhat working - still some camera issues.
+	TODO: Make it better!
+*/
+
+bool Collision::in_level(const Level& level, const glm::vec2& texture_size, glm::vec3& new_pos)
 {
 	for(int i = 0; i < level.get_width(); i++)
 	{	
 		for(int j = 0; j < level.get_height(); j++)
 		{
-			if(level.get_pixel(i, j) == sf::Color::White)
+			if(new_pos.x < 0 || new_pos.z < 0)
 			{
-				if(camera_pos.x > i * texture_size.x && camera_pos.x < (i + 1) * texture_size.x)
-				{
-					if(camera_pos.z > j * texture_size.y && camera_pos.z < (j + 1) * texture_size.y)
-					{
-						camera_pos.x -= 1;
-						camera_pos.z -= 1;
-						return glm::vec3(0, 1, 0);
-					}
-				}
+				return false;
+			}
+
+			if(level.get_pixel((new_pos.x + texture_size.x / 2) / texture_size.x,
+							   (new_pos.z + texture_size.y / 6.42f) / texture_size.y) == sf::Color::Black)
+			{
+				return false;
 			}
 		}
 	}
-	return glm::vec3(1, 1, 1);
+	return true;
 }

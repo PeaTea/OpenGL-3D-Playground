@@ -7,7 +7,7 @@
 class Collision
 {
 public:
-	static glm::vec3 in_level(const Level& level, const glm::vec2& texture_size, glm::vec3& camera_pos);
+	static bool in_level(const Level& level, const glm::vec2& texture_size, glm::vec3& new_pos);
 };
 
 #endif

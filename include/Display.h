@@ -13,7 +13,8 @@ public:
 	sf::Window& get();
 	void update();
 	void render();
-	void process_keyboard_input(float deltatime);
+	void render_transparent();
+	void process_keyboard_input(float deltatime, bool collision = true);
 	void process_mouse_movement(float deltatime);
 	void close();
 	void switch_wireframe(bool wireframe);

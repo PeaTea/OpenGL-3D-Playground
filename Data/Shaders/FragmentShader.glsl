@@ -9,5 +9,8 @@ uniform sampler2D image;
 
 void main(void)
 {
-	color = spritecolor * texture(image, tex_coords);
+	vec4 texel = spritecolor * texture(image, tex_coords);
+	if(texel.a < 0.5)
+		discard;
+	color = texel;
 }

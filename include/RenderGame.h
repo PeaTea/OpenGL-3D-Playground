@@ -8,7 +8,7 @@
 
 namespace RG_GB
 {
-	const float FOV = 80.0f;
+	const float FOV = 100.0f;
 	const glm::vec2 TEX_SIZE(128, 128);
 }
 
@@ -32,6 +32,7 @@ public:
 	RenderGame(int width, int height);
 
 	void render(Camera& camera);
+	void render_transparent();
 
 	std::vector<Level> levels;
 

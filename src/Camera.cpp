@@ -4,6 +4,10 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <iostream>
+
+#define Log(x) std::cout << x << std::endl;
+
 static bool y_movement = false;
 
 Camera::Camera(glm::vec3 pos, glm::vec3 up, float yaw, float pitch)
@@ -33,32 +37,77 @@ void Camera::update_camera_vectors()
 }
 
 
-void Camera::process_keyboard(CameraMovement direction, float dt, const RenderGame& render_game)
+void Camera::process_keyboard_collision(CameraMovement direction, float dt, const RenderGame& render_game)
 {
 	float vel = movement_speed * dt;
+
+	//To avoid "stuttering" when colliding - only change position, when it's viable
+	glm::vec3 new_pos = position;
 	switch(direction)
 	{
 	case FORWARD:
-		position += front * vel;// * Collision::in_level(render_game.levels[0], RG_GB::TEX_SIZE, position);
+		new_pos += front * vel;
 		break;
 	case BACKWARD:
-		position -= front * vel;// * Collision::in_level(render_game.levels[0], RG_GB::TEX_SIZE, position);
+		new_pos -= front * vel;
 		break;
 	case RIGHT:
-		position += right * (vel * 0.5f);// * Collision::in_level(render_game.levels[0], RG_GB::TEX_SIZE, position);
+		new_pos += right * vel;
 		break;
 	case LEFT:
-		position -= right * (vel * 0.5f);// * Collision::in_level(render_game.levels[0], RG_GB::TEX_SIZE, position);
+		new_pos -= right * vel;
 		break;
 	case UP:
-		position.y += (SPEED * 5) * vel;
+		position.y += (SPEED * 8) * vel;
 		break;
 	case DOWN:
-		position.y -= (SPEED * 5) * vel;
+		position.y -= (SPEED * 8) * vel;
 		break;
 	}
 
+	if(Collision::in_level(render_game.levels[0], RG_GB::TEX_SIZE, new_pos)) {
+		position = new_pos;
+	}
+
 	if(!y_movement)	position.y = 0.0f;
+
+	std::cout << position.x << " | " << position.z << std::endl;
+}
+
+
+void Camera::process_keyboard(CameraMovement direction, float dt, const RenderGame& render_game)
+{
+	float vel = movement_speed * dt;
+
+	//To avoid "stuttering" when colliding - only change position, when it's viable
+	glm::vec3 new_pos = position;
+	switch(direction)
+	{
+	case FORWARD:
+		new_pos += front * vel;
+		break;
+	case BACKWARD:
+		new_pos -= front * vel;
+		break;
+	case RIGHT:
+		new_pos += right * vel;
+		break;
+	case LEFT:
+		new_pos -= right * vel;
+		break;
+	case UP:
+		position.y += (SPEED * 8) * vel;
+		break;
+	case DOWN:
+		position.y -= (SPEED * 8) * vel;
+		break;
+	}
+
+	position = new_pos;
+
+	if(!y_movement)	position.y = 0.0f;
+
+	std::cout << position.x << " | " << position.z << std::endl;
 }
 
 

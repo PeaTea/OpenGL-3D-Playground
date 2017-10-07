@@ -27,6 +27,7 @@ public:
 	Camera(glm::vec3 pos = glm::vec3(0, 0, 0), glm::vec3 up = glm::vec3(0, 1, 0), float yaw = YAW, float pitch = PITCH);
 	~Camera();
 
+	void process_keyboard_collision(CameraMovement direction, float dt, const RenderGame& render_game);
 	void process_keyboard(CameraMovement direction, float dt, const RenderGame& render_game);
 	void process_mouse_movement(float xoffset, float yoffset, bool constrain_pitch = true);
 	glm::mat4 get_view_matrix();

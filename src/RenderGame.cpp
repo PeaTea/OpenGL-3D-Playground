@@ -6,6 +6,8 @@
 
 using namespace RG_GB;
 
+const glm::vec2 ENTITY_TEX_SIZE(62, 96);
+
 
 RenderGame::RenderGame(int width, int height)
 {
@@ -95,6 +97,16 @@ void RenderGame::render(Camera& camera)
 
 	//Renderer::draw_sprite(textures[ACID].id(), glm::vec3(0, -100.0f, 0), glm::vec2(1000, 1000), 90.0f, glm::vec3(1, 0, 0));
 	levels[0].draw(textures);
-
 	//Renderer::draw_sprite(textures[CROSSHAIR].id(), glm::vec3(0, 0, 1.0f), TEX_SIZE, 0.0f);
+}
+
+
+void RenderGame::render_transparent()
+{
+	for(int i = 40; i > 0; i--)
+	{
+		Renderer::draw_sprite(textures[TRANSPARENCY_TEST].id(),
+							  glm::vec3(RG_GB::TEX_SIZE.x * 15.5f - 2000.0f, 0.0f, RG_GB::TEX_SIZE.y * i - 200.0f),
+							  ENTITY_TEX_SIZE, 180.0f, glm::vec3(1, 0, 0), glm::vec4(1, 1, 1, 1));
+	}
 }
