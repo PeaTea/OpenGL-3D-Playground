@@ -1,7 +1,7 @@
 ### Problem ###
 
 
-### Description of Problems ###
+### Description of Problem ###
 
 
 ### Suggests to solve it ###
