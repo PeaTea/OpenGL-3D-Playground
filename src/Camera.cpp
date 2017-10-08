@@ -28,7 +28,7 @@ void Camera::update_camera_vectors()
 {
 	glm::vec3 front_vec;
 	front_vec.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	front_vec.y = sin(glm::radians(pitch));
+	front_vec.y = sin(glm::radians(pitch));								//Player can't look up or down if disabled
 	front_vec.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 	front = glm::normalize(front_vec);
 
@@ -65,7 +65,7 @@ void Camera::process_keyboard_collision(CameraMovement direction, float dt, cons
 		break;
 	}
 
-	if(Collision::in_level(render_game.levels[0], RG_GB::TEX_SIZE, new_pos)) {
+	if(Collision::in_level(render_game.levels[0], RG_GB::TEX_SIZE, new_pos, position)) {
 		position = new_pos;
 	}
 
@@ -84,22 +84,22 @@ void Camera::process_keyboard(CameraMovement direction, float dt, const RenderGa
 	switch(direction)
 	{
 	case FORWARD:
-		new_pos += front * vel;
+		new_pos += vel;
 		break;
 	case BACKWARD:
-		new_pos -= front * vel;
+		new_pos -= vel;
 		break;
 	case RIGHT:
-		new_pos += right * vel;
+		new_pos += vel;
 		break;
 	case LEFT:
-		new_pos -= right * vel;
+		new_pos -= vel;
 		break;
 	case UP:
-		position.y += (SPEED * 8) * vel;
+		new_pos.y += (SPEED * 8) * vel;
 		break;
 	case DOWN:
-		position.y -= (SPEED * 8) * vel;
+		new_pos.y -= (SPEED * 8) * vel;
 		break;
 	}
 
