@@ -4,4 +4,4 @@
 ### Description of Problem ###
 
 
-### Suggests to solve it ###
+### Suggestions to solve it ###
