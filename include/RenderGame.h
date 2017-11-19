@@ -8,49 +8,49 @@
 
 namespace RG_GB
 {
-	const float FOV = 100.0f;
-	const glm::vec2 TEX_SIZE(128, 128);
+    const float FOV = 110.0f;
+    const glm::vec2 TEX_SIZE(128, 128);
 }
 
 enum Textures
 {
-	METAL_CUBE,
-	ACID,
-	STONE,
-	LAVA,
-	MARBLE,
-	WOOD,
-	QUAD_TEMPLATE,
-	DIAGONAL_TEMPLATE,
-	MYSTERIOUS_ROBOT,
-	TRANSPARENCY_TEST,
+    METAL_CUBE,
+    ACID,
+    STONE,
+    LAVA,
+    MARBLE,
+    WOOD,
+    QUAD_TEMPLATE,
+    DIAGONAL_TEMPLATE,
+    MYSTERIOUS_ROBOT,
+    TRANSPARENCY_TEST,
 };
 
 class RenderGame
 {
 public:
-	RenderGame(int width, int height);
+    RenderGame(int width, int height);
 
-	void render(Camera& camera);
-	void render_transparent();
+    void render(Camera& camera);
+    void render_transparent();
 
-	std::vector<Level> levels;
+    std::vector<Level> levels;
 
 private:
-	void load_textures();
-	void set_uniforms();
-	void update_matrices(glm::mat4 view_mat, glm::mat4 projection_mat);
+    void load_textures();
+    void set_uniforms();
+    void update_matrices(glm::mat4 view_mat, glm::mat4 projection_mat);
 
-	void load_levels();
+    void load_levels();
 
-	GLProgram gl_program;
+    GLProgram gl_program;
 
-	int screen_w;
-	int screen_h;
+    int screen_w;
+    int screen_h;
 
-	std::vector<GLTexture> textures;
+    std::vector<GLTexture> textures;
 
-	//Game Objects
+    //Game Objects
 };
 
 #endif

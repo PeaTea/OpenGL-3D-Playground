@@ -6,12 +6,12 @@
 class SFEvent
 {
 public:
-	sf::Event& get();
-	sf::Event::EventType type();
-	sf::Event::SizeEvent size();
+    sf::Event& get();
+    sf::Event::EventType type();
+    sf::Event::SizeEvent size();
 
 private:
-	sf::Event event;
+    sf::Event event;
 };
 
 #endif 

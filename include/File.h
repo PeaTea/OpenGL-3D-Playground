@@ -7,18 +7,18 @@
 class File
 {
 public:
-	File();
-	File(const std::string& filename);
+    File();
+    File(const std::string& filename);
 
-	std::string get_contents();
-	std::string get_name();
+    std::string get_contents();
+    std::string get_name();
 
-	void set_name(const std::string& filename);
-	void read();
+    void set_name(const std::string& filename);
+    void read();
 
 private:
-	std::string name;
-	std::string contents;
+    std::string name;
+    std::string contents;
 };
 
 #endif

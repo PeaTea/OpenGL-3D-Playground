@@ -8,26 +8,26 @@
 class Display
 {
 public:
-	Display(int width, int height, std::string title, sf::Uint32 style);
-	~Display();
-	sf::Window& get();
-	void update();
-	void render();
-	void render_transparent();
-	void process_keyboard_input(float deltatime, bool collision = true);
-	void process_mouse_movement(float deltatime);
-	void close();
-	void switch_wireframe(bool wireframe);
-	void restrain_camera_y(bool y_mov);
+    Display(int width, int height, std::string title, sf::Uint32 style);
+    ~Display();
+    sf::Window& get();
+    void update();
+    void render();
+    void render_transparent();
+    void process_keyboard_input(float deltatime, bool collision, const int& curr_lvl);
+    void process_mouse_movement(float deltatime);
+    void close();
+    void switch_wireframe(bool wireframe);
+    void restrain_camera_y(bool y_mov);
 
-	bool should_close;
+    bool should_close;
 
 private:
-	RenderGame* render_game;
-	sf::Window window;
+    RenderGame* render_game;
+    sf::Window window;
 
-	float last_mousex;
-	float last_mousey;
+    float last_mousex;
+    float last_mousey;
 
 };
 

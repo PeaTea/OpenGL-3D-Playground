@@ -6,22 +6,22 @@
 
 enum Shadertype
 {
-	VERTEX,
-	FRAGMENT
+    VERTEX,
+    FRAGMENT
 };
 
 class GLShader
 {
 public:
-	GLShader(File file, Shadertype type);
+    GLShader(File file, Shadertype type);
 
-	GLuint id();
-	void destroy();
+    GLuint id();
+    void destroy();
 
 private:
-	void check_for_errors();
+    void check_for_errors();
 
-	GLuint shader_id;
+    GLuint shader_id;
 };
 
 #endif
