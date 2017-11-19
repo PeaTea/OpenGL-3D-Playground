@@ -2,15 +2,15 @@
 
 sf::Event& SFEvent::get()
 {
-	return event;
+    return event;
 }
 
 sf::Event::EventType SFEvent::type()
 {
-	return event.type;
+    return event.type;
 }
 
 sf::Event::SizeEvent SFEvent::size()
 {
-	return event.size;
+    return event.size;
 }
