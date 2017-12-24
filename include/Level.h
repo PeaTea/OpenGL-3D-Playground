@@ -3,26 +3,28 @@
 
 #include <string>
 #include <SFML/Graphics/Image.hpp>
+#include <glm/glm.hpp>
 #include "GLTexture.h"
 
 class Level
 {
 public:
-    Level(int width, int height);
-    Level(const std::string& path);
+    Level(const std::string& path, const glm::vec3& start_positions, int wall_scaling);
     ~Level();
 
-    int get_width() const;
-    int get_height() const;
+    int width() const;
+    int height() const;
+    int wall_scaling() const;
     const unsigned char* get_data();
     sf::Color get_pixel(unsigned int x, unsigned int y) const;
-    void draw(std::vector<GLTexture>& textures);
-    //void draw_transparent(std::vector<GLTexture>& textures);
+    glm::vec3& start();
 
 private:
-    int width;
-    int height;
+    int w;
+    int h;
+    int wallScaling;
     sf::Image image;
+    glm::vec3 startPositions;
 };
 
 #endif

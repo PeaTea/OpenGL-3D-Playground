@@ -19,7 +19,8 @@ enum GLTexFlags
 class GLTexture
 {
 public:
-    GLTexture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags wrap_t, GLTexFlags min_filter, GLTexFlags mag_filter);
+    GLTexture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags wrap_t,
+              GLTexFlags min_filter, GLTexFlags mag_filter, bool prefix = true);
 
     GLuint id();
 

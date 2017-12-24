@@ -6,8 +6,6 @@
 
 #include <iostream>
 
-#define Log(x) std::cout << x << std::endl;
-
 static bool y_movement = false;
 
 Camera::Camera(glm::vec3 pos, glm::vec3 up, float yaw, float pitch)

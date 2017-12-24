@@ -81,7 +81,6 @@ void Renderer::draw_sprite(GLuint texture_id, glm::vec3 pos, glm::vec2 size, GLf
 
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
 }
 
 void Renderer::draw_texture(GLuint texture)

@@ -2,13 +2,13 @@
 #include <SFML/Graphics/Image.hpp>
 #include <iostream>
 
-GLTexture::GLTexture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags wrap_t, GLTexFlags min_filter, GLTexFlags mag_filter)
+GLTexture::GLTexture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags wrap_t, GLTexFlags min_filter, GLTexFlags mag_filter, bool prefix)
 {
     glGenTextures(1, &texture_id);
     glBindTexture(GL_TEXTURE_2D, texture_id);
 
     sf::Image texture;
-    if(!texture.loadFromFile(filename))
+    if(!texture.loadFromFile(prefix ? "Data/Textures/" + filename : filename))
     {
         std::cerr << "Could not load file: " << filename << std::endl;
     }

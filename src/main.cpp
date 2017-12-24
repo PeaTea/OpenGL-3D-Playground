@@ -6,7 +6,6 @@
 #define DEBUG
 #define FULLSCREEN 1
 
-
 static bool wire_frame = false;
 static bool y_mov_switch = false;
 static bool out_of_focus = false;
@@ -21,14 +20,14 @@ namespace PC
     constexpr int WIDTH = 800;
     constexpr int HEIGHT = 600;
 #endif
-    const std::string TITLE = "CompleteN00B's Wolfenstein3D";
+    const std::string TITLE = "OpenGL Playground";
 }
 
 
 namespace Main_GB
 {
     bool collision = true;
-    int current_level = 0;
+    int current_level = 1;
 }
 
 
@@ -122,8 +121,6 @@ int main()
             display.render_transparent();
 
             display.update(); // Also swaps buffers
-
-            //std::cout << glGetError() << std::endl;
         }
     }
 }
