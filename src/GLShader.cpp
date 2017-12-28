@@ -14,7 +14,7 @@ GLShader::GLShader(File file, Shadertype type)
         break;
     }
 
-    std::string temp = file.get_contents();
+    std::string temp = file.read();
     const GLchar* source[1] = { temp.c_str() };
 
     glShaderSource(shader_id, 1, source, nullptr);

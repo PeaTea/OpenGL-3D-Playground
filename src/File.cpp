@@ -2,6 +2,7 @@
 
 #include "Logging.h"
 #include <sstream>
+#include <iterator>
 
 File::File()
     :   name    {""}
@@ -13,20 +14,12 @@ File::File(const std::string& filename)
 {
 }
 
-std::string File::get_contents() 
-{
-    if(contents != "")	return contents;
-    else
-    {
-        read();
-        return contents;
-    }
-}
-
 std::string File::get_name() const 
 {
-    if(name != "")	return name;
-    else throw std::runtime_error("Filename has not yet been set!");
+    if(name != "")	
+        return name;
+    else 
+        logging::log("No filename specified for get_name()", lstream::error);
 }
 
 void File::set_name(const std::string& filename)
@@ -34,42 +27,65 @@ void File::set_name(const std::string& filename)
     name = filename;
 }
 
-void File::read()
+std::string File::read(const std::string& filename)
 {
-    if(name != "")
-    {
-        std::ifstream in_file;
-        std::string line;
+    if(filename == "" && name == "")
+        logging::log("No filename", lstream::error);
 
-        in_file.open(name, std::ios::binary);
-        if(in_file.fail())
-        {
-            throw std::runtime_error("Error opening file (maybe wrong path?):" + name + "\n");
-        }
+    std::ifstream file { ((name == "") ? filename : name), std::ios::binary };
 
-        std::stringstream ss;
-        ss << in_file.rdbuf();
-        contents = ss.str();
+    if(file.fail())
+        logging::log("Error opening file - maybe wrong path?:" + name + "\n", lstream::error);
 
-        in_file.close();
-    } 
-    else
-    {
-        throw std::runtime_error("No filename specified");
-    }
+    std::stringstream ss;
+    ss << file.rdbuf();
+    
+    return ss.str();
 }
 
-template <typename T>
-void File::write(const T& txt)
+std::vector<std::string> File::read_lines(const std::string& filename)
 {
-    if(name != "")
+    if(filename == "" && name == "")
+        logging::log("No filename", lstream::error);
+
+    std::vector<std::string> lines;
+    std::ifstream file { name == "" ? filename : name, std::ios::binary };
+
+    if(file.fail())
+        logging::log("Error opening file (maybe wrong path?):" + name + "\n", lstream::error);
+
+    std::string line;
+    while(std::getline(file, line))
     {
-        std::ofstream file { name };
-        file << txt;
-        file.close();
+        lines.push_back(line);
     }
-    else
-    {
-        throw std::runtime_error("No filename specified for contents: " + std::to_string(txt) + "\n");
-    }
+
+    return lines;
+}
+
+std::vector<std::string> File::read_words(const std::string& filename)
+{
+    if(filename == "" && name == "")
+        logging::log("No filename", lstream::error);
+
+    std::vector<std::string> lines;
+    std::ifstream file{name == "" ? filename : name, std::ios::binary};
+
+    if(file.fail())
+        logging::log("Error opening file (maybe wrong path?):" + name + "\n", lstream::error);
+
+    std::copy(std::istream_iterator<std::string>(file),
+              std::istream_iterator<std::string>(),
+              std::back_inserter(lines));
+
+    return lines;
+}
+
+void File::write(const std::string& txt, const std::string& filename)
+{
+    if(filename == "" && name == "")
+        logging::log("No filename for contents:\n  " + txt + "\n", lstream::error);
+
+    std::ofstream file { name == "" ? filename : name };
+    file << txt;
 }

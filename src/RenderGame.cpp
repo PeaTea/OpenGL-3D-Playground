@@ -34,8 +34,8 @@ RenderGame::RenderGame(int width, int height)
 
 void RenderGame::load_levels()
 {
-    levels.emplace_back("Data/Levels/tutorial.png", glm::vec3(-2000.0f, PLAYER_SIZE / 2, 44.0f), 1);
-    levels.emplace_back("Data/Levels/cathedral.png", glm::vec3(0, 0, 0), 10);
+    levels.emplace_back("Data/Levels/tutorial.png", glm::vec3(-2000.0f, PLAYER_SIZE / 2, 44.0f), 1, 1);
+    levels.emplace_back("Data/Levels/cathedral.png", glm::vec3(0, 0, 0), 1, 10);
 }
 
 void RenderGame::set_uniforms()
@@ -72,7 +72,7 @@ void RenderGame::update_matrices(glm::mat4 view_mat, glm::mat4 projection_mat)
 void RenderGame::render(Camera& camera)
 {
     update_matrices(camera.get_view_matrix(),
-                    glm::perspective(glm::radians(FOV), (float)(screen_w / screen_h), 0.1f, 100000.0f));
+                    glm::perspective(glm::radians(FOV), (float)(screen_w / screen_h), 0.1f, 10000.0f));
 
     LevelDrawer::render(textures, levels[1]);
 }
@@ -80,10 +80,15 @@ void RenderGame::render(Camera& camera)
 
 void RenderGame::render_transparent()
 {
+    /*
     for(int i = 40; i > 0; i--)
     {
         Renderer::draw_sprite(textures[TRANSPARENCY_TEST].id(),
                               glm::vec3(RG_GB::TEX_SIZE.x * 15.5f, 0.0f, RG_GB::TEX_SIZE.y * i - 200.0f),
                               ENTITY_TEX_SIZE, 180.0f, glm::vec3(1, 0, 0), glm::vec4(0, 1, 1, 1));
     }
+    */
+    Renderer::draw_sprite(textures[MYSTERIOUS_ROBOT].id(),
+                          glm::vec3(TEX_SIZE.x * 15.5f, ENTITY_TEX_SIZE.y / 2.0f, TEX_SIZE.y * 20 - 200.0f),
+                          ENTITY_TEX_SIZE * glm::vec2(2.0f, 2.0f), 180.0f, glm::vec3(1, 0, 0));
 }

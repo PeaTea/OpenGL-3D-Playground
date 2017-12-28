@@ -1,10 +1,15 @@
 #include "Display.h"
 #include "SFEvent.h"
+#include "Vec2.h"
+#include "Settings.h"
+
 #include <iostream>
 
+#define TEST 0
+
+#if !TEST
 
 #define DEBUG
-#define FULLSCREEN 1
 
 static bool wire_frame = false;
 static bool y_mov_switch = false;
@@ -13,14 +18,10 @@ static bool out_of_focus = false;
 // Everything I need to know for a PC platform
 namespace PC
 {
-#if FULLSCREEN
-    constexpr int WIDTH = 1920;
-    constexpr int HEIGHT = 1080;
-#else
-    constexpr int WIDTH = 800;
-    constexpr int HEIGHT = 600;
-#endif
+    int WIDTH = Settings::width();
+    int HEIGHT = Settings::height();
     const std::string TITLE = "OpenGL Playground";
+    bool FULLSCREEN = Settings::fullscreen();
 }
 
 
@@ -33,12 +34,7 @@ namespace Main_GB
 
 int main()
 {
-    // Creates a display
-#if FULLSCREEN
-    Display display(PC::WIDTH, PC::HEIGHT, PC::TITLE, sf::Style::Fullscreen);
-#else
-    Display display(PC::WIDTH, PC::HEIGHT, PC::TITLE, sf::Style::Default);
-#endif
+    Display display(PC::WIDTH, PC::HEIGHT, PC::TITLE, PC::FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Default);
 
     sf::Clock clock;
     float delta_time = 0.0f;
@@ -124,3 +120,20 @@ int main()
         }
     }
 }
+
+
+#else
+
+void main()
+{
+    Vec2 v(3, 4);
+    Vec2 o(2, 1);
+
+    v /= o;
+
+    std::cout << v << std::endl;
+
+    std::cin.get();
+}
+
+#endif

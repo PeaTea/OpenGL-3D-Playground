@@ -9,20 +9,18 @@
 class Level
 {
 public:
-    Level(const std::string& path, const glm::vec3& start_positions, int wall_scaling);
+    Level(const std::string& path, const glm::vec3& start_positions, int xz_scaling, int y_scaling);
     ~Level();
 
     int width() const;
     int height() const;
-    int wall_scaling() const;
+    glm::vec2 scaling() const;
     const unsigned char* get_data();
     sf::Color get_pixel(unsigned int x, unsigned int y) const;
     glm::vec3& start();
 
 private:
-    int w;
-    int h;
-    int wallScaling;
+    int xz_scaling, y_scaling, w, h;
     sf::Image image;
     glm::vec3 startPositions;
 };

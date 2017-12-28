@@ -43,6 +43,7 @@ private:
 
     void load_levels();
 
+private:
     GLProgram gl_program;
 
     int screen_w;

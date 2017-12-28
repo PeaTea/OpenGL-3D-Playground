@@ -12,9 +12,10 @@ levels[0] = Tutorial:
     Starting Positions:	-2000.0f, PlayerSize / 2, 44.0f
 */
 
-Level::Level(const std::string& path, const glm::vec3& start_positions, int wall_scaling)
+Level::Level(const std::string& path, const glm::vec3& start_positions, int xz_scaling, int y_scaling)
     :   startPositions  {start_positions}
-    ,   wallScaling     {wall_scaling}
+    ,   xz_scaling      {xz_scaling}
+    ,   y_scaling       {y_scaling}
 {
     if(!image.loadFromFile(path))
     {
@@ -40,9 +41,9 @@ int Level::height() const
     return h;
 }
 
-int Level::wall_scaling() const
+glm::vec2 Level::scaling() const
 {
-    return wallScaling;
+    return glm::vec2(xz_scaling, y_scaling);
 }
 
 const unsigned char* Level::get_data()
