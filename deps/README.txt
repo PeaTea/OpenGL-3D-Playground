@@ -5,8 +5,8 @@ You need 3 directories:
     glm
     SFML
 
-Each folder contains a include and a lib directory (in case of glm it's just include), containing the 
-same-named directories of the downloaded dependencies, so in case of GLEW, it would be like this:
+Each folder contains a include and a lib directory (in case of glm it's only include), containing the contents
+of the same-named directories of the downloaded dependencies, so in case of GLEW, it would be like this:
 
     GLEW - include - GL - [include_files]
     GLEW - lib - Release - Win32 - [lib_files]
