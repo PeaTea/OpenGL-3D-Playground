@@ -1,3 +1,7 @@
 [STATUS]
 
-Implementing Collision...
+Implementing Collision...       DONE
+Level y_scaling...              DONE
+Level xz_scaling...             DONE
+Fine-tuning and changes...
+
