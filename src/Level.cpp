@@ -1,8 +1,11 @@
 #include "Level.h"
+
 #include <iostream>
-#include "RenderGame.h"
 #include <random>
 #include <ctime>
+
+#include "Logging.h"
+#include "RenderGame.h"
 
 using RG_GB::TEX_SIZE;
 
@@ -19,11 +22,16 @@ Level::Level(const std::string& path, const glm::vec3& start_positions, int xz_s
 {
     if(!image.loadFromFile(path))
     {
-        std::cout << "Could not load file: " << path << std::endl;
+        logging::log("Could not load file: " + path, lstream::error);
+    }
+    if(xz_scaling == 0 || y_scaling == 0)
+    {
+        logging::log("scaling = 0", lstream::error);
     }
 
     w = image.getSize().x;
     h = image.getSize().y;
+    newTexSize = {TEX_SIZE.x * xz_scaling, TEX_SIZE.y * y_scaling};
 }
 
 Level::~Level()
@@ -59,4 +67,9 @@ sf::Color Level::get_pixel(unsigned int x, unsigned int y) const
 glm::vec3& Level::start()
 {
     return startPositions;
+}
+
+Vec2 Level::scaled_tex_size() const
+{
+    return newTexSize;
 }

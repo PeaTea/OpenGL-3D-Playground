@@ -8,7 +8,6 @@
 #define TEST 0
 
 #if !TEST
-
 #define DEBUG
 
 static bool wire_frame = false;
@@ -37,9 +36,7 @@ int main()
     Display display(PC::WIDTH, PC::HEIGHT, PC::TITLE, PC::FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Default);
 
     sf::Clock clock;
-    float delta_time = 0.0f;
-    float current_time = 0.0f;
-    float last_time = 0.0f;
+    float delta_time = 0.0f, current_time = 0.0f, last_time = 0.0f;
 
     SFEvent sfevent;
 
@@ -105,13 +102,10 @@ int main()
 
             display.process_mouse_movement(delta_time);
 
-            if(Main_GB::collision)
-                display.process_keyboard_input(delta_time, true, Main_GB::current_level);
-            else
-                display.process_keyboard_input(delta_time, false, Main_GB::current_level);
+            display.process_keyboard_input(delta_time, Main_GB::collision, Main_GB::current_level);
 
             glEnable(GL_CULL_FACE);
-            display.render();
+            display.render(Main_GB::current_level);
 
             glDisable(GL_CULL_FACE);
             display.render_transparent();

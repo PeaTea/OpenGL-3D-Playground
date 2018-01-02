@@ -1,5 +1,6 @@
 #include "LevelDrawer.h"
 #include "RenderGame.h"
+#include "Maths.h"
 
 using RG_GB::TEX_SIZE;
 
@@ -36,33 +37,35 @@ void LevelDrawer::render(std::vector<GLTexture>& textures, const Level& lvl)
             {
                 //Floor
                 Renderer::draw_sprite(textures[FLOOR_TEXTURE].id(),
-                                      {TEX_SIZE.x * i * xz_scaling, -TEX_SIZE.x / 2, TEX_SIZE.y * j * xz_scaling + 44.0f},
+                                      {TEX_SIZE.x * i * xz_scaling, -TEX_SIZE.x / 2, TEX_SIZE.y * j * xz_scaling},
                                       TEX_SIZE * xz_scaling, 90.0f, {1, 0, 0}, WHITE);
 
                 //Walls 
                 if(wcolor_xl == sf::Color::Black)
                     Renderer::draw_sprite(textures[WALL_TEXTURE].id(),
-                                          {TEX_SIZE.x * i * xz_scaling, y_scaling * TEX_SIZE.y / 2 - TEX_SIZE.x / 2, TEX_SIZE.y * j * xz_scaling + 44.0f - TEX_SIZE.x / 2},
+                                          {TEX_SIZE.x * i * xz_scaling, y_scaling * TEX_SIZE.y / 2 - TEX_SIZE.x / 2, TEX_SIZE.y * j * xz_scaling - TEX_SIZE.x / 2 - (xz_scaling > 1 ? (lvl.scaled_tex_size().x / 2) - TEX_SIZE.x / 2 : 0)},
                                           {TEX_SIZE.x * xz_scaling, TEX_SIZE.y * y_scaling}, 180.0f, {0, 1, 0}, LIGHT_GREY);
 
                 if(wcolor_xr == sf::Color::Black)
                     Renderer::draw_sprite(textures[WALL_TEXTURE].id(),
-                                          {TEX_SIZE.x * i * xz_scaling, y_scaling * TEX_SIZE.y / 2 - TEX_SIZE.x / 2, TEX_SIZE.y * j * xz_scaling - (-44.0f - TEX_SIZE.x) - TEX_SIZE.x / 2},
+                                          {TEX_SIZE.x * i * xz_scaling, y_scaling * TEX_SIZE.y / 2 - TEX_SIZE.x / 2, TEX_SIZE.y * j * xz_scaling + TEX_SIZE.x / 2 + (xz_scaling > 1 ? (lvl.scaled_tex_size().x / 2) - TEX_SIZE.x / 2 : 0)},
                                           {TEX_SIZE.x * xz_scaling, TEX_SIZE.y * y_scaling}, 0.0f, {1, 0, 0}, LIGHT_GREY);
 
                 if(wcolor_yl == sf::Color::Black)
                     Renderer::draw_sprite(textures[WALL_TEXTURE].id(),
-                                          {TEX_SIZE.x * i * xz_scaling - TEX_SIZE.x / 2, y_scaling * TEX_SIZE.y / 2 - TEX_SIZE.x / 2, TEX_SIZE.y * j * xz_scaling - (-44.0f - TEX_SIZE.y / 2) - TEX_SIZE.x / 2},
+                                          {TEX_SIZE.x * i * xz_scaling - TEX_SIZE.x / 2 - (xz_scaling > 1 ? (lvl.scaled_tex_size().x / 2) - TEX_SIZE.x / 2 : 0), y_scaling * TEX_SIZE.y / 2 - TEX_SIZE.x / 2,
+                                          TEX_SIZE.y * j * xz_scaling + TEX_SIZE.y / 2 - TEX_SIZE.x / 2},
                                           {TEX_SIZE.x * xz_scaling, TEX_SIZE.y * y_scaling}, 270.0f, {0, 1, 0}, LIGHT_GREY);
 
                 if(wcolor_yr == sf::Color::Black)
                     Renderer::draw_sprite(textures[WALL_TEXTURE].id(),
-                                          {TEX_SIZE.x * i * xz_scaling + TEX_SIZE.x / 2, y_scaling * TEX_SIZE.y / 2 - TEX_SIZE.x / 2, TEX_SIZE.y * j * xz_scaling - (-44.0f - TEX_SIZE.y / 2) - TEX_SIZE.x / 2},
+                                          {TEX_SIZE.x * i * xz_scaling + TEX_SIZE.x / 2 + (xz_scaling > 1 ? (lvl.scaled_tex_size().x / 2) - TEX_SIZE.x / 2 : 0), y_scaling * TEX_SIZE.y / 2 - TEX_SIZE.x / 2,
+                                          TEX_SIZE.y * j * xz_scaling + TEX_SIZE.y / 2 - TEX_SIZE.x / 2},
                                           {TEX_SIZE.x * xz_scaling, TEX_SIZE.y * y_scaling}, 90.0f, {0, 1, 0}, LIGHT_GREY);
 
                 //Ceiling
                 Renderer::draw_sprite(textures[CEILING_TEXTURE].id(),
-                                      {TEX_SIZE.x * i * xz_scaling, y_scaling  * TEX_SIZE.y - TEX_SIZE.y / 2, TEX_SIZE.y * j * xz_scaling + 44.0f},
+                                      {TEX_SIZE.x * i * xz_scaling, y_scaling  * TEX_SIZE.y - TEX_SIZE.y / 2, TEX_SIZE.y * j * xz_scaling},
                                       TEX_SIZE * xz_scaling, 270.0f, glm::vec3(1, 0, 0), GREY);
             }
         }

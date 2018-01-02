@@ -12,7 +12,7 @@ public:
     ~Display();
     sf::Window& get();
     void update();
-    void render();
+    void render(int& curr_lvl);
     void render_transparent();
     void process_keyboard_input(float deltatime, bool collision, const int& curr_lvl);
     void process_mouse_movement(float deltatime);

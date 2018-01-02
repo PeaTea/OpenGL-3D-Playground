@@ -31,7 +31,7 @@ class RenderGame
 public:
     RenderGame(int width, int height);
 
-    void render(Camera& camera);
+    void render(Camera& camera, int& curr_lvl);
     void render_transparent();
 
     std::vector<Level> levels;

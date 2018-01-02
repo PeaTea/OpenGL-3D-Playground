@@ -48,9 +48,9 @@ void Display::update()
     //std::cout << camera.yaw << std::endl;
 }
 
-void Display::render()
+void Display::render(int& curr_lvl)
 {
-    render_game->render(camera);
+    render_game->render(camera, curr_lvl);
 }
 
 void Display::render_transparent()

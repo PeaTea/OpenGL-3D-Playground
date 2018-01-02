@@ -65,7 +65,7 @@ void Camera::process_keyboard(CameraMovement direction, float dt, const Level& l
     }
 
     if(collision) {
-        if(Collision::in_level(lvl, RG_GB::TEX_SIZE, new_pos, position))
+        if(Collision::in_level(lvl, new_pos, position))
             position = new_pos;
     } else {
         position = new_pos;
