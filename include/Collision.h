@@ -4,9 +4,8 @@
 #include <glm/glm.hpp>
 #include "Level.h"
 
-class Collision
+struct Collision
 {
-public:
     static bool in_level(const Level& level, const glm::vec3& new_pos, const glm::vec3& old_pos);
 };
 

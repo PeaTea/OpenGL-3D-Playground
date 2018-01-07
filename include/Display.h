@@ -8,11 +8,11 @@
 class Display
 {
 public:
-    Display(int width, int height, std::string title, sf::Uint32 style);
+    Display(int width, int height, std::string title, sf::Uint32 style, int current_lvl = 0);
     ~Display();
     sf::Window& get();
     void update();
-    void render(int& curr_lvl);
+    void render();
     void render_transparent();
     void process_keyboard_input(float deltatime, bool collision, const int& curr_lvl);
     void process_mouse_movement(float deltatime);
@@ -26,9 +26,8 @@ private:
     RenderGame* render_game;
     sf::Window window;
 
-    float last_mousex;
-    float last_mousey;
-
+    int last_mousex;
+    int last_mousey;
 };
 
 #endif

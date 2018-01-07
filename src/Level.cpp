@@ -6,8 +6,7 @@
 
 #include "Logging.h"
 #include "RenderGame.h"
-
-using RG_GB::TEX_SIZE;
+#include "Settings.h"
 
 /*
 ===============	Level notes	==============
@@ -15,10 +14,11 @@ levels[0] = Tutorial:
     Starting Positions:	-2000.0f, PlayerSize / 2, 44.0f
 */
 
-Level::Level(const std::string& path, const glm::vec3& start_positions, int xz_scaling, int y_scaling)
+Level::Level(unsigned int lvl_id, const std::string& path, const glm::vec3& start_positions, float xz_scaling, float y_scaling)
     :   startPositions  {start_positions}
     ,   xz_scaling      {xz_scaling}
     ,   y_scaling       {y_scaling}
+    ,   m_id            {lvl_id}
 {
     if(!image.loadFromFile(path))
     {
@@ -31,7 +31,7 @@ Level::Level(const std::string& path, const glm::vec3& start_positions, int xz_s
 
     w = image.getSize().x;
     h = image.getSize().y;
-    newTexSize = {TEX_SIZE.x * xz_scaling, TEX_SIZE.y * y_scaling};
+    newTexSize = {Settings::tex_size() * xz_scaling, Settings::tex_size() * y_scaling};
 }
 
 Level::~Level()
@@ -39,19 +39,19 @@ Level::~Level()
 }
 
 
-int Level::width() const
+unsigned int Level::width() const
 {
     return w;
 }
 
-int Level::height() const
+unsigned int Level::height() const
 {
     return h;
 }
 
-glm::vec2 Level::scaling() const
+Vec2 Level::scaling() const
 {
-    return glm::vec2(xz_scaling, y_scaling);
+    return {xz_scaling, y_scaling};
 }
 
 const unsigned char* Level::get_data()
@@ -72,4 +72,10 @@ glm::vec3& Level::start()
 Vec2 Level::scaled_tex_size() const
 {
     return newTexSize;
+}
+
+void Level::init(const std::vector<GLTexture>& textures, const std::vector<Level>& levels, const glm::vec3& cam_pos,
+                 std::map<std::string, GLProgram>& programs)
+{
+    data.init(m_id, textures, levels, cam_pos, programs);
 }

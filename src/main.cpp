@@ -1,7 +1,7 @@
+#include "Settings.h"
 #include "Display.h"
 #include "SFEvent.h"
 #include "Vec2.h"
-#include "Settings.h"
 
 #include <iostream>
 
@@ -27,13 +27,14 @@ namespace PC
 namespace Main_GB
 {
     bool collision = true;
-    int current_level = 1;
+    int current_level = 2;
 }
 
 
 int main()
 {
-    Display display(PC::WIDTH, PC::HEIGHT, PC::TITLE, PC::FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Default);
+    Display display(PC::WIDTH, PC::HEIGHT, PC::TITLE, PC::FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Default, Main_GB::current_level);
+    std::cout << glGetString(GL_VERSION) << std::endl;
 
     sf::Clock clock;
     float delta_time = 0.0f, current_time = 0.0f, last_time = 0.0f;
@@ -51,8 +52,6 @@ int main()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glEnable(GL_ALPHA_TEST);
-
-    std::cout << glGetString(GL_VERSION) << std::endl;
 
     while(!display.should_close)
     {
@@ -104,8 +103,10 @@ int main()
 
             display.process_keyboard_input(delta_time, Main_GB::collision, Main_GB::current_level);
 
+#ifndef DEBUG
             glEnable(GL_CULL_FACE);
-            display.render(Main_GB::current_level);
+#endif
+            display.render();
 
             glDisable(GL_CULL_FACE);
             display.render_transparent();
@@ -118,16 +119,15 @@ int main()
 
 #else
 
-void main()
+int main()
 {
-    Vec2 v(3, 4);
-    Vec2 o(2, 1);
+    Vec2 v = Settings::TEX_SIZE();
+    Vec2 v2 = Settings::TEX_SIZE();
 
-    v /= o;
-
-    std::cout << v << std::endl;
+    std::cout << v << " | " << v2 << std::endl;
 
     std::cin.get();
+    return 0;
 }
 
 #endif

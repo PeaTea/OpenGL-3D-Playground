@@ -1,8 +1,16 @@
 #pragma once
 
+#include <iostream>
+
 struct Vec2
 {
     Vec2()
+    {
+    }
+
+    Vec2(float x)
+        :   x   {x}
+        ,   y   {x}
     {
     }
 

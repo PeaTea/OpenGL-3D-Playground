@@ -26,3 +26,4 @@ float Maths::float_pow(float x, int n)
     }
     return res;
 }
+

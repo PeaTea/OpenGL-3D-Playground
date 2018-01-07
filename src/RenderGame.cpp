@@ -1,28 +1,18 @@
 #include "RenderGame.h"
+#include "Camera.h"
+
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
-#include "Camera.h"
-#include "LevelDrawer.h"
 
 using namespace RG_GB;
 
-const glm::vec2 ENTITY_TEX_SIZE(62, 96);
-const float PLAYER_SIZE = 128.0f;
-
-RenderGame::RenderGame(int width, int height)
+RenderGame::RenderGame(int width, int height, int current_lvl, Camera& camera)
+    :   m_screen_w      {width}
+    ,   m_screen_h      {height}
+    ,   m_current_lvl   {current_lvl}
 {
-    screen_w = width;
-    screen_h = height;
-
-    GLShader basic_vertex_shader({"Data/Shaders/BasicVertexShader.glsl"}, Shadertype::VERTEX);
-    GLShader basic_fragment_shader({"Data/Shaders/BasicFragmentShader.glsl"}, Shadertype::FRAGMENT);
-
-    gl_program.create();
-    gl_program.attach_shader(basic_vertex_shader);
-    gl_program.attach_shader(basic_fragment_shader);
-    gl_program.link();
-
-    Renderer::set_program(gl_program);
+    std::cout << "Loading shaders..." << std::endl;
+    load_shaders();
 
     std::cout << "Loading textures..." << std::endl;
     load_textures();
@@ -30,65 +20,109 @@ RenderGame::RenderGame(int width, int height)
 
     std::cout << "Loading levels..." << std::endl;
     load_levels();
+
+    camera.position = m_levels[current_lvl].start();
+    update_camera_pos(camera.position);
+
+    std::cout << "Loading entities..." << std::endl;
+    load_entities();
+}
+
+void RenderGame::load_shaders()
+{
+    GLShader darken_vertex_shader({"Data/Shaders/DarkenVS.glsl"}, Shadertype::VERTEX);
+    GLShader darken_fragment_shader({"Data/Shaders/DarkenFS.glsl"}, Shadertype::FRAGMENT);
+
+    GLShader normal_vertex_shader({"Data/Shaders/NormalVS.glsl"}, Shadertype::VERTEX);
+    GLShader normal_fragment_shader({"Data/Shaders/NormalFS.glsl"}, Shadertype::FRAGMENT);
+
+    GLProgram darken;
+    GLProgram normal;
+
+    darken.create();
+    darken.attach_shader(darken_vertex_shader);
+    darken.attach_shader(darken_fragment_shader);
+    darken.link();
+
+    normal.create();
+    normal.attach_shader(normal_vertex_shader);
+    normal.attach_shader(normal_fragment_shader);
+    normal.link();
+
+    m_programs["darken"] = darken;
+    m_programs["normal"] = normal;
+
+    //Renderer::set_program(m_gl_program_darken);
 }
 
 void RenderGame::load_levels()
 {
-    levels.emplace_back("Data/Levels/tutorial.png", glm::vec3(-2000.0f, PLAYER_SIZE / 2, 44.0f), 10, 50);
-    levels.emplace_back("Data/Levels/cathedral.png", glm::vec3(0, 0, 0), 2, 30);
-}
-
-void RenderGame::set_uniforms()
-{
-    gl_program.use();
-
-    gl_program.set_int("image", 0);
-
-    gl_program.unuse();
+    m_levels.emplace_back(m_levels.size(), "Data/Levels/tutorial.png", glm::vec3(-2000.0f, Settings::player_size() * 0.5f, 44.0f), 10.0f, 50.0f);
+    m_levels.emplace_back(m_levels.size(), "Data/Levels/cathedral.png", glm::vec3(2000.0f, 0, Settings::player_size() * 2.0f), 1.0f, 15.0f);
+    m_levels.emplace_back(m_levels.size(), "Data/Levels/cathedral_extended_test.png",
+                          glm::vec3(2000.0f, 0.0f, Settings::player_size() * 20.0f), 1.0f, 15.0f);
+    m_levels.emplace_back(m_levels.size(), "Data/Levels/window_test.png", glm::vec3(500, 500, 500), 1.0f, 2.0f);
+    //m_levels.emplace_back(m_levels.size(), "Data/Levels/cathedral_extended.png", glm::vec3(0, 0, 0), 1.0f, 15.0f);
 }
 
 void RenderGame::load_textures()
 {
-    textures.emplace_back("MetalCube.png", REPEAT, REPEAT, LINEAR, LINEAR);
-    textures.emplace_back("Acid.png", REPEAT, REPEAT, NEAREST, NEAREST);
-    textures.emplace_back("Stone.png", REPEAT, REPEAT, LINEAR, LINEAR);
-    textures.emplace_back("Lava.png", REPEAT, REPEAT, LINEAR, LINEAR);
-    textures.emplace_back("Marble.png", REPEAT, REPEAT, NEAREST, NEAREST);
-    textures.emplace_back("Wood.png", REPEAT, REPEAT, LINEAR, LINEAR);
-    textures.emplace_back("QuadTemplate.png", REPEAT, REPEAT, LINEAR, LINEAR);
-    textures.emplace_back("DiagonalTemplate.png", REPEAT, REPEAT, LINEAR, LINEAR);
-    textures.emplace_back("MysteriousRobot.png", CLAMP, CLAMP, NEAREST, NEAREST);
-    textures.emplace_back("TransparencyTest.png", CLAMP, CLAMP, LINEAR, LINEAR);
+    m_textures.emplace_back("MetalCube.png", REPEAT, REPEAT, LINEAR, LINEAR);
+    m_textures.emplace_back("Acid.png", REPEAT, REPEAT, NEAREST, NEAREST);
+    m_textures.emplace_back("Stone.png", REPEAT, REPEAT, LINEAR, LINEAR);
+    m_textures.emplace_back("Lava.png", REPEAT, REPEAT, LINEAR, LINEAR);
+    m_textures.emplace_back("Marble.png", REPEAT, REPEAT, NEAREST, NEAREST);
+    m_textures.emplace_back("Wood.png", REPEAT, REPEAT, LINEAR, LINEAR);
+    m_textures.emplace_back("QuadTemplate.png", REPEAT, REPEAT, LINEAR, LINEAR);
+    m_textures.emplace_back("DiagonalTemplate.png", REPEAT, REPEAT, LINEAR, LINEAR);
+    m_textures.emplace_back("MysteriousRobot.png", CLAMP, CLAMP, NEAREST, NEAREST);
+    m_textures.emplace_back("TransparencyTest.png", CLAMP, CLAMP, LINEAR, LINEAR);
+    m_textures.emplace_back("Glass_Light.png", CLAMP, CLAMP, LINEAR, LINEAR);
+}
+
+void RenderGame::load_entities()
+{
+    for(unsigned int i = 0; i < m_levels.size(); i++)
+    {
+        m_levels[i].init(m_textures, m_levels, m_cam_pos, m_programs);
+    }
+}
+
+void RenderGame::set_uniforms()
+{
+    m_programs["darken"].use();
+    m_programs["darken"].set_int("image", 0);
+    m_programs["normal"].use();
+    m_programs["normal"].set_int("image", 0);
+    m_programs["normal"].unuse();
 }
 
 void RenderGame::update_matrices(glm::mat4 view_mat, glm::mat4 projection_mat)
 {
-    gl_program.use();
-    gl_program.set_mat4("view", view_mat);
-    gl_program.set_mat4("projection", projection_mat);
-    gl_program.unuse();
+    m_programs["darken"].use();
+    m_programs["darken"].set_mat4("view", view_mat);
+    m_programs["darken"].set_mat4("projection", projection_mat);
+    m_programs["normal"].use();
+    m_programs["normal"].set_mat4("view", view_mat);
+    m_programs["normal"].set_mat4("projection", projection_mat);
+    m_programs["normal"].unuse();
 }
 
-void RenderGame::render(Camera& camera, int& curr_lvl)
+void RenderGame::render(Camera& camera)
 {
     update_matrices(camera.get_view_matrix(),
-                    glm::perspective(glm::radians(FOV), (float)(screen_w / screen_h), 0.1f, 1000000.0f));
+                    glm::perspective(glm::radians(FOV), (float)(m_screen_w / m_screen_h), 0.1f, 10000.0f));
 
-    LevelDrawer::render(textures, levels[curr_lvl]);
+    m_ld.render(m_textures, m_levels[m_current_lvl], m_programs["darken"]);
 }
-
 
 void RenderGame::render_transparent()
 {
-    
-    for(int i = 40; i > 0; i--)
-    {
-        Renderer::draw_sprite(textures[TRANSPARENCY_TEST].id(),
-                              glm::vec3(RG_GB::TEX_SIZE.x * 15.5f, 0.0f, RG_GB::TEX_SIZE.y * i - 200.0f),
-                              ENTITY_TEX_SIZE, 180.0f, glm::vec3(1, 0, 0), glm::vec4(0, 1, 1, 1));
-    }
-    
-    Renderer::draw_sprite(textures[MYSTERIOUS_ROBOT].id(),
-                          glm::vec3(TEX_SIZE.x * 15.5f, ENTITY_TEX_SIZE.y / 2.0f, TEX_SIZE.y * 20 - 200.0f),
-                          ENTITY_TEX_SIZE * glm::vec2(2.0f, 2.0f), 180.0f, glm::vec3(1, 0, 0));
+    m_levels[m_current_lvl].data.update_and_render(m_cam_pos);
 }
+
+void RenderGame::update_camera_pos(const glm::vec3& cam_pos)
+{
+    m_cam_pos = cam_pos;
+}
+

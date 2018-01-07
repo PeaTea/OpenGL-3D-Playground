@@ -1,15 +1,20 @@
+#pragma once
+
 #ifndef RENDERGAME_H
 #define RENDERGAME_H
 
 #include "Renderer.h"
 #include "GLProgram.h"
 #include "Camera.h"
+#include "Settings.h"
+#include "LevelDrawer.h"
 #include "Level.h"
+
+#include <map>
 
 namespace RG_GB
 {
     const float FOV = 110.0f;
-    const glm::vec2 TEX_SIZE(128, 128);
 }
 
 enum Textures
@@ -24,34 +29,42 @@ enum Textures
     DIAGONAL_TEMPLATE,
     MYSTERIOUS_ROBOT,
     TRANSPARENCY_TEST,
+    GLASS_LIGHT
 };
+
 
 class RenderGame
 {
 public:
-    RenderGame(int width, int height);
+    RenderGame(int width, int height, int current_lvl, Camera& camera);
 
-    void render(Camera& camera, int& curr_lvl);
+    void render(Camera& camera);
     void render_transparent();
 
-    std::vector<Level> levels;
+    void update_camera_pos(const glm::vec3& cam_pos);
+
+    std::vector<Level> m_levels;
 
 private:
-    void load_textures();
     void set_uniforms();
     void update_matrices(glm::mat4 view_mat, glm::mat4 projection_mat);
 
+    void load_shaders();
     void load_levels();
+    void load_textures();
+    void load_entities();
 
 private:
-    GLProgram gl_program;
+    std::map<std::string, GLProgram> m_programs;
 
-    int screen_w;
-    int screen_h;
+    int m_screen_w;
+    int m_screen_h;
+    int m_current_lvl;
 
-    std::vector<GLTexture> textures;
+    std::vector<GLTexture> m_textures;
+    LevelDrawer m_ld;
 
-    //Game Objects
+    glm::vec3 m_cam_pos;
 };
 
 #endif

@@ -1,5 +1,7 @@
 #include "Renderer.h"
 #include "Coordinate_Definitions.h"
+#include "Logging.h"
+
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -15,7 +17,6 @@ Renderer::Renderer(GLProgram program)
     gl_program = program;
     init_render_data();
 }
-
 
 
 void Renderer::init_render_data()
@@ -50,28 +51,51 @@ void Renderer::set_program(GLProgram program)
 {
     if(!gl_program.exists())
     {
-        gl_program = program;
         init_render_data();
-    } else return;
+    } 
+    gl_program = program;
 }
 
-void Renderer::draw_sprite(GLuint texture_id, glm::vec3 pos, glm::vec2 size, GLfloat rotation, glm::vec3 rotation_vec, glm::vec4 color)
+void Renderer::draw_sprite(GLuint texture_id, glm::vec3 pos, Vec2 size,
+                           GLfloat rotation, glm::vec3 rotation_vec, glm::vec4 color)
 {
     if(!gl_program.exists())
     {
-        std::cerr << "Program has not been set for Renderer!\r" << std::endl;
-        return;
+        logging::log("No program set for Renderer", lstream::error);
     }
 
     gl_program.use();
     glm::mat4 model;
 
     model = glm::translate(model, pos);
-    //model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
     model = glm::rotate(model, glm::radians(rotation), rotation_vec);
-    //model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
+    model = glm::scale(model, glm::vec3(size.x, size.y, 1));
 
-    model = glm::scale(model, glm::vec3(size, 1.0f));
+    gl_program.set_mat4("model", model);
+    gl_program.set_vec4("spritecolor", color);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    glBindVertexArray(vao);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+}
+
+void Renderer::draw_sprite_facing_cam(GLuint texture_id, glm::vec3 pos, glm::vec3 cam_pos,
+                                      Vec2 size, glm::vec4 color)
+{
+    if(!gl_program.exists())
+    {
+        logging::log("No program set for Renderer", lstream::error);
+    }
+
+    gl_program.use();
+    glm::mat4 model;
+
+    model = glm::translate(model, pos);
+    model = glm::rotate(model, atan2(pos.x - cam_pos.x, pos.z - cam_pos.z), {0, 1, 0});
+    model = glm::rotate(model, 135.0f, {1, 0, 0});
+    model = glm::scale(model, glm::vec3(size.x, size.y, 1));
 
     gl_program.set_mat4("model", model);
     gl_program.set_vec4("spritecolor", color);

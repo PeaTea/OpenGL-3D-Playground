@@ -2,6 +2,7 @@
 #include <SFML/Graphics/Image.hpp>
 #include <iostream>
 
+
 GLTexture::GLTexture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags wrap_t, GLTexFlags min_filter, GLTexFlags mag_filter, bool prefix)
 {
     glGenTextures(1, &texture_id);
@@ -84,7 +85,7 @@ GLTexture::GLTexture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags 
 }
 
 
-GLuint GLTexture::id()
+GLuint GLTexture::id() const
 {
     return texture_id;
 }

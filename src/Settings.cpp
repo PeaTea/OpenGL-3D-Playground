@@ -6,15 +6,25 @@
 #include <iterator>
 #include <cctype>
 #include <algorithm>
+#include <iostream>
 
 #define SETTINGS_FILE_NAME "Data/settings.cfg"
 
 bool Settings::m_fullscreen = false;
-bool Settings::is_initialized = false;
+bool Settings::m_mode_found = false;
 int Settings::m_width = 0;
 int Settings::m_height = 0;
+float Settings::m_entity_sizew = 0.0f;
+float Settings::m_entity_sizeh = 0.0f;
+float Settings::m_tex_size = 0.0f;
+float Settings::m_player_size = 0.0f;
 
-void Settings::get_config()
+Settings::Settings()
+{
+    get_config();
+}
+
+bool Settings::get_config()
 {
     File settings_file(SETTINGS_FILE_NAME);
     std::vector<std::string> contents = settings_file.read_lines();
@@ -30,19 +40,60 @@ void Settings::get_config()
         if(words[0][0] == '#') 
             continue;
 
+        std::transform(words[0].begin(), words[0].end(), words[0].begin(), ::tolower);
         std::transform(words[2].begin(), words[2].end(), words[2].begin(), ::tolower);
 
-        if(words[0] == "Fullscreen")
+        if(words[0] == "mode")
         {
-            m_fullscreen = (words[2] == "true") ? true : false;
-        } 
-        else if(words[0] == "Width")
-        {
-            m_width = std::stoi(words[2]);
+            if(words[2] == "fullscreen")
+            {
+                m_fullscreen = true;
+                m_width = 1920;
+                m_height = 1080;
+            }
+            else if(words[2] == "windowed")
+            {
+                m_fullscreen = false;
+                m_width = 800;
+                m_height = 600;
+            }
+            else
+            {
+                logging::log("Unrecognized mode: " + words[2], lstream::warning);
+                continue;
+            }
+            m_mode_found = true;
         }
-        else if(words[0] == "Height")
+        else if(words[0] == "fullscreen")
         {
-            m_height = std::stoi(words[2]);
+            if(!m_mode_found)
+                m_fullscreen = (words[2] == "true") ? true : false;
+        } 
+        else if(words[0] == "width")
+        {
+            if(!m_mode_found)
+                m_width = std::stoi(words[2]);
+        }
+        else if(words[0] == "height")
+        {
+            if(!m_mode_found)
+                m_height = std::stoi(words[2]);
+        }
+        else if(words[0] == "entitysizew")
+        {
+            m_entity_sizew = std::stof(words[2]);
+        }
+        else if(words[0] == "entitysizeh")
+        {
+            m_entity_sizeh = std::stof(words[2]);
+        }
+        else if(words[0] == "playersize")
+        {
+            m_player_size = std::stoi(words[2]);
+        }
+        else if(words[0] == "texsize")
+        {
+            m_tex_size = std::stof(words[2]);
         }
         else
         {
@@ -50,7 +101,7 @@ void Settings::get_config()
         }
     }
 
-    is_initialized = true;
+    return true;
 }
 
 void Settings::update_config()
@@ -61,35 +112,50 @@ void Settings::update_config()
 
 bool Settings::fullscreen()
 {
-    if(!is_initialized)
-        get_config();
-
     return m_fullscreen;
 }
 
 int Settings::width()
 {
-    if(!is_initialized)
-        get_config();
-
-    if(m_width != 0)
+    if(m_width > 0)
         return m_width;
     else
-        logging::log("Invalid value for m_width or settings file not found (width == 0)", lstream::error);
+        logging::log("Invalid value for width (width <= 0)", lstream::error);
 }
 
 int Settings::height()
 {
-    if(!is_initialized)
-        get_config();
-
-    if(m_height != 0)
+    if(m_height > 0)
         return m_height;
     else
-        logging::log("Invalid value for m_height or settings file not found (height == 0)", lstream::error);
+        logging::log("Invalid value for height (height <= 0)", lstream::error);
 }
 
-std::string settings_file_name()
+Vec2 Settings::entity_size()
+{
+    if(m_entity_sizew > 0 && m_entity_sizeh > 0)
+        return {m_entity_sizew, m_entity_sizeh};
+    else
+        logging::log("Invalid or missing value for entity_size (component uninitialized or <= 0)", lstream::error);
+}
+
+float Settings::tex_size()
+{
+    if(m_tex_size > 0)
+        return m_tex_size;
+    else
+        logging::log("Invalid or missing value for TEX_SIZE (<= 0)", lstream::error);
+}
+
+float Settings::player_size()
+{
+    if(m_player_size > 0)
+        return m_player_size;
+    else
+        logging::log("Invalid or missing value for player_size (playersizeh <= 0)", lstream::error);
+}
+
+std::string Settings::settings_file_name()
 {
     return SETTINGS_FILE_NAME;
 }
