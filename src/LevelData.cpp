@@ -47,11 +47,11 @@ void LevelData::init(int lvl_id, const std::vector<GLTexture>& textures, const s
 }
 
 
-void LevelData::update_and_render(const glm::vec3& cam_pos)
+void LevelData::update_and_render(const glm::vec3& cam_pos, int cf_height)
 {
     for(unsigned int i = 0; i < m_entities.size(); i++)
     {
-        m_entities[i].render(m_programs);
         m_entities[i].set_cam_pos(cam_pos);
+        m_entities[i].render(m_programs, cf_height);
     }
 }

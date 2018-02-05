@@ -39,12 +39,12 @@ Level::~Level()
 }
 
 
-unsigned int Level::width() const
+int Level::width() const
 {
     return w;
 }
 
-unsigned int Level::height() const
+int Level::height() const
 {
     return h;
 }

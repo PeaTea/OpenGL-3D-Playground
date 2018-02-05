@@ -5,8 +5,10 @@
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 
-GLProgram Renderer::gl_program;
-GLuint Renderer::vao;
+GLProgram   Renderer::gl_program;
+GLuint      Renderer::vao;
+GLuint      Renderer::test_cube_vao;
+bool        Renderer::enabled_test = false;
 
 Renderer::Renderer()
 {
@@ -36,11 +38,14 @@ void Renderer::init_render_data()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(COORD_DEFS::indices), COORD_DEFS::indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GL_FLOAT), (GLvoid*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GL_FLOAT), (GLvoid*)(3 * sizeof(GL_FLOAT)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (GLvoid*)(3 * sizeof(GL_FLOAT)));
     glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (GLvoid*)(6 * sizeof(GL_FLOAT)));
+    glEnableVertexAttribArray(2);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -117,4 +122,64 @@ void Renderer::draw_texture(GLuint texture)
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+}
+
+
+
+void Renderer::enable_test()
+{
+    init_test_render_data();
+}
+
+void Renderer::init_test_render_data()
+{
+    GLuint cube_vbo;
+
+    glGenVertexArrays(1, &test_cube_vao);
+    glGenBuffers(1, &cube_vbo);
+
+    glBindVertexArray(test_cube_vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, cube_vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(COORD_DEFS::cube_vertices), COORD_DEFS::cube_vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 8, (GLvoid*)0);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 8, (GLvoid*)(sizeof(GL_FLOAT) * 3));
+    glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 8, (GLvoid*)(sizeof(GL_FLOAT) * 6));
+    glEnableVertexAttribArray(2);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    enabled_test = true;
+}
+
+void Renderer::test_draw_cube(GLuint texture_id, const glm::vec3& pos, const glm::vec3& size, GLfloat rotation, const glm::vec3& rotation_vec,
+                              const glm::vec4& color)
+{
+    if(!enabled_test)
+    {
+        logging::log("Please enable test first (Renderer::error)", lstream::error);
+    }
+
+    gl_program.use();
+
+    glm::mat4 model;
+
+    model = glm::translate(model, pos);
+    model = glm::rotate(model, rotation, rotation_vec);
+    model = glm::scale(model, size);
+
+    gl_program.set_mat4("model", model);
+    gl_program.set_vec4("spritecolor", color);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+    
+    glBindVertexArray(test_cube_vao);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
 }

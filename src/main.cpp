@@ -45,7 +45,7 @@ int main()
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glFrontFace(GL_CW);
-    glCullFace(GL_BACK);
+    glCullFace(GL_FRONT);
     glAlphaFunc(GL_GREATER, 0.5f);
     //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -103,9 +103,7 @@ int main()
 
             display.process_keyboard_input(delta_time, Main_GB::collision, Main_GB::current_level);
 
-#ifndef DEBUG
-            glEnable(GL_CULL_FACE);
-#endif
+            //glEnable(GL_CULL_FACE);
             display.render();
 
             glDisable(GL_CULL_FACE);

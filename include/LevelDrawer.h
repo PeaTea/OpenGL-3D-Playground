@@ -22,9 +22,17 @@ struct LevelDrawer
 {
     LevelDrawer();
     
-    void render(std::vector<GLTexture>& textures, const Level& lvl, GLProgram& program);
+    // Fast performance
+    void render_2D(std::vector<GLTexture>& textures, const Level& lvl, GLProgram& program);
+
+    // For complex lightning
+    void render_cubes(std::vector<GLTexture>& textures, const Level& lvl, GLProgram& program);
+
+    int get_cf_height() const;
 
 private:
     std::array<PixelData, 6> m_pixeldata;
+    int m_tex_size;
+    int m_cf_height;
     bool skip[4];
 };

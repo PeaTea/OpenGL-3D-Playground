@@ -21,11 +21,21 @@ public:
                                        Vec2 size, glm::vec4 color = {1, 1, 1, 1});
     static void draw_texture(GLuint texture_id);
 
+    static void enable_test();
+    static void test_draw_cube(GLuint texture_id, const glm::vec3& pos, const glm::vec3& size,
+                               GLfloat rotation = 0.0f, const glm::vec3& rotation_vec = {1, 0, 0},
+                               const glm::vec4& color = {0.5, 0.5, 0.5, 1});
+
 private:
     static void init_render_data();
+    static void init_test_render_data();
 
     static GLuint vao;
     static GLProgram gl_program;
+
+    static GLuint test_cube_vao;
+
+    static bool enabled_test;
 };
 
 #endif

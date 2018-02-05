@@ -18,8 +18,8 @@ public:
     Level(unsigned int lvl_id, const std::string& path, const glm::vec3& start_positions, float xz_scaling, float y_scaling);
     ~Level();
 
-    unsigned int width() const;
-    unsigned int height() const;
+    int width() const;
+    int height() const;
 
     const unsigned char* get_data();
     sf::Color get_pixel(unsigned int x, unsigned int y) const;
@@ -35,7 +35,8 @@ public:
 
 private:
     float xz_scaling, y_scaling;
-    unsigned int w, h, m_id;
+    int w, h;
+    unsigned int m_id;
     sf::Image image;
     glm::vec3 startPositions;
     Vec2 newTexSize;

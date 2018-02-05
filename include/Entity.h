@@ -17,11 +17,14 @@ public:
     Entity(unsigned int tex_id, const glm::vec3& pos, const glm::vec3& cam_pos,
            const Vec2& size = {1, 1}, const glm::vec4& color = {1, 1, 1, 1});
 
-    void render(std::map<std::string, GLProgram>& programs);
+    void render(std::map<std::string, GLProgram>& programs, int cf_height);
 
     void set_cam_pos(const glm::vec3& cam_pos);
 
-private:
+    glm::vec3 get_position() const;
+    glm::vec4 get_color() const;
+
+protected:
     Vec2 m_size;
 
     GLuint m_texture_id;

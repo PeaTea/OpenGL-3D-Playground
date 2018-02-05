@@ -8,8 +8,6 @@ levels[0] = Tutorial:
 Starting Positions:	-2000.0f, PlayerSize / 2, 44.0f
 */
 
-#define TEX_SIZE Settings::tex_size()
-
 enum PixelID
 {
     FLOOR,
@@ -29,9 +27,12 @@ LevelDrawer::LevelDrawer()
 
     m_pixeldata[(int)PixelID::CEILING].texture = MARBLE;
     m_pixeldata[(int)PixelID::CEILING].color = DARK_GREY;
+
+    m_tex_size = Settings::tex_size();
+    m_cf_height = m_tex_size / 2;
 }
 
-void LevelDrawer::render(std::vector<GLTexture>& textures, const Level& lvl, GLProgram& program)
+void LevelDrawer::render_2D(std::vector<GLTexture>& textures, const Level& lvl, GLProgram& program)
 {
     Renderer::set_program(program);
     for(unsigned int i = 0; i < lvl.width(); i++)
@@ -69,14 +70,13 @@ void LevelDrawer::render(std::vector<GLTexture>& textures, const Level& lvl, GLP
                 
                 //Floor
                 Renderer::draw_sprite(textures[m_pixeldata[FLOOR].texture].id(),
-                                      {TEX_SIZE * i * xz_scaling, -TEX_SIZE / 2, TEX_SIZE * j * xz_scaling},
-                                      TEX_SIZE * xz_scaling, 90.0f, {1, 0, 0}, m_pixeldata[FLOOR].color);
-
-                
+                                      {m_tex_size * i * xz_scaling, -m_tex_size / 2, m_tex_size * j * xz_scaling},
+                                      m_tex_size * xz_scaling, 90.0f, {1, 0, 0}, m_pixeldata[FLOOR].color);
+            
                 //Ceiling
                 Renderer::draw_sprite(textures[m_pixeldata[CEILING].texture].id(),
-                                      {TEX_SIZE * i * xz_scaling, y_scaling  * TEX_SIZE - TEX_SIZE / 2, TEX_SIZE * j * xz_scaling},
-                                      TEX_SIZE * xz_scaling, 270.0f, glm::vec3(1, 0, 0), m_pixeldata[CEILING].color);
+                                      {m_tex_size * i * xz_scaling, y_scaling  * m_tex_size - m_tex_size / 2, m_tex_size * j * xz_scaling},
+                                      m_tex_size * xz_scaling, 270.0f, {1, 0, 0}, m_pixeldata[CEILING].color);
                 
                 //Walls 
                 if(wcolor_xl != sf::Color::White)
@@ -88,9 +88,9 @@ void LevelDrawer::render(std::vector<GLTexture>& textures, const Level& lvl, GLP
                     else
                     {
                         Renderer::draw_sprite(textures[m_pixeldata[WALL_UP].texture].id(),
-                                              {TEX_SIZE * i * xz_scaling - TEX_SIZE / 2 - (xz_scaling > 1 ? (lvl.scaled_tex_size().x / 2) - TEX_SIZE / 2 : 0),
-                                              y_scaling * TEX_SIZE / 2 - TEX_SIZE / 2, TEX_SIZE * j * xz_scaling + TEX_SIZE / 2 - TEX_SIZE / 2},
-                                              {TEX_SIZE * xz_scaling, TEX_SIZE * y_scaling}, 270.0f, {0, 1, 0}, m_pixeldata[WALL_UP].color);
+                                              {m_tex_size * i * xz_scaling - m_tex_size / 2 - (xz_scaling > 1 ? (lvl.scaled_tex_size().x / 2) - m_tex_size / 2 : 0),
+                                              y_scaling * m_tex_size / 2 - m_tex_size / 2, m_tex_size * j * xz_scaling + m_tex_size / 2 - m_tex_size / 2},
+                                              {m_tex_size * xz_scaling, m_tex_size * y_scaling}, 270.0f, {0, 1, 0}, m_pixeldata[WALL_UP].color);
                     }
                 }
 
@@ -103,9 +103,9 @@ void LevelDrawer::render(std::vector<GLTexture>& textures, const Level& lvl, GLP
                     else
                     {
                         Renderer::draw_sprite(textures[m_pixeldata[WALL_DOWN].texture].id(),
-                                              {TEX_SIZE * i * xz_scaling + TEX_SIZE / 2 + (xz_scaling > 1 ? (lvl.scaled_tex_size().x / 2) - TEX_SIZE / 2 : 0),
-                                              y_scaling * TEX_SIZE / 2 - TEX_SIZE / 2, TEX_SIZE * j * xz_scaling + TEX_SIZE / 2 - TEX_SIZE / 2},
-                                              {TEX_SIZE * xz_scaling, TEX_SIZE * y_scaling}, 90.0f, {0, 1, 0}, m_pixeldata[WALL_DOWN].color);
+                                              {m_tex_size * i * xz_scaling + m_tex_size / 2 + (xz_scaling > 1 ? (lvl.scaled_tex_size().x / 2) - m_tex_size / 2 : 0),
+                                              y_scaling * m_tex_size / 2 - m_tex_size / 2, m_tex_size * j * xz_scaling + m_tex_size / 2 - m_tex_size / 2},
+                                              {m_tex_size * xz_scaling, m_tex_size * y_scaling}, 90.0f, {0, 1, 0}, m_pixeldata[WALL_DOWN].color);
                     }
                 }
 
@@ -118,12 +118,12 @@ void LevelDrawer::render(std::vector<GLTexture>& textures, const Level& lvl, GLP
                     else
                     {
                         Renderer::draw_sprite(textures[m_pixeldata[WALL_LEFT].texture].id(),
-                                              {TEX_SIZE * i * xz_scaling, y_scaling * TEX_SIZE / 2 - TEX_SIZE / 2, TEX_SIZE * j * xz_scaling - TEX_SIZE / 2 -
-                                              (xz_scaling > 1 ? (lvl.scaled_tex_size().x / 2) - TEX_SIZE / 2 : 0)},
-                                              {TEX_SIZE * xz_scaling, TEX_SIZE * y_scaling}, 180.0f, {0, 1, 0}, m_pixeldata[WALL_LEFT].color);
+                                              {m_tex_size * i * xz_scaling, y_scaling * m_tex_size / 2 - m_tex_size / 2, m_tex_size * j * xz_scaling - m_tex_size / 2 -
+                                              (xz_scaling > 1 ? (lvl.scaled_tex_size().x / 2) - m_tex_size / 2 : 0)},
+                                              {m_tex_size * xz_scaling, m_tex_size * y_scaling}, 180.0f, {0, 1, 0}, m_pixeldata[WALL_LEFT].color);
                     }
                 }
-
+                
                 if(wcolor_yr != sf::Color::White)
                 {
                     if(skip[WALL_DOWN - 1])
@@ -133,12 +133,56 @@ void LevelDrawer::render(std::vector<GLTexture>& textures, const Level& lvl, GLP
                     else
                     {
                         Renderer::draw_sprite(textures[m_pixeldata[WALL_RIGHT].texture].id(),
-                                              {TEX_SIZE * i * xz_scaling, y_scaling * TEX_SIZE / 2 - TEX_SIZE / 2, TEX_SIZE * j * xz_scaling + TEX_SIZE / 2 +
-                                              (xz_scaling > 1 ? (lvl.scaled_tex_size().x / 2) - TEX_SIZE / 2 : 0)},
-                                              {TEX_SIZE * xz_scaling, TEX_SIZE * y_scaling}, 0.0f, {0, 1, 0}, m_pixeldata[WALL_RIGHT].color);
+                                              {m_tex_size * i * xz_scaling, y_scaling * m_tex_size / 2 - m_tex_size / 2, m_tex_size * j * xz_scaling + m_tex_size / 2 +
+                                              (xz_scaling > 1 ? (lvl.scaled_tex_size().x / 2) - m_tex_size / 2 : 0)},
+                                              {m_tex_size * xz_scaling, m_tex_size * y_scaling}, 0.0f, {0, 1, 0}, m_pixeldata[WALL_RIGHT].color);
                     }
                 }
             }
         }
     }
+}
+
+void LevelDrawer::render_cubes(std::vector<GLTexture>& textures, const Level& lvl, GLProgram& program)
+{
+    Renderer::set_program(program);
+    for(unsigned int i = 0; i < lvl.width(); i++)
+    {
+        for(unsigned int j = 0; j < lvl.height(); j++)
+        {
+            sf::Color color = lvl.get_pixel(i, j);
+
+            float xz_scaling = lvl.scaling().x;
+            float y_scaling = lvl.scaling().y;
+
+            if(color == sf::Color::Black)
+            {
+                //Walls
+                Renderer::test_draw_cube(textures[METAL_CUBE].id(),
+                {m_tex_size * i * xz_scaling, y_scaling * m_tex_size / 2 - (m_tex_size + m_cf_height) / 2, m_tex_size * j * xz_scaling},
+                {m_tex_size * xz_scaling, m_tex_size * y_scaling, m_tex_size * xz_scaling}, 0.0f, {0, 1, 0},
+                                            WHITE);
+            }
+            else if(color == sf::Color::White || color == sf::Color(192, 192, 192, 255))
+            {
+                //Floor
+                Renderer::test_draw_cube(textures[m_pixeldata[FLOOR].texture].id(),
+                {m_tex_size * i * xz_scaling, -m_cf_height * 2, m_tex_size * j * xz_scaling},
+                {m_tex_size * xz_scaling, m_cf_height, m_tex_size * xz_scaling}, 0.0f, {1, 0, 0},
+                                         m_pixeldata[FLOOR].color);
+
+
+                //Ceiling
+                Renderer::test_draw_cube(textures[m_pixeldata[CEILING].texture].id(),
+                {m_tex_size * i * xz_scaling, y_scaling * m_tex_size - m_cf_height, m_tex_size * j * xz_scaling},
+                {m_tex_size * xz_scaling, -m_cf_height, m_tex_size * xz_scaling}, 3.141592653f, {1, 0, 0},
+                                         m_pixeldata[CEILING].color);
+            }
+        }
+    }
+}
+
+int LevelDrawer::get_cf_height() const
+{
+    return m_cf_height;
 }

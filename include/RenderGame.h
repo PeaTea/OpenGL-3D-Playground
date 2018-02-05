@@ -9,6 +9,7 @@
 #include "Settings.h"
 #include "LevelDrawer.h"
 #include "Level.h"
+#include "BasicLightSource.h"
 
 #include <map>
 
@@ -29,7 +30,8 @@ enum Textures
     DIAGONAL_TEMPLATE,
     MYSTERIOUS_ROBOT,
     TRANSPARENCY_TEST,
-    GLASS_LIGHT
+    GLASS_LIGHT,
+    BASIC_CIRCLE
 };
 
 
@@ -44,6 +46,7 @@ public:
     void update_camera_pos(const glm::vec3& cam_pos);
 
     std::vector<Level> m_levels;
+    std::vector<BasicLightSource> m_light_sources;
 
 private:
     void set_uniforms();

@@ -11,4 +11,6 @@ const glm::vec4 GREY(0.5, 0.5, 0.5, 1);
 const glm::vec4 LIGHT_GREY(0.75, 0.75, 0.75, 1);
 const glm::vec4 DARK_GREY(0.25, 0.25, 0.25, 1);
 
+const glm::vec4 ICY_COLD(0.5, 1, 1, 1);
+
 const glm::vec4 LIGHT_GREY_TRANSPARENT(0.75, 0.75, 0.75, 0.5);

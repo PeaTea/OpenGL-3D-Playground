@@ -10,6 +10,7 @@ Entity::Entity(unsigned int tex_id, const glm::vec3& pos, const Vec2& size,
     ,   m_rotation_vec  {rotation_vec}
     ,   m_color         {color}
     ,   m_is_rotated    {false}
+    ,   m_cam_pos       {}
 {
 }
 
@@ -36,17 +37,23 @@ void Entity::set_cam_pos(const glm::vec3& cam_pos)
 }
 
 
-void Entity::render(std::map<std::string, GLProgram>& programs)
+void Entity::render(std::map<std::string, GLProgram>& programs, int cf_height)
 {
-    if(m_is_rotated)
-    {
-        Renderer::set_program(programs["darken"]);
-    }
-    else
-    {
-        Renderer::set_program(programs["normal"]);
-    }
-    (m_is_rotated) ? Renderer::draw_sprite_facing_cam(m_texture_id, m_position, m_cam_pos, m_size, m_color)
-                   : Renderer::draw_sprite(m_texture_id, m_position, m_size, m_rotation, m_rotation_vec, m_color);
+    Renderer::set_program(m_is_rotated ? programs["point"] : programs["normal"]);
+    (m_is_rotated) ? Renderer::draw_sprite_facing_cam(m_texture_id, {m_position.x, m_position.y - cf_height, m_position.z},
+                                                      m_cam_pos, m_size, m_color)
+                   : Renderer::draw_sprite(m_texture_id, {m_position.x, m_position.y - cf_height, m_position.z},
+                                           m_size, m_rotation, m_rotation_vec, m_color);
+}
+
+glm::vec3 Entity::get_position() const
+{
+    return m_position;
+}
+
+
+glm::vec4 Entity::get_color() const
+{
+    return m_color;
 }
 
