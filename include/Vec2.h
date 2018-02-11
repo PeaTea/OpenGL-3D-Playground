@@ -2,109 +2,109 @@
 
 #include <iostream>
 
+template <typename T>
 struct Vec2
 {
-    Vec2()
+    Vec2<T>()
     {
     }
 
-    Vec2(float x)
-        :   x   {x}
-        ,   y   {x}
+    Vec2<T>(T x)
+        :   x  {x}
+        ,   y  {x}
     {
     }
 
-    Vec2(float x, float y)
-        :   x   {x}
-        ,   y   {y}
+    Vec2<T>(T x, T y)
+        :   x  {x}
+        ,   y  {y}
     {
     }
 
-    float x, y;
-
+    T x, y;
 
 public:
-    Vec2& operator+=(const Vec2& other)
+    Vec2<T>& operator+=(const Vec2<T>& other)
     {
-        x += other.x;
-        y += other.y;
+        x = x + other.x;
+        y = y + other.y;
         return *this;
     }
 
-    friend Vec2 operator+(Vec2 left, const Vec2& right)
+    friend Vec2<T> operator+(Vec2<T> left, const Vec2<T>& right)
     {
         left += right;
         return left;
     }
 
-    friend Vec2 operator+(Vec2 left, const float& value)
+    friend Vec2<T> operator+(Vec2<T> left, const T& value)
     {
         left.x += value;
         left.y += value;
         return left;
     }
 
-    Vec2& operator-=(const Vec2& other)
+    Vec2<T>& operator-=(const Vec2<T>& other)
     {
-        x -= other.x;
-        y -= other.y;
+        x = x - other.x;
+        y = y - other.y;
         return *this;
     }
-
-    friend Vec2 operator-(Vec2 left, const Vec2& right)
+    
+    friend Vec2<T> operator-(Vec2<T> left, const Vec2<T>& right)
     {
         left -= right;
         return left;
     }
 
-    friend Vec2 operator-(Vec2 left, const float& value)
+    friend Vec2<T> operator-(Vec2<T> left, const T& value)
     {
         left.x -= value;
         left.y -= value;
         return left;
     }
 
-    Vec2& operator*=(const Vec2& other)
+    Vec2<T>& operator*=(const Vec2<T>& other)
     {
-        x *= other.x;
-        y *= other.y;
+        x = x * other.x;
+        y = y * other.y;
         return *this;
     }
 
-    friend Vec2 operator*(Vec2 left, const Vec2& right)
+    friend Vec2<T> operator*(Vec2<T> left, const Vec2<T>& right)
     {
         left *= right;
         return left;
     }
 
-    friend Vec2 operator*(Vec2 left, const float& value)
+    friend Vec2<T> operator*(Vec2<T> left, const T& value)
     {
         left.x *= value;
         left.y *= value;
         return left;
     }
 
-    Vec2& operator/=(const Vec2& other)
+    Vec2<T>& operator/=(const Vec2<T>& other)
     {
-        x /= other.x;
-        y /= other.y;
+        x = x / other.x;
+        y = y / other.y;
         return *this;
     }
 
-    friend Vec2 operator/(Vec2 left, const Vec2& right)
+    friend Vec2<T> operator/(Vec2<T> left, const Vec2<T>& right)
     {
         left /= right;
         return left;
     }
 
-    friend Vec2 operator/(Vec2 left, const float& value)
+    friend Vec2<T> operator/(Vec2<T> left, const T& value)
     {
         left.x /= value;
         left.y /= value;
         return left;
     }
 
-    friend std::ostream& operator<<(std::ostream& stream, const Vec2& vec)
+    friend std::ostream& operator<<(std::ostream& stream, const Vec2<T>& vec)
     {
         stream << vec.x << ", " << vec.y;
         return stream;

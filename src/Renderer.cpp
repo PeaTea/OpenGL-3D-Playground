@@ -1,6 +1,6 @@
 #include "Renderer.h"
 #include "Coordinate_Definitions.h"
-#include "Logging.h"
+#include "OutUtils.h"
 
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
@@ -33,7 +33,7 @@ void Renderer::init_render_data()
     glBindVertexArray(vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(COORD_DEFS::vertices), COORD_DEFS::vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(COORD_DEFS::vertices_upwards), COORD_DEFS::vertices_upwards, GL_STATIC_DRAW);
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(COORD_DEFS::indices), COORD_DEFS::indices, GL_STATIC_DRAW);
@@ -61,7 +61,7 @@ void Renderer::set_program(GLProgram program)
     gl_program = program;
 }
 
-void Renderer::draw_sprite(GLuint texture_id, glm::vec3 pos, Vec2 size,
+void Renderer::draw_sprite(GLuint texture_id, glm::vec3 pos, Vec2<float> size,
                            GLfloat rotation, glm::vec3 rotation_vec, glm::vec4 color)
 {
     if(!gl_program.exists())
@@ -87,7 +87,7 @@ void Renderer::draw_sprite(GLuint texture_id, glm::vec3 pos, Vec2 size,
 }
 
 void Renderer::draw_sprite_facing_cam(GLuint texture_id, glm::vec3 pos, glm::vec3 cam_pos,
-                                      Vec2 size, glm::vec4 color)
+                                      Vec2<float> size, glm::vec4 color)
 {
     if(!gl_program.exists())
     {

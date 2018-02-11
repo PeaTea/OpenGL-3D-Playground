@@ -1,6 +1,6 @@
 #include "Display.h"
 #include "Camera.h"
-#include "Logging.h"
+#include "OutUtils.h"
 
 #include <iostream>
 
@@ -21,7 +21,7 @@ Display::Display(int width, int height, std::string title, sf::Uint32 style, int
 
     window.create(sf::VideoMode(width, height), title, style, settings);
     window.setVisible(false);
-    window.setVerticalSyncEnabled(true);
+    window.setVerticalSyncEnabled(Settings::vsync_enabled());
 
     glewExperimental = GL_TRUE;
     GLenum err = glewInit();
@@ -103,7 +103,8 @@ void Display::process_mouse_movement(float deltatime)
     int xoffset = last_mousex - window.getSize().x / 2;
     int yoffset = window.getSize().y / 2 - last_mousey;
 
-    camera.process_mouse_movement(xoffset, yoffset);
+    camera.process_mouse_movement(static_cast<float>(xoffset),
+                                  static_cast<float>(yoffset));
 
     sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2), window);
 }

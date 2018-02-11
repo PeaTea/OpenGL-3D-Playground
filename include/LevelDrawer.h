@@ -2,8 +2,10 @@
 
 #include <vector>
 #include <array>
+
 #include "GLTexture.h"
 #include "Level.h"
+#include "Types.h"
 
 struct PixelPosition
 {
@@ -32,7 +34,7 @@ struct LevelDrawer
 
 private:
     std::array<PixelData, 6> m_pixeldata;
-    int m_tex_size;
+    float m_tex_size;
     int m_cf_height;
     bool skip[4];
 };

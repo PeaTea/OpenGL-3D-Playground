@@ -18,29 +18,29 @@ void LevelData::init(int lvl_id, const std::vector<GLTexture>& textures, const s
         break;
     case 1:
         m_entities.emplace_back(textures[MYSTERIOUS_ROBOT].id(),
-                                glm::vec3(Settings::tex_size() * 15.5f, Settings::entity_size().y / 2.0f, Settings::tex_size() * 20 - 200.0f),
-                                cam_pos, Settings::entity_size() * 2);
+                                glm::vec3(Settings::tex_size() * 15.5f, Settings::entity_size().y * 0.5f, Settings::tex_size() * 20 - 200.0f),
+                                cam_pos, Settings::entity_size() * 2.0f);
         m_entities.emplace_back(textures[MYSTERIOUS_ROBOT].id(),
                                 glm::vec3(Settings::tex_size() * 10.5f, Settings::entity_size().y / 0.6f, Settings::tex_size() * 5 + 200.0f),
-                                cam_pos, Settings::entity_size() * 5);
+                                cam_pos, Settings::entity_size() * 5.0f);
         break;
     case 2:
         m_entities.emplace_back(textures[MYSTERIOUS_ROBOT].id(),
                                 glm::vec3(levels[2].scaled_tex_size().x * 15.5f, Settings::entity_size().y * 0.5f, levels[2].scaled_tex_size().x * 6),
-                                cam_pos, Vec2(levels[2].scaled_tex_size().x * 1.5f, levels[2].scaled_tex_size().y * 0.15f));
+                                cam_pos, Vec2<float>(levels[2].scaled_tex_size().x * 1.5f, levels[2].scaled_tex_size().y * 0.15f));
         m_entities.emplace_back(textures[MYSTERIOUS_ROBOT].id(),
                                 glm::vec3(levels[2].scaled_tex_size().x * 25, Settings::entity_size().y * 0.5f, levels[2].scaled_tex_size().x * 20),
-                                cam_pos, Vec2(levels[2].scaled_tex_size().x * 1.5f, levels[2].scaled_tex_size().y * 0.15f));
+                                cam_pos, Vec2<float>(levels[2].scaled_tex_size().x * 1.5f, levels[2].scaled_tex_size().y * 0.15f));
         m_entities.emplace_back(textures[MYSTERIOUS_ROBOT].id(),
                                 glm::vec3(levels[2].scaled_tex_size().x * 6, Settings::entity_size().y * 0.5f, levels[2].scaled_tex_size().x * 20),
-                                cam_pos, Vec2(levels[2].scaled_tex_size().x * 1.5f, levels[2].scaled_tex_size().y * 0.15f));
+                                cam_pos, Vec2<float>(levels[2].scaled_tex_size().x * 1.5f, levels[2].scaled_tex_size().y * 0.15f));
         m_entities.emplace_back(textures[GLASS_LIGHT].id(),
                                 glm::vec3(levels[2].scaled_tex_size().x * 15.5f, levels[2].scaled_tex_size().y * 0.465f, levels[2].scaled_tex_size().x * 9.5f),
-                                Vec2(levels[2].scaled_tex_size().x * 14, levels[2].scaled_tex_size().y),
+                                Vec2<float>(levels[2].scaled_tex_size().x * 14.0f, levels[2].scaled_tex_size().y),
                                 180.0f, glm::vec3(1, 0, 0), BLUE);
         m_entities.emplace_back(textures[GLASS_LIGHT].id(),
                                 glm::vec3(levels[2].scaled_tex_size().x * 15.5f, levels[2].scaled_tex_size().y * 0.465f, levels[2].scaled_tex_size().x * 15.5f),
-                                Vec2(levels[2].scaled_tex_size().x * 14, levels[2].scaled_tex_size().y),
+                                Vec2<float>(levels[2].scaled_tex_size().x * 14.0f, levels[2].scaled_tex_size().y),
                                 180.0f, glm::vec3(1, 0, 0), BLUE);
         break;
     }

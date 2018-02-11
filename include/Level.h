@@ -24,9 +24,9 @@ public:
     const unsigned char* get_data();
     sf::Color get_pixel(unsigned int x, unsigned int y) const;
 
-    Vec2 scaling() const;
+    Vec2<float> scaling() const;
     glm::vec3& start();
-    Vec2 scaled_tex_size() const;
+    Vec2<float> scaled_tex_size() const;
 
     void init(const std::vector<GLTexture>& textures, const std::vector<Level>& levels, const glm::vec3& cam_pos,
               std::map<std::string, GLProgram>& programs);
@@ -39,7 +39,7 @@ private:
     unsigned int m_id;
     sf::Image image;
     glm::vec3 startPositions;
-    Vec2 newTexSize;
+    Vec2<float> newTexSize;
 };
 
 #endif

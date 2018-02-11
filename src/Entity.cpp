@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity(unsigned int tex_id, const glm::vec3& pos, const Vec2& size,
+Entity::Entity(unsigned int tex_id, const glm::vec3& pos, const Vec2<float>& size,
                GLfloat rotation, const glm::vec3& rotation_vec,
                const glm::vec4& color)
     :   m_texture_id    {tex_id}
@@ -15,7 +15,7 @@ Entity::Entity(unsigned int tex_id, const glm::vec3& pos, const Vec2& size,
 }
 
 Entity::Entity(unsigned int tex_id, const glm::vec3& pos, const glm::vec3& cam_pos,
-               const Vec2& size, const glm::vec4& color)
+               const Vec2<float>& size, const glm::vec4& color)
     :   m_texture_id    {tex_id}
     ,   m_position      {pos}
     ,   m_cam_pos       {cam_pos}

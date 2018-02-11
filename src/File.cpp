@@ -1,61 +1,62 @@
 #include "File.h"
+#include "OutUtils.h"
 
-#include "Logging.h"
 #include <sstream>
 #include <iterator>
 
-File::File()
-    :   name    {""}
+File::File(const std::string& filepath, bool create_new)
+    :   m_path  {filepath}
 {
+    m_flags = ((create_new) ? std::ios::trunc : std::ios::app) | std::ios::out | std::ios::in;
+    m_file.open(m_path, m_flags);
 }
 
-File::File(const std::string& filename)
-    :   name    {filename}
+File::~File()
 {
+    close();
 }
 
-std::string File::get_name() const 
+std::string File::path() const 
 {
-    if(name != "")	
-        return name;
-    else 
-        logging::log("No filename specified for get_name()", lstream::error);
+    return m_path;
 }
 
-void File::set_name(const std::string& filename)
+void File::path(const std::string& filepath, bool create_new)
 {
-    name = filename;
+    m_path = filepath;
+    m_file.close();
+    m_flags = ((create_new) ? std::ios::trunc : std::ios::app) | std::ios::out | std::ios::in;
+    m_file.open(m_path, m_flags);
 }
 
-std::string File::read(const std::string& filename)
+std::string File::read()
 {
-    if(filename == "" && name == "")
-        logging::log("No filename", lstream::error);
-
-    std::ifstream file { ((name == "") ? filename : name), std::ios::binary };
-
-    if(file.fail())
-        logging::log("Error opening file - maybe wrong path?:" + name + "\n", lstream::error);
+    if(m_not_read)
+    {
+        m_file.seekg(0);
+        m_not_read = false;
+        m_not_written = true;
+    }
 
     std::stringstream ss;
-    ss << file.rdbuf();
+    ss << m_file.rdbuf();
     
     return ss.str();
 }
 
-std::vector<std::string> File::read_lines(const std::string& filename)
+std::vector<std::string> File::read_lines()
 {
-    if(filename == "" && name == "")
-        logging::log("No filename", lstream::error);
+    if(m_not_read)
+    {
+        m_file.seekg(0);
+        m_not_read = false;
+        m_not_written = true;
+    }
 
     std::vector<std::string> lines;
-    std::ifstream file { name == "" ? filename : name, std::ios::binary };
-
-    if(file.fail())
-        logging::log("Error opening file (maybe wrong path?):" + name + "\n", lstream::error);
 
     std::string line;
-    while(std::getline(file, line))
+    while(std::getline(m_file, line))
     {
         lines.push_back(line);
     }
@@ -63,29 +64,59 @@ std::vector<std::string> File::read_lines(const std::string& filename)
     return lines;
 }
 
-std::vector<std::string> File::read_words(const std::string& filename)
+std::vector<std::string> File::read_words()
 {
-    if(filename == "" && name == "")
-        logging::log("No filename", lstream::error);
+    if(m_not_read)
+    {
+        m_file.seekg(0);
+        m_not_read = false;
+        m_not_written = true;
+    }
 
     std::vector<std::string> lines;
-    std::ifstream file{name == "" ? filename : name, std::ios::binary};
 
-    if(file.fail())
-        logging::log("Error opening file (maybe wrong path?):" + name + "\n", lstream::error);
-
-    std::copy(std::istream_iterator<std::string>(file),
+    std::copy(std::istream_iterator<std::string>(m_file),
               std::istream_iterator<std::string>(),
               std::back_inserter(lines));
 
     return lines;
 }
 
-void File::write(const std::string& txt, const std::string& filename)
+void File::write(const std::string& txt)
 {
-    if(filename == "" && name == "")
-        logging::log("No filename for contents:\n  " + txt + "\n", lstream::error);
+    if(m_not_written)
+    {
+        m_file.seekp(m_file.tellg());
+        m_not_written = false;
+        m_not_read = true;
+    }
 
-    std::ofstream file { name == "" ? filename : name };
-    file << txt;
+    m_file << txt;
+}
+
+void File::close()
+{
+    m_file.close();
+}
+
+void File::open()
+{
+    m_file.open(m_path, m_flags);
+}
+
+void File::clear()
+{
+    path(m_path, true);
+}
+
+void File::copy_to(conststrref filepath, bool create_new)
+{
+    File target {filepath, create_new};
+    target.write(read());
+}
+
+void File::copy_from(conststrref filepath)
+{
+    File target {filepath};
+    write(target.read());
 }

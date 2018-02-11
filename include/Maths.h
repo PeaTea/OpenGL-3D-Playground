@@ -1,8 +1,8 @@
 #pragma once
 
-struct Maths
+namespace maths
 {
-    static long long int_pow(long long x, int n);
-    static float float_pow(float x, int n);
-    static float sqrt(float n);
+    long long int_pow(long long x, int n);
+    float float_pow(float x, int n);
+    float sqrt(float n, float accuracy = 0.001);
 };

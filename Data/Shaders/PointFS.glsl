@@ -43,7 +43,7 @@ void main()
 
     vec3 result = vec3(darkest, darkest, darkest);
 
-    for(int i = 0; i < num_lights; i++)
+    for(int i = num_lights; i > 0; i--)
     {
         if(i > MAX_LIGHTS)
             discard;

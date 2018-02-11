@@ -29,15 +29,15 @@ LevelDrawer::LevelDrawer()
     m_pixeldata[(int)PixelID::CEILING].color = DARK_GREY;
 
     m_tex_size = Settings::tex_size();
-    m_cf_height = m_tex_size / 2;
+    m_cf_height = (int)(m_tex_size * 0.5f);
 }
 
 void LevelDrawer::render_2D(std::vector<GLTexture>& textures, const Level& lvl, GLProgram& program)
 {
     Renderer::set_program(program);
-    for(unsigned int i = 0; i < lvl.width(); i++)
+    for(int i = 0; i < lvl.width(); i++)
     {
-        for(unsigned int j = 0; j < lvl.height(); j++)
+        for(int j = 0; j < lvl.height(); j++)
         {
             sf::Color color = lvl.get_pixel(i, j);
             sf::Color wcolor_yl = (j == 0) ? sf::Color::Red : lvl.get_pixel(i, j - 1);                //Wall Color y left = up
@@ -70,13 +70,13 @@ void LevelDrawer::render_2D(std::vector<GLTexture>& textures, const Level& lvl, 
                 
                 //Floor
                 Renderer::draw_sprite(textures[m_pixeldata[FLOOR].texture].id(),
-                                      {m_tex_size * i * xz_scaling, -m_tex_size / 2, m_tex_size * j * xz_scaling},
-                                      m_tex_size * xz_scaling, 90.0f, {1, 0, 0}, m_pixeldata[FLOOR].color);
+                                      {m_tex_size * i * xz_scaling, - (m_tex_size * 0.5), m_tex_size * j * xz_scaling},
+                                      {m_tex_size * xz_scaling}, 90.0f, {1, 0, 0}, m_pixeldata[FLOOR].color);
             
                 //Ceiling
                 Renderer::draw_sprite(textures[m_pixeldata[CEILING].texture].id(),
                                       {m_tex_size * i * xz_scaling, y_scaling  * m_tex_size - m_tex_size / 2, m_tex_size * j * xz_scaling},
-                                      m_tex_size * xz_scaling, 270.0f, {1, 0, 0}, m_pixeldata[CEILING].color);
+                                      {m_tex_size * xz_scaling}, 270.0f, {1, 0, 0}, m_pixeldata[CEILING].color);
                 
                 //Walls 
                 if(wcolor_xl != sf::Color::White)
@@ -146,9 +146,10 @@ void LevelDrawer::render_2D(std::vector<GLTexture>& textures, const Level& lvl, 
 void LevelDrawer::render_cubes(std::vector<GLTexture>& textures, const Level& lvl, GLProgram& program)
 {
     Renderer::set_program(program);
-    for(unsigned int i = 0; i < lvl.width(); i++)
+    glCullFace(GL_BACK);
+    for(int i = 0; i < lvl.width(); i++)
     {
-        for(unsigned int j = 0; j < lvl.height(); j++)
+        for(int j = 0; j < lvl.height(); j++)
         {
             sf::Color color = lvl.get_pixel(i, j);
 

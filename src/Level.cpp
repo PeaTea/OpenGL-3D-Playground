@@ -4,7 +4,7 @@
 #include <random>
 #include <ctime>
 
-#include "Logging.h"
+#include "OutUtils.h"
 #include "RenderGame.h"
 #include "Settings.h"
 
@@ -31,7 +31,8 @@ Level::Level(unsigned int lvl_id, const std::string& path, const glm::vec3& star
 
     w = image.getSize().x;
     h = image.getSize().y;
-    newTexSize = {Settings::tex_size() * xz_scaling, Settings::tex_size() * y_scaling};
+    newTexSize = {Settings::tex_size() * xz_scaling,
+                  Settings::tex_size() * y_scaling};
 }
 
 Level::~Level()
@@ -49,7 +50,7 @@ int Level::height() const
     return h;
 }
 
-Vec2 Level::scaling() const
+Vec2<float> Level::scaling() const
 {
     return {xz_scaling, y_scaling};
 }
@@ -69,7 +70,7 @@ glm::vec3& Level::start()
     return startPositions;
 }
 
-Vec2 Level::scaled_tex_size() const
+Vec2<float> Level::scaled_tex_size() const
 {
     return newTexSize;
 }

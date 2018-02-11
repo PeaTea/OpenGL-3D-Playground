@@ -56,6 +56,7 @@ private:
     void load_levels();
     void load_textures();
     void load_entities();
+    void load_light_sources();
 
 private:
     std::map<std::string, GLProgram> m_programs;

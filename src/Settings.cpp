@@ -1,5 +1,5 @@
 #include "Settings.h"
-#include "Logging.h"
+#include "OutUtils.h"
 
 #include <vector>
 #include <sstream>
@@ -10,14 +10,35 @@
 
 #define SETTINGS_FILE_NAME "Data/settings.cfg"
 
-bool Settings::m_fullscreen = false;
-bool Settings::m_mode_found = false;
-int Settings::m_width = 0;
-int Settings::m_height = 0;
-float Settings::m_entity_sizew = 0.0f;
-float Settings::m_entity_sizeh = 0.0f;
-float Settings::m_tex_size = 0.0f;
-float Settings::m_player_size = 0.0f;
+const std::string DEFAULTS = "\
+# Settings for OpenGL Playground\n\n\
+Mode = FULLSCREEN\n\n\
+# PC\n\
+Fullscreen = false\n\
+Width = 800\n\
+Height = 600\n\
+VSync = true\n\n\
+# Sizes\n\
+EntitySizeW = 96\n\
+EntitySizeH = 128\n\
+# Leave at 128 !!!\n\
+TexSize = 128\n\
+# Should not be much larger than 256\n\
+PlayerSize = 128\n\n\
+# Debug Settings\n\
+ShowFPS = false\n\
+";
+
+bool    Settings::m_fullscreen      = false;
+bool    Settings::m_mode_found      = false;
+bool    Settings::m_show_fps        = false;
+bool    Settings::m_enable_vsync    = false;
+int     Settings::m_width           = 0;
+int     Settings::m_height          = 0;
+float   Settings::m_entity_sizew    = 0.0f;
+float   Settings::m_entity_sizeh    = 0.0f;
+float   Settings::m_tex_size        = 0.0f;
+float   Settings::m_player_size     = 0.0f;
 
 Settings::Settings()
 {
@@ -89,11 +110,19 @@ bool Settings::get_config()
         }
         else if(words[0] == "playersize")
         {
-            m_player_size = std::stoi(words[2]);
+            m_player_size = std::stof(words[2]);
         }
         else if(words[0] == "texsize")
         {
             m_tex_size = std::stof(words[2]);
+        }
+        else if(words[0] == "showfps")
+        {
+            m_show_fps = (words[2] == "true") ? true : false;
+        }
+        else if(words[0] == "vsync")
+        {
+            m_enable_vsync = (words[2] == "true") ? true : false;
         }
         else
         {
@@ -104,15 +133,20 @@ bool Settings::get_config()
     return true;
 }
 
-void Settings::update_config()
-{
-
-}
-
 
 bool Settings::fullscreen()
 {
     return m_fullscreen;
+}
+
+bool Settings::show_fps()
+{
+    return m_show_fps;
+}
+
+bool Settings::vsync_enabled()
+{
+    return m_enable_vsync;
 }
 
 int Settings::width()
@@ -131,12 +165,13 @@ int Settings::height()
         logging::log("Invalid value for height (height <= 0)", lstream::error);
 }
 
-Vec2 Settings::entity_size()
+Vec2<float> Settings::entity_size()
 {
     if(m_entity_sizew > 0 && m_entity_sizeh > 0)
         return {m_entity_sizew, m_entity_sizeh};
     else
-        logging::log("Invalid or missing value for entity_size (component uninitialized or <= 0)", lstream::error);
+        logging::log("Invalid or missing value for entity_size (component uninitialized or <= 0)",
+                     lstream::error);
 }
 
 float Settings::tex_size()
@@ -152,10 +187,17 @@ float Settings::player_size()
     if(m_player_size > 0)
         return m_player_size;
     else
-        logging::log("Invalid or missing value for player_size (playersizeh <= 0)", lstream::error);
+        logging::log("Invalid or missing value for player_size (playersizeh <= 0)",
+                     lstream::error);
 }
 
 std::string Settings::settings_file_name()
 {
     return SETTINGS_FILE_NAME;
+}
+
+void Settings::revert_to_defaults()
+{
+    File settings_file {SETTINGS_FILE_NAME};
+    settings_file.write(DEFAULTS);
 }

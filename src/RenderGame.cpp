@@ -1,5 +1,6 @@
 #include "RenderGame.h"
 #include "Camera.h"
+#include "Types.h"
 
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
@@ -111,32 +112,42 @@ void RenderGame::load_entities()
     {
         m_levels[i].init(m_textures, m_levels, m_cam_pos, m_programs);
     }
-    int curr_lvl_w = (m_levels[m_current_lvl].width() - 1) * m_levels[m_current_lvl].scaled_tex_size().x;
-    int curr_lvl_h = (m_levels[m_current_lvl].height() - 1) * m_levels[m_current_lvl].scaled_tex_size().x;
+    int curr_lvl_w = (m_levels[m_current_lvl].width() - 1) * (int)m_levels[m_current_lvl].scaled_tex_size().x;
+    int curr_lvl_h = (m_levels[m_current_lvl].height() - 1) * (int)m_levels[m_current_lvl].scaled_tex_size().x;
     /*m_light_sources.emplace_back(m_textures[BASIC_CIRCLE], 
                                  glm::vec3(curr_lvl_w / 2, 3000, curr_lvl_h / 2),
                                  glm::vec2(Settings::tex_size() * 5, Settings::tex_size() * 5),
                                  glm::vec4(0.5, 1, 1, 1), 100000, m_levels[m_current_lvl]);*/
-    m_light_sources.emplace_back(m_levels[m_current_lvl].data.m_entities[3].get_position(),
-                                 1500, BLUE, m_levels[m_current_lvl]);
-    m_light_sources.emplace_back(m_levels[m_current_lvl].data.m_entities[4].get_position(),
-                                 1500, BLUE, m_levels[m_current_lvl]);
-    m_light_sources.emplace_back(glm::vec3(2000, m_levels[m_current_lvl].height() / 2, 5500),
-                                 3000, ICY_COLD, m_levels[m_current_lvl]);
-    m_light_sources.emplace_back(glm::vec3(2000, m_levels[m_current_lvl].height(), 500),
-                                 1000, GREEN, m_levels[m_current_lvl]);
+    load_light_sources();
+}
 
-    m_programs["point"].use();
-    m_programs["point"].set_int("num_lights", m_light_sources.size());
-
-    for(int i = 1; i < m_light_sources.size(); i++)
+void RenderGame::load_light_sources()
+{
+    switch(m_current_lvl)
     {
-        std::string variable = "point_lights[" + std::to_string(i) + "]";
-        m_programs["point"].set_vec3(std::string(variable + ".position").c_str(), m_light_sources[i].position());
-        m_programs["point"].set_vec4(std::string(variable + ".color").c_str(), m_light_sources[i].color());
-        m_programs["point"].set_float(std::string(variable + ".radius").c_str(), m_light_sources[i].radius());
+    case 2:
+        m_light_sources.emplace_back(m_levels[m_current_lvl].data.m_entities[3].get_position(),
+                                     1500.0f, BLUE, m_levels[m_current_lvl]);
+        m_light_sources.emplace_back(m_levels[m_current_lvl].data.m_entities[4].get_position(),
+                                     1500.0f, BLUE, m_levels[m_current_lvl]);
+        m_light_sources.emplace_back(glm::vec3(2000.0f, m_levels[m_current_lvl].height() / 2, 5500.0f),
+                                     3000.0f, ICY_COLD, m_levels[m_current_lvl]);
+        m_light_sources.emplace_back(glm::vec3(2000.0f, m_levels[m_current_lvl].height(), 500.0f),
+                                     1000.0f, GREEN, m_levels[m_current_lvl]);
+
+        m_programs["point"].use();
+        m_programs["point"].set_int("num_lights", m_light_sources.size());
+
+        for(uint i = 1; i < m_light_sources.size(); i++)
+        {
+            std::string variable = "point_lights[" + std::to_string(i) + "]";
+            m_programs["point"].set_vec3(std::string(variable + ".position").c_str(), m_light_sources[i].position());
+            m_programs["point"].set_vec4(std::string(variable + ".color").c_str(), m_light_sources[i].color());
+            m_programs["point"].set_float(std::string(variable + ".radius").c_str(), m_light_sources[i].radius());
+        }
+        m_programs["point"].unuse();
+        break;
     }
-    m_programs["point"].unuse();
 }
 
 void RenderGame::set_uniforms()

@@ -2,13 +2,35 @@
 #include "Display.h"
 #include "SFEvent.h"
 #include "Vec2.h"
+#include "OutUtils.h"
+#include "Maths.h"
+#include "Timer.h"
 
 #include <iostream>
 
 #define TEST 0
 
+struct StartupOperations
+{
+    StartupOperations() 
+    {
+        //std::ios::sync_with_stdio(false); 
+        output::print("Starting...");
+    }
+}   so;
+
+struct ExitOperations
+{
+    ~ExitOperations() 
+    { 
+        output::print("Press any key to exit...");
+        std::cin.get();
+    }
+}   eo;
+
+
 #if !TEST
-#define DEBUG
+#define DEBUGMODE
 
 static bool wire_frame = false;
 static bool y_mov_switch = false;
@@ -27,6 +49,7 @@ namespace PC
 namespace Main_GB
 {
     bool collision = true;
+    bool show_fps = Settings::show_fps();
     int current_level = 2;
 }
 
@@ -37,7 +60,7 @@ int main()
     std::cout << glGetString(GL_VERSION) << std::endl;
 
     sf::Clock clock;
-    float delta_time = 0.0f, current_time = 0.0f, last_time = 0.0f;
+    float delta_time = 1.0f, current_time = 0.0f, last_time = 0.0f;
 
     SFEvent sfevent;
 
@@ -69,7 +92,7 @@ int main()
             case sf::Event::Resized:
                 glViewport(0, 0, sfevent.size().width, sfevent.size().height);
                 break;
-#ifdef DEBUG
+#ifdef DEBUGMODE
             case sf::Event::KeyPressed:
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::F1))
                 {
@@ -103,13 +126,17 @@ int main()
 
             display.process_keyboard_input(delta_time, Main_GB::collision, Main_GB::current_level);
 
-            //glEnable(GL_CULL_FACE);
             display.render();
 
             glDisable(GL_CULL_FACE);
             display.render_transparent();
 
-            display.update(); // Also swaps buffers
+            display.update();
+
+            if(Main_GB::show_fps)
+            {
+                logging::log(std::to_string((1 / delta_time) * 1000), lstream::info);
+            }
         }
     }
 }
@@ -117,15 +144,12 @@ int main()
 
 #else
 
+#include "Tests.h"
+
 int main()
 {
-    Vec2 v = Settings::TEX_SIZE();
-    Vec2 v2 = Settings::TEX_SIZE();
-
-    std::cout << v << " | " << v2 << std::endl;
-
-    std::cin.get();
-    return 0;
+    //test_files_write();
+    test_files_read();
 }
 
 #endif

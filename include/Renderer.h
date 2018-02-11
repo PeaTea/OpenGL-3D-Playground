@@ -14,11 +14,11 @@ public:
     Renderer(GLProgram program);
 
     static void set_program(GLProgram program);
-    static void draw_sprite(GLuint texture_id, glm::vec3 pos, Vec2 size,
+    static void draw_sprite(GLuint texture_id, glm::vec3 pos, Vec2<float> size,
                             GLfloat rotation = 180.0f, glm::vec3 rotation_vec = {1, 0, 0},
                             glm::vec4 color = {1, 1, 1, 1});
     static void draw_sprite_facing_cam(GLuint texture_id, glm::vec3 pos, glm::vec3 cam_pos,
-                                       Vec2 size, glm::vec4 color = {1, 1, 1, 1});
+                                       Vec2<float> size, glm::vec4 color = {1, 1, 1, 1});
     static void draw_texture(GLuint texture_id);
 
     static void enable_test();
