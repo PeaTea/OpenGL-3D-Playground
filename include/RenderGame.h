@@ -10,6 +10,7 @@
 #include "LevelDrawer.h"
 #include "Level.h"
 #include "BasicLightSource.h"
+#include "Skybox.h"
 
 #include <map>
 
@@ -31,7 +32,8 @@ enum Textures
     MYSTERIOUS_ROBOT,
     TRANSPARENCY_TEST,
     GLASS_LIGHT,
-    BASIC_CIRCLE
+    BASIC_CIRCLE,
+    SKYBOX
 };
 
 
@@ -45,6 +47,8 @@ public:
 
     void update_camera_pos(const glm::vec3& cam_pos);
 
+    void set_deltatime(float dt);
+
     std::vector<Level> m_levels;
     std::vector<BasicLightSource> m_light_sources;
 
@@ -57,6 +61,7 @@ private:
     void load_textures();
     void load_entities();
     void load_light_sources();
+    void load_objects();
 
 private:
     std::map<std::string, GLProgram> m_programs;
@@ -65,8 +70,12 @@ private:
     int m_screen_h;
     int m_current_lvl;
 
+    float m_deltatime;
+
     std::vector<GLTexture> m_textures;
     LevelDrawer m_ld;
+    GLTextureCube m_skybox_cube_map;
+    Skybox m_skybox;
 
     glm::vec3 m_cam_pos;
 };

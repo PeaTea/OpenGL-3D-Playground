@@ -3,6 +3,7 @@
 
 #include <GL/glew.h>
 #include <string>
+#include <array>
 
 enum GLTexFlags
 {
@@ -27,6 +28,25 @@ public:
 private:
     GLuint texture_id;
 
+};
+
+class GLTextureCube
+{
+public:
+    GLTextureCube(std::array<std::string, 6> filenames, GLTexFlags wrap_r = CLAMP_TO_EDGE, GLTexFlags wrap_s = CLAMP_TO_EDGE, GLTexFlags wrap_t = CLAMP_TO_EDGE,
+                  GLTexFlags min_filter = LINEAR, GLTexFlags mag_filter = LINEAR);
+
+    GLTextureCube();
+
+    ~GLTextureCube();
+
+    void gen_cube_map(std::array<std::string, 6> filenames, GLTexFlags wrap_r = CLAMP_TO_EDGE, GLTexFlags wrap_s = CLAMP_TO_EDGE, GLTexFlags wrap_t = CLAMP_TO_EDGE,
+                      GLTexFlags min_filter = LINEAR, GLTexFlags mag_filter = LINEAR);
+
+    GLuint id() const;
+
+private:
+    GLuint m_texture_id;
 };
 
 #endif

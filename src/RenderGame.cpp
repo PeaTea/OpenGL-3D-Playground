@@ -1,6 +1,7 @@
 #include "RenderGame.h"
 #include "Camera.h"
 #include "Types.h"
+#include "OutUtils.h"
 
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
@@ -14,21 +15,24 @@ RenderGame::RenderGame(int width, int height, int current_lvl, Camera& camera)
     ,   m_screen_h      {height}
     ,   m_current_lvl   {current_lvl}
 {
-    std::cout << "Loading shaders..." << std::endl;
+    output::print("Loading shaders...");
     load_shaders();
 
-    std::cout << "Loading textures..." << std::endl;
+    output::print("Loading textures...");
     load_textures();
     set_uniforms();
 
-    std::cout << "Loading levels..." << std::endl;
+    output::print("Loading levels...");
     load_levels();
+
+    output::print("Loading entities...");
+    load_entities();
+
+    output::print("Loading objects...");
+    load_objects();
 
     camera.position = m_levels[current_lvl].start();
     update_camera_pos(camera.position);
-
-    std::cout << "Loading entities..." << std::endl;
-    load_entities();
 
     Renderer::enable_test();
 }
@@ -150,6 +154,16 @@ void RenderGame::load_light_sources()
     }
 }
 
+void RenderGame::load_objects()
+{
+    std::array<std::string, 6> textures;
+    std::fill(textures.begin(), textures.end(), "Data/Textures/Skybox.png");
+    m_skybox_cube_map.gen_cube_map(textures, CLAMP_TO_EDGE, CLAMP_TO_EDGE, CLAMP_TO_EDGE, LINEAR, LINEAR);
+
+    m_skybox.init(m_skybox_cube_map, m_levels[m_current_lvl].center(), 10000,
+                  "Data/Shaders/SkyboxVS.glsl", "Data/Shaders/SkyboxFS.glsl");
+}
+
 void RenderGame::set_uniforms()
 {
     m_programs["darken"].use();
@@ -182,9 +196,10 @@ void RenderGame::update_matrices(glm::mat4 view_mat, glm::mat4 projection_mat)
 
 void RenderGame::render(Camera& camera)
 {
-    update_matrices(camera.get_view_matrix(),
-                    glm::perspective(glm::radians(FOV), (float)(m_screen_w / m_screen_h), 0.1f, 50000.0f));
+    glm::mat4 projection = glm::perspective(glm::radians(FOV), (float)(m_screen_w / m_screen_h), 0.1f, 50000.0f);
+    update_matrices(camera.get_view_matrix(), projection);
 
+    m_skybox.render(camera.get_view_matrix(), projection, m_deltatime);
     m_ld.render_cubes(m_textures, m_levels[m_current_lvl], m_programs["point"]);
 }
 
@@ -203,3 +218,7 @@ void RenderGame::update_camera_pos(const glm::vec3& cam_pos)
     m_cam_pos = cam_pos;
 }
 
+void RenderGame::set_deltatime(float dt)
+{
+    m_deltatime = dt;
+}

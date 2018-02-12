@@ -15,7 +15,7 @@ struct StartupOperations
     StartupOperations() 
     {
         //std::ios::sync_with_stdio(false); 
-        output::print("Starting...");
+        output::print("Starting...");    
     }
 }   so;
 
@@ -23,7 +23,7 @@ struct ExitOperations
 {
     ~ExitOperations() 
     { 
-        output::print("Press any key to exit...");
+        output::print("Press enter to exit...");
         std::cin.get();
     }
 }   eo;
@@ -65,7 +65,6 @@ int main()
     SFEvent sfevent;
 
     //Enabling OpenGL stuff
-
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glFrontFace(GL_CW);
     glCullFace(GL_FRONT);
@@ -119,7 +118,7 @@ int main()
 
         if(!out_of_focus)
         {
-            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             display.process_mouse_movement(delta_time);

@@ -20,6 +20,7 @@ public:
 
     int width() const;
     int height() const;
+    glm::vec3 center() const;
 
     const unsigned char* get_data();
     sf::Color get_pixel(unsigned int x, unsigned int y) const;

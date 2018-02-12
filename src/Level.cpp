@@ -50,6 +50,11 @@ int Level::height() const
     return h;
 }
 
+glm::vec3 Level::center() const
+{
+    return {((w - 1) * newTexSize.x) / 2, 0, ((h - 1) * newTexSize.x) / 2};
+}
+
 Vec2<float> Level::scaling() const
 {
     return {xz_scaling, y_scaling};

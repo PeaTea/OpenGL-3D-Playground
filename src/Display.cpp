@@ -65,6 +65,7 @@ void Display::render_transparent()
 
 void Display::process_keyboard_input(float dt, bool collision, const int& curr_lvl)
 {
+    render_game->set_deltatime(dt);
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
     {
         close();

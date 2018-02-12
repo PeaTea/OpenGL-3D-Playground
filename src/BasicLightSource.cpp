@@ -5,9 +5,7 @@ BasicLightSource::BasicLightSource(GLTexture texture, const glm::vec3& pos, cons
                                    const glm::vec4& color, float radius, Level lvl)
     :   m_pos           {pos}
     ,   m_size          {size}
-    ,   m_level_center  {((lvl.width() - 1) * lvl.scaled_tex_size().x) / 2,
-                         0,
-                         ((lvl.height() - 1) * lvl.scaled_tex_size().x) / 2}
+    ,   m_level_center  {lvl.center()}
     ,   m_direction     {m_level_center - m_pos}
     ,   m_texture       {texture}
     ,   m_color         {color}
@@ -22,9 +20,7 @@ BasicLightSource::BasicLightSource(const glm::vec3& pos, float radius, const glm
                                    Level lvl)
     :   m_pos           {pos}
     ,   m_size          {radius, radius}
-    ,   m_level_center  {((lvl.width() - 1) * lvl.scaled_tex_size().x) / 2,
-                         0,
-                         ((lvl.height() - 1) * lvl.scaled_tex_size().x) / 2}
+    ,   m_level_center  {lvl.center()}
     ,   m_direction     {m_level_center - m_pos}
     ,   m_texture       {"NONE"}
     ,   m_color         {color}
