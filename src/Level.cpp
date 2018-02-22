@@ -65,7 +65,7 @@ const unsigned char* Level::get_data()
     return image.getPixelsPtr();
 }
 
-sf::Color Level::get_pixel(unsigned int x, unsigned int y) const
+sf::Color Level::get_pixel(const uint& x, const uint& y) const
 {
     return image.getPixel(x, y);
 }
@@ -80,8 +80,8 @@ Vec2<float> Level::scaled_tex_size() const
     return newTexSize;
 }
 
-void Level::init(const std::vector<GLTexture>& textures, const std::vector<Level>& levels, const glm::vec3& cam_pos,
-                 std::map<std::string, GLProgram>& programs)
+void Level::init(const std::unordered_map<int, GLTexture>& textures, const std::vector<Level>& levels, const glm::vec3& cam_pos,
+                 std::unordered_map<std::string, GLProgram>& programs)
 {
     data.init(m_id, textures, levels, cam_pos, programs);
 }

@@ -7,8 +7,7 @@
 
 GLProgram   Renderer::gl_program;
 GLuint      Renderer::vao;
-GLuint      Renderer::test_cube_vao;
-bool        Renderer::enabled_test = false;
+GLuint      Renderer::cube_vao;
 
 Renderer::Renderer()
 {
@@ -17,11 +16,11 @@ Renderer::Renderer()
 Renderer::Renderer(GLProgram program)
 {
     gl_program = program;
-    init_render_data();
+    init_quad_render_data();
 }
 
 
-void Renderer::init_render_data()
+void Renderer::init_quad_render_data()
 {
     GLuint vbo;
     GLuint ebo;
@@ -56,13 +55,13 @@ void Renderer::set_program(GLProgram program)
 {
     if(!gl_program.exists())
     {
-        init_render_data();
+        init_quad_render_data();
     } 
     gl_program = program;
 }
 
-void Renderer::draw_sprite(GLuint texture_id, glm::vec3 pos, Vec2<float> size,
-                           GLfloat rotation, glm::vec3 rotation_vec, glm::vec4 color)
+void Renderer::draw_sprite(const GLuint& texture_id, const glm::vec3& pos, const Vec2<float>& size,
+                           const GLfloat& rotation, const glm::vec3& rotation_vec, const glm::vec4& color)
 {
     if(!gl_program.exists())
     {
@@ -86,8 +85,8 @@ void Renderer::draw_sprite(GLuint texture_id, glm::vec3 pos, Vec2<float> size,
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
-void Renderer::draw_sprite_facing_cam(GLuint texture_id, glm::vec3 pos, glm::vec3 cam_pos,
-                                      Vec2<float> size, glm::vec4 color)
+void Renderer::draw_sprite_facing_cam(const GLuint& texture_id, const glm::vec3& pos, const glm::vec3& cam_pos,
+                                      const Vec2<float>& size, const glm::vec4& color)
 {
     if(!gl_program.exists())
     {
@@ -126,19 +125,19 @@ void Renderer::draw_texture(GLuint texture)
 
 
 
-void Renderer::enable_test()
+void Renderer::enable_cube()
 {
-    init_test_render_data();
+    init_cube_render_data();
 }
 
-void Renderer::init_test_render_data()
+void Renderer::init_cube_render_data()
 {
     GLuint cube_vbo;
 
-    glGenVertexArrays(1, &test_cube_vao);
+    glGenVertexArrays(1, &cube_vao);
     glGenBuffers(1, &cube_vbo);
 
-    glBindVertexArray(test_cube_vao);
+    glBindVertexArray(cube_vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, cube_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(COORD_DEFS::cube_vertices), COORD_DEFS::cube_vertices, GL_STATIC_DRAW);
@@ -154,18 +153,11 @@ void Renderer::init_test_render_data()
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-
-    enabled_test = true;
 }
 
-void Renderer::test_draw_cube(GLuint texture_id, const glm::vec3& pos, const glm::vec3& size, GLfloat rotation, const glm::vec3& rotation_vec,
-                              const glm::vec4& color)
+void Renderer::draw_cube(const GLuint& texture_id, const glm::vec3& pos, const glm::vec3& size, const GLfloat& rotation,
+                              const glm::vec3& rotation_vec, const glm::vec4& color)
 {
-    if(!enabled_test)
-    {
-        logging::log("Please enable test first (Renderer::error)", lstream::error);
-    }
-
     gl_program.use();
 
     glm::mat4 model;
@@ -180,6 +172,6 @@ void Renderer::test_draw_cube(GLuint texture_id, const glm::vec3& pos, const glm
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture_id);
     
-    glBindVertexArray(test_cube_vao);
+    glBindVertexArray(cube_vao);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 }

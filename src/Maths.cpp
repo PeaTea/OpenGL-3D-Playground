@@ -45,4 +45,9 @@ namespace maths
             guess = new_guess;
         }
     }
+
+    int roundf(float n)
+    {
+        return (int) (n + 0.5f);
+    }
 }

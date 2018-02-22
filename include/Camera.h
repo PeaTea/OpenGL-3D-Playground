@@ -30,6 +30,10 @@ public:
     void process_keyboard(CameraMovement direction, float dt, const Level& lvl, const int& num_level,
                           bool& collision, const int& v = 8, const bool& output = false);
     void process_mouse_movement(float xoffset, float yoffset, bool constrain_pitch = true);
+    void fall(float dt, int velocity = SPEED);
+    
+    glm::vec2 get_2D_pixel_pos(int lvlw, int lvlh);
+
     glm::mat4 get_view_matrix();
 
     glm::vec3 position;

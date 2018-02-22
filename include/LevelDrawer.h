@@ -25,10 +25,10 @@ struct LevelDrawer
     LevelDrawer();
     
     // Fast performance
-    void render_2D(std::vector<GLTexture>& textures, const Level& lvl, GLProgram& program);
+    void render_2D(const std::unordered_map<int, GLTexture>& textures, const Level& lvl, GLProgram& program);
 
     // For complex lightning
-    void render_cubes(std::vector<GLTexture>& textures, const Level& lvl, GLProgram& program);
+    void render_cubes(const std::unordered_map<int, GLTexture>& textures, const Level& lvl, GLProgram& program);
 
     int get_cf_height() const;
 

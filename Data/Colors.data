@@ -4,6 +4,9 @@ const glm::vec4 BLACK(0, 0, 0, 0);
 const glm::vec4 RED(1, 0, 0, 1);
 const glm::vec4 GREEN(0, 1, 0, 1);
 const glm::vec4 BLUE(0, 0, 1, 1);
+const glm::vec4 ORANGE_YELLOW(1, 0.6, 0, 1);
+const glm::vec4 YELLOW(1, 0.75, 0, 1);
+const glm::vec4 BRIGHT_YELLOW(1, 1, 0, 1);
 
 const glm::vec4 LIGHT_BLUE(0, 0, 0.5, 1);
 

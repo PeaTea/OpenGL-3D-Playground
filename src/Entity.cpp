@@ -33,11 +33,11 @@ void Entity::set_cam_pos(const glm::vec3& cam_pos)
     if(m_is_rotated)
     {
         m_cam_pos = cam_pos;
-    } else return;
+    }
 }
 
 
-void Entity::render(std::map<std::string, GLProgram>& programs, int cf_height)
+void Entity::render(std::unordered_map<std::string, GLProgram>& programs, const int& cf_height)
 {
     Renderer::set_program(m_is_rotated ? programs["point"] : programs["normal"]);
     (m_is_rotated) ? Renderer::draw_sprite_facing_cam(m_texture_id, {m_position.x, m_position.y - cf_height, m_position.z},

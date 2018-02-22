@@ -19,6 +19,8 @@ public:
 
     void render(glm::mat4 view_mat, const glm::mat4& proj_mat, float dt, float rotation_angle = 1.0f, const glm::vec3& rotation_vec = {1, 1, 1});
 
+    static glm::vec3 s_rotation_vec;
+
 private:
     void generate_vao();
     void generate_program(conststrref vspath, conststrref fspath);

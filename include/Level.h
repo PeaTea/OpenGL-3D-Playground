@@ -6,11 +6,12 @@
 #include <string>
 #include <SFML/Graphics/Image.hpp>
 #include <glm/glm.hpp>
-#include <map>
+#include <unordered_map>
 
 #include "GLTexture.h"
 #include "Vec2.h"
 #include "LevelData.h"
+#include "Types.h"
 
 class Level
 {
@@ -23,14 +24,14 @@ public:
     glm::vec3 center() const;
 
     const unsigned char* get_data();
-    sf::Color get_pixel(unsigned int x, unsigned int y) const;
+    sf::Color get_pixel(const uint& x, const uint& y) const;
 
     Vec2<float> scaling() const;
     glm::vec3& start();
     Vec2<float> scaled_tex_size() const;
 
-    void init(const std::vector<GLTexture>& textures, const std::vector<Level>& levels, const glm::vec3& cam_pos,
-              std::map<std::string, GLProgram>& programs);
+    void init(const std::unordered_map<int, GLTexture>& textures, const std::vector<Level>& levels, const glm::vec3& cam_pos,
+              std::unordered_map<std::string, GLProgram>& programs);
 
     LevelData data;
 

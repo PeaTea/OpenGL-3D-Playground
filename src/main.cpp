@@ -101,7 +101,7 @@ int main()
 
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::F2))
                 {
-                    display.restrain_camera_y(!y_mov_switch);
+                    display.restrain_camera_y(y_mov_switch);
                     y_mov_switch = !y_mov_switch;
                     Main_GB::collision = !Main_GB::collision;
                 }

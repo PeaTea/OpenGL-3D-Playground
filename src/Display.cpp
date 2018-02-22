@@ -50,7 +50,6 @@ sf::Window& Display::get()
 void Display::update()
 {
     window.display();
-    //std::cout << camera.yaw << std::endl;
 }
 
 void Display::render()
@@ -71,7 +70,7 @@ void Display::process_keyboard_input(float dt, bool collision, const int& curr_l
         close();
     }
 
-    int v = collision ? 2 : 25;
+    int v = collision ? 2 : 50;
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {

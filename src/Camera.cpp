@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "Collision.h"
 #include "RenderGame.h"
+#include "Maths.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -57,10 +58,10 @@ void Camera::process_keyboard(CameraMovement direction, float dt, const Level& l
         new_pos -= right * (vel + v);
         break;
     case UP:
-        new_pos.y += (SPEED / 4 * v) * vel;
+        new_pos.y += (SPEED / 3 * v) * vel;
         break;
     case DOWN:
-        new_pos.y -= (SPEED / 4 * v) * vel;
+        new_pos.y -= (SPEED / 3 * v) * vel;
         break;
     }
 
@@ -79,10 +80,15 @@ void Camera::process_keyboard(CameraMovement direction, float dt, const Level& l
 }
 
 
+void Camera::fall(float dt, int velocity)
+{
+    position.y -= dt * velocity;
+}
+
+
 void Camera::restrain_y_mov(bool& y_mov)
 {
-    if(y_movement)	y_movement = false;
-    else			y_movement = true;
+    y_movement = !y_mov;
 }
 
 
@@ -109,6 +115,12 @@ void Camera::process_mouse_movement(float xoffset, float yoffset, bool constrain
 glm::mat4 Camera::get_view_matrix()
 {
     return glm::lookAt(position, position + front, up);
+}
+
+
+glm::vec2 Camera::get_2D_pixel_pos(int lvlw, int lvlh)
+{
+    return {maths::roundf(position.x) % lvlh, maths::roundf(position.z) % lvlw};
 }
 
 

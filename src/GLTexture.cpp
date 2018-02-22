@@ -18,7 +18,7 @@ GLTexture::GLTexture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags 
         }
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture.getSize().x, texture.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.getPixelsPtr());
-        glGenerateMipmap(GL_TEXTURE_2D);
+        //glGenerateMipmap(GL_TEXTURE_2D);
 
         switch(wrap_s)
         {

@@ -61,8 +61,8 @@ bool Settings::get_config()
         if(words[0][0] == '#') 
             continue;
 
-        std::transform(words[0].begin(), words[0].end(), words[0].begin(), ::tolower);
-        std::transform(words[2].begin(), words[2].end(), words[2].begin(), ::tolower);
+        std::transform(words[0].begin(), words[0].end(), words[0].begin(), tolower);
+        std::transform(words[2].begin(), words[2].end(), words[2].begin(), tolower);
 
         if(words[0] == "mode")
         {
@@ -77,6 +77,10 @@ bool Settings::get_config()
                 m_fullscreen = false;
                 m_width = 800;
                 m_height = 600;
+            }
+            else if(words[2] == "custom")
+            {
+                continue;
             }
             else
             {

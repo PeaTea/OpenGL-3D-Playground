@@ -5,7 +5,7 @@
 #include "Renderer.h"
 
 #include <glm/glm.hpp>
-#include <map>
+#include <unordered_map>
 
 class Entity
 {
@@ -17,7 +17,7 @@ public:
     Entity(unsigned int tex_id, const glm::vec3& pos, const glm::vec3& cam_pos,
            const Vec2<float>& size = {1, 1}, const glm::vec4& color = {1, 1, 1, 1});
 
-    void render(std::map<std::string, GLProgram>& programs, int cf_height);
+    void render(std::unordered_map<std::string, GLProgram>& programs, const int& cf_height);
 
     void set_cam_pos(const glm::vec3& cam_pos);
 

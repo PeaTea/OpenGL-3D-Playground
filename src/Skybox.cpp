@@ -5,6 +5,10 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+const uint ROTATION_DIV = 5000000;
+
+glm::vec3 Skybox::s_rotation_vec = {0, 0, 0};
+
 Skybox::Skybox(const GLTextureCube& cube_map, const glm::vec3& position, const int& size,
                conststrref vspath, conststrref fspath)
     :   m_cube_map  {cube_map}
@@ -32,12 +36,13 @@ void Skybox::init(const GLTextureCube& cube_map, const glm::vec3& position, cons
 
 void Skybox::render(glm::mat4 view_mat, const glm::mat4& proj_mat, float dt, float rotation_angle, const glm::vec3& rotation_vec)
 {
+    Skybox::s_rotation_vec = rotation_vec;
+
     view_mat[3][0] = 0;
     view_mat[3][1] = 0;
     view_mat[3][2] = 0;
 
-    float rotation = rotation_angle * (dt / 5000000);
-    //output::print(rotation);
+    float rotation = rotation_angle * (dt / ROTATION_DIV);
     model = glm::rotate(model, glm::degrees(rotation), rotation_vec);
 
     m_program.use();
@@ -111,17 +116,6 @@ void Skybox::generate_vao()
         -m_size, -m_size, m_size,
         m_size, -m_size, m_size
     };
-    /*
-    GLfloat skybox_indices[] =
-    {
-        0, 1, 2, 2, 3, 0,
-        4, 5, 6, 6, 7, 4,
-        8, 9, 10, 10, 11, 8,
-        12, 13, 14, 14, 15, 12,
-        16, 17, 18, 18, 19, 16,
-        20, 21, 22, 22, 23, 20
-    };
-    */
 
     GLuint vbo;
 
