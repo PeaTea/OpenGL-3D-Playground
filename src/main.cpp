@@ -1,10 +1,12 @@
 #include "Settings.h"
-#include "Display.h"
+#include "DisplayGLFW.h"
 #include "SFEvent.h"
 #include "Vec2.h"
 #include "OutUtils.h"
 #include "Maths.h"
 #include "Timer.h"
+#include "RenderGame.h"
+#include "InputHandler.h"
 
 #include <iostream>
 
@@ -15,16 +17,18 @@ struct StartupOperations
     StartupOperations() 
     {
         //std::ios::sync_with_stdio(false); 
-        output::print("Starting...");    
+        output::print("Starting...");
+        glfwInit();
     }
 }   so;
 
 struct ExitOperations
 {
     ~ExitOperations() 
-    { 
+    {
         output::print("Press enter to exit...");
         std::cin.get();
+        glfwTerminate();
     }
 }   eo;
 
@@ -39,8 +43,8 @@ static bool out_of_focus = false;
 // Everything I need to know for a PC platform
 namespace PC
 {
-    int WIDTH = Settings::width();
-    int HEIGHT = Settings::height();
+    uint WIDTH = Settings::width();
+    uint HEIGHT = Settings::height();
     const std::string TITLE = "OpenGL Playground";
     bool FULLSCREEN = Settings::fullscreen();
 }
@@ -56,87 +60,64 @@ namespace Main_GB
 
 int main()
 {
-    Display display(PC::WIDTH, PC::HEIGHT, PC::TITLE, PC::FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Default, Main_GB::current_level);
-    std::cout << glGetString(GL_VERSION) << std::endl;
+    DisplayGLFW display {PC::WIDTH, PC::HEIGHT, PC::TITLE, PC::FULLSCREEN ? FULLSCREEN : WINDOWED};
+    InputHandler::init(&display.get_instance());
+    RenderGame render_game {PC::WIDTH, PC::HEIGHT, Main_GB::current_level, InputHandler::m_camera};
+    InputHandler::m_camera.current_level = render_game.m_levels[Main_GB::current_level];
 
-    sf::Clock clock;
-    float delta_time = 1.0f, current_time = 0.0f, last_time = 0.0f;
-
-    SFEvent sfevent;
+    float delta_time;
+    float current_time;
+    float last_time {0.0f};
 
     //Enabling OpenGL stuff
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glFrontFace(GL_CW);
     glCullFace(GL_FRONT);
     glAlphaFunc(GL_GREATER, 0.5f);
+    //glDepthFunc(GL_LESS);
     //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
+    glEnable(GL_STENCIL_TEST);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glEnable(GL_ALPHA_TEST);
 
-    while(!display.should_close)
+    glEnable(GL_MULTISAMPLE);
+
+    //glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
+
+    while(!display.close_requested())
     {
-        current_time = (float)clock.getElapsedTime().asMilliseconds();
+        current_time = (float)glfwGetTime();
         delta_time = current_time - last_time;
         last_time = current_time;
 
-        while(display.get().pollEvent(sfevent.get()))
-        {
-            switch(sfevent.type())
-            {
-            case sf::Event::Closed:
-                display.close();
-                break;
-            case sf::Event::Resized:
-                glViewport(0, 0, sfevent.size().width, sfevent.size().height);
-                break;
-#ifdef DEBUGMODE
-            case sf::Event::KeyPressed:
-                if(sf::Keyboard::isKeyPressed(sf::Keyboard::F1))
-                {
-                    display.switch_wireframe(!wire_frame);
-                    wire_frame = !wire_frame;
-                }
+        render_game.set_deltatime(delta_time);
+        render_game.update_camera_pos(InputHandler::m_camera.position);
 
-                if(sf::Keyboard::isKeyPressed(sf::Keyboard::F2))
-                {
-                    display.restrain_camera_y(y_mov_switch);
-                    y_mov_switch = !y_mov_switch;
-                    Main_GB::collision = !Main_GB::collision;
-                }
-                break;
-#endif
-            case sf::Event::LostFocus:
-                out_of_focus = true;
-                break;
-            case sf::Event::GainedFocus:
-                out_of_focus = false;
-                break;
-            }
-        }
+        InputHandler::update_dt(delta_time);
 
         if(!out_of_focus)
         {
-            glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-            display.process_mouse_movement(delta_time);
+            InputHandler::handle_input();
 
-            display.process_keyboard_input(delta_time, Main_GB::collision, Main_GB::current_level);
-
-            display.render();
+            render_game.render(InputHandler::m_camera);
 
             glDisable(GL_CULL_FACE);
-            display.render_transparent();
-
-            display.update();
+            render_game.render_transparent();
 
             if(Main_GB::show_fps)
             {
-                logging::log(std::to_string((1 / delta_time) * 1000), lstream::info);
+                output::print("FPS: " + std::to_string((1.0f / delta_time)));
             }
+
+            glfwPollEvents();
         }
+
+        glfwSwapBuffers(&display.get_instance());
     }
 }
 
@@ -147,8 +128,10 @@ int main()
 
 int main()
 {
-    //test_files_write();
-    test_files_read();
+    //ptest_files_write();
+    //ptest_files_read();
+    //test_files_multiple_read();
+    //test_files_read_line();
 }
 
 #endif

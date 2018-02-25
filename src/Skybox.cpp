@@ -9,7 +9,7 @@ const uint ROTATION_DIV = 5000000;
 
 glm::vec3 Skybox::s_rotation_vec = {0, 0, 0};
 
-Skybox::Skybox(const GLTextureCube& cube_map, const glm::vec3& position, const int& size,
+Skybox::Skybox(const GLTextureCube& cube_map, const glm::vec3& position, const float& size,
                conststrref vspath, conststrref fspath)
     :   m_cube_map  {cube_map}
     ,   m_position  {position}

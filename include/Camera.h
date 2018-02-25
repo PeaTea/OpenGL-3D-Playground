@@ -2,12 +2,11 @@
 #define CAMERA_H
 
 #include <glm/glm.hpp>
-
-class Level;
+#include "Level.h"
 
 const float YAW = 112.5f;
 const float PITCH = 0.0f;
-const float SPEED = 0.4f;
+const float SPEED = 100.0f;
 const float SENSITIVITY = 0.1f;
 const float ZOOM = 80.0f;
 
@@ -27,12 +26,12 @@ public:
     Camera(glm::vec3 pos = glm::vec3(0, 0, 0), glm::vec3 up = glm::vec3(0, 1, 0), float yaw = YAW, float pitch = PITCH);
     ~Camera();
 
-    void process_keyboard(CameraMovement direction, float dt, const Level& lvl, const int& num_level,
-                          bool& collision, const int& v = 8, const bool& output = false);
-    void process_mouse_movement(float xoffset, float yoffset, bool constrain_pitch = true);
+    void process_keyboard(CameraMovement direction, float dt, bool& collision, const float& v = 8);
+    void process_mouse_movement(float xoffset, float yoffset,
+                                const bool& constrain_pitch = true);
     void fall(float dt, int velocity = SPEED);
     
-    glm::vec2 get_2D_pixel_pos(int lvlw, int lvlh);
+    glm::vec2 get_2D_pixel_pos(const Vec2<float>& tex_size, const glm::vec3& position);
 
     glm::mat4 get_view_matrix();
 
@@ -49,11 +48,12 @@ public:
     float mouse_sensitivity;
     float zoom;
 
-    void restrain_y_mov(bool& y_mov);
+    Level current_level;
+
+    bool y_movement;
 
 private:
     void update_camera_vectors();
-
 };
 
 #endif

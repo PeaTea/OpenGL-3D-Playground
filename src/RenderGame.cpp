@@ -10,7 +10,7 @@
 
 using namespace RG_GB;
 
-RenderGame::RenderGame(int width, int height, int current_lvl, Camera& camera)
+RenderGame::RenderGame(const uint& width, const uint& height, const int& current_lvl, Camera& camera)
     :   m_screen_w      {width}
     ,   m_screen_h      {height}
     ,   m_current_lvl   {current_lvl}
@@ -34,7 +34,7 @@ RenderGame::RenderGame(int width, int height, int current_lvl, Camera& camera)
     camera.position = m_levels[current_lvl].start();
     update_camera_pos(camera.position);
 
-    Renderer::enable_cube();
+    BasicRenderer::enable_cube();
 }
 
 void RenderGame::load_shaders()
@@ -81,7 +81,7 @@ void RenderGame::load_shaders()
     m_programs["diffuse"] = diffuse;
     m_programs["point"] = point;
 
-    Renderer::set_program(m_programs["point"]);
+    BasicRenderer::set_program(m_programs["point"]);
 }
 
 void RenderGame::load_levels()
@@ -201,19 +201,19 @@ void RenderGame::render(Camera& camera)
     update_matrices(camera.get_view_matrix(), projection);
 
     m_skybox.render(camera.get_view_matrix(), projection, m_deltatime);
-    m_ld.render_cubes(m_textures, m_levels[m_current_lvl], m_programs["point"]);
+    m_image_drawer.render_cubes(m_textures, m_levels[m_current_lvl], m_programs["point"]);
 }
 
 void RenderGame::render_transparent()
 {
-    Renderer::set_program(m_programs["normal"]);
+    BasicRenderer::set_program(m_programs["normal"]);
     m_light_sources[0].rotate_around_center(0.1f);
     m_programs["point"].set_vec3("point_lights[0].position", m_light_sources[0].position());
     m_light_sources[0].render();
 
-    Renderer::set_program(m_programs["point"]);
+    BasicRenderer::set_program(m_programs["point"]);
 
-    m_levels[m_current_lvl].data.update_and_render(m_cam_pos, m_ld.get_cf_height() / 2);
+    m_levels[m_current_lvl].data.update_and_render(m_cam_pos, m_image_drawer.get_cf_height() / 2);
 }
 
 void RenderGame::update_camera_pos(const glm::vec3& cam_pos)
@@ -224,4 +224,9 @@ void RenderGame::update_camera_pos(const glm::vec3& cam_pos)
 void RenderGame::set_deltatime(float dt)
 {
     m_deltatime = dt;
+}
+
+glm::vec3 RenderGame::get_cam_pos()
+{
+    return m_cam_pos;
 }

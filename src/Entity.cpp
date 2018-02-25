@@ -39,10 +39,10 @@ void Entity::set_cam_pos(const glm::vec3& cam_pos)
 
 void Entity::render(std::unordered_map<std::string, GLProgram>& programs, const int& cf_height)
 {
-    Renderer::set_program(m_is_rotated ? programs["point"] : programs["normal"]);
-    (m_is_rotated) ? Renderer::draw_sprite_facing_cam(m_texture_id, {m_position.x, m_position.y - cf_height, m_position.z},
+    BasicRenderer::set_program(m_is_rotated ? programs["point"] : programs["normal"]);
+    (m_is_rotated) ? BasicRenderer::draw_sprite_facing_cam(m_texture_id, {m_position.x, m_position.y - cf_height, m_position.z},
                                                       m_cam_pos, m_size, m_color)
-                   : Renderer::draw_sprite(m_texture_id, {m_position.x, m_position.y - cf_height, m_position.z},
+                   : BasicRenderer::draw_sprite(m_texture_id, {m_position.x, m_position.y - cf_height, m_position.z},
                                            m_size, m_rotation, m_rotation_vec, m_color);
 }
 

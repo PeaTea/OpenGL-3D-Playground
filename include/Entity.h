@@ -2,7 +2,7 @@
 
 #include "Vec2.h"
 #include "GLTexture.h"
-#include "Renderer.h"
+#include "BasicRenderer.h"
 
 #include <glm/glm.hpp>
 #include <unordered_map>

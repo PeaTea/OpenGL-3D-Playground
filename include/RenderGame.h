@@ -3,11 +3,11 @@
 #ifndef RENDERGAME_H
 #define RENDERGAME_H
 
-#include "Renderer.h"
+#include "BasicRenderer.h"
 #include "GLProgram.h"
 #include "Camera.h"
 #include "Settings.h"
-#include "LevelDrawer.h"
+#include "ImageDrawer.h"
 #include "Level.h"
 #include "BasicLightSource.h"
 #include "Skybox.h"
@@ -42,7 +42,7 @@ enum Textures
 class RenderGame
 {
 public:
-    RenderGame(int width, int height, int current_lvl, Camera& camera);
+    RenderGame(const uint& width, const uint& height, const int& current_lvl, Camera& camera);
 
     void render(Camera& camera);
     void render_transparent();
@@ -50,6 +50,8 @@ public:
     void update_camera_pos(const glm::vec3& cam_pos);
 
     void set_deltatime(float dt);
+
+    glm::vec3 get_cam_pos();
 
     std::vector<Level> m_levels;
     std::vector<BasicLightSource> m_light_sources;
@@ -68,14 +70,14 @@ private:
 private:
     std::unordered_map<std::string, GLProgram> m_programs;
 
-    int m_screen_w;
-    int m_screen_h;
+    uint m_screen_w;
+    uint m_screen_h;
     int m_current_lvl;
 
     float m_deltatime;
 
     std::unordered_map<int, GLTexture> m_textures;
-    LevelDrawer m_ld;
+    ImageDrawer m_image_drawer;
     GLTextureCube m_skybox_cube_map;
     Skybox m_skybox;
 

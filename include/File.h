@@ -18,11 +18,13 @@ public:
     std::string path() const;
     void path(const std::string& filepath, bool create_new = false);
 
-    std::string read();
-    std::vector<std::string> read_lines();
-    std::vector<std::string> read_words();
+    std::string read(const bool& reset_fp = false);
+    std::vector<std::string> read_lines(const bool& reset_fp = false);
+    std::vector<std::string> read_words(const bool& reset_fp = false);
 
-    void write(const std::string& txt);
+    uint lines();
+
+    void write(const std::string& txt, const bool& reset_fp = false);
     void close();
     void open();
     void clear();
@@ -33,9 +35,6 @@ private:
     std::string m_path;
     std::fstream m_file;
     int m_flags;
-
-    bool m_not_read;
-    bool m_not_written;
 };
 
 #endif

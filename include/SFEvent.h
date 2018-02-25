@@ -1,3 +1,6 @@
+/*
+This file is deprecated and no longer needed
+
 #ifndef SFEVENT_H
 #define SFEVENT_H
 
@@ -14,4 +17,4 @@ private:
     sf::Event event;
 };
 
-#endif 
+#endif */

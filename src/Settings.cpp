@@ -4,41 +4,23 @@
 #include <vector>
 #include <sstream>
 #include <iterator>
-#include <cctype>
 #include <algorithm>
 #include <iostream>
 
 #define SETTINGS_FILE_NAME "Data/settings.cfg"
 
-const std::string DEFAULTS = "\
-# Settings for OpenGL Playground\n\n\
-Mode = FULLSCREEN\n\n\
-# PC\n\
-Fullscreen = false\n\
-Width = 800\n\
-Height = 600\n\
-VSync = true\n\n\
-# Sizes\n\
-EntitySizeW = 96\n\
-EntitySizeH = 128\n\
-# Leave at 128 !!!\n\
-TexSize = 128\n\
-# Should not be much larger than 256\n\
-PlayerSize = 128\n\n\
-# Debug Settings\n\
-ShowFPS = false\n\
-";
-
 bool    Settings::m_fullscreen      = false;
 bool    Settings::m_mode_found      = false;
 bool    Settings::m_show_fps        = false;
 bool    Settings::m_enable_vsync    = false;
-int     Settings::m_width           = 0;
-int     Settings::m_height          = 0;
+uint8_t Settings::m_multisamples    = 0;
+uint    Settings::m_width           = 0;
+uint    Settings::m_height          = 0;
 float   Settings::m_entity_sizew    = 0.0f;
 float   Settings::m_entity_sizeh    = 0.0f;
 float   Settings::m_tex_size        = 0.0f;
 float   Settings::m_player_size     = 0.0f;
+
 
 Settings::Settings()
 {
@@ -47,11 +29,20 @@ Settings::Settings()
 
 bool Settings::get_config()
 {
-    File settings_file(SETTINGS_FILE_NAME);
+    File settings_file {SETTINGS_FILE_NAME};
     std::vector<std::string> contents = settings_file.read_lines();
+
+    if(contents[0] == "RESET")
+    {
+        settings_file.close();
+        revert_to_defaults();
+        settings_file.open();
+        contents = settings_file.read_lines();
+    }
+
     for(auto& line : contents)
     {
-        std::istringstream stream(line);
+        std::istringstream stream {line};
         std::vector<std::string> words {std::istream_iterator<std::string>(stream),
                                         std::istream_iterator<std::string>()};
         
@@ -62,7 +53,8 @@ bool Settings::get_config()
             continue;
 
         std::transform(words[0].begin(), words[0].end(), words[0].begin(), tolower);
-        std::transform(words[2].begin(), words[2].end(), words[2].begin(), tolower);
+        if(words.size() >= 3)
+            std::transform(words[2].begin(), words[2].end(), words[2].begin(), tolower);
 
         if(words[0] == "mode")
         {
@@ -128,12 +120,15 @@ bool Settings::get_config()
         {
             m_enable_vsync = (words[2] == "true") ? true : false;
         }
+        else if(words[0] == "multisamples")
+        {
+            m_multisamples = std::stoi(words[2]);
+        }
         else
         {
             logging::log("Unrecognized setting: " + words[0], lstream::warning);
         }
     }
-
     return true;
 }
 
@@ -153,7 +148,7 @@ bool Settings::vsync_enabled()
     return m_enable_vsync;
 }
 
-int Settings::width()
+uint Settings::width()
 {
     if(m_width > 0)
         return m_width;
@@ -161,12 +156,21 @@ int Settings::width()
         logging::log("Invalid value for width (width <= 0)", lstream::error);
 }
 
-int Settings::height()
+uint Settings::height()
 {
     if(m_height > 0)
         return m_height;
     else
         logging::log("Invalid value for height (height <= 0)", lstream::error);
+}
+
+uint8_t Settings::multisamples()
+{
+    if(m_multisamples <= 16)
+        return m_multisamples;
+    else
+        logging::log("Value greater than 16 is not allowed for Multisamples\nValue received: " +
+                     std::to_string(m_multisamples), lstream::error);
 }
 
 Vec2<float> Settings::entity_size()
@@ -202,6 +206,34 @@ std::string Settings::settings_file_name()
 
 void Settings::revert_to_defaults()
 {
-    File settings_file {SETTINGS_FILE_NAME};
-    settings_file.write(DEFAULTS);
+    File settings_file {SETTINGS_FILE_NAME, true};
+    settings_file.write(
+"\n\
+# Settings for OpenGL Playground\n\
+# If you enter 'RESET' on the first line, it will generate a default config file.\n\n\
+# # # # # # # # # # # # # # # # # # # # # # # # #\n\
+#                 Mode Options                  #\n\
+# # # # # # # # # # # # # # # # # # # # # # # # #\n\
+# FULLSCREEN:               FULLHD + FULLSCREEN #\n\
+# WINDOWED :                 800x600 + WINDOWED #\n\
+# CUSTOM :          Uses Settings in PC Section #\n\
+# Deleting             behaves just like CUSTOM #\n\
+# # # # # # # # # # # # # # # # # # # # # # # # #\n\n\
+Mode = FULLSCREEN\n\n\
+# PC\n\
+Fullscreen = false\n\
+Width = 800\n\
+Height = 600\n\n\
+# Sizes\n\
+EntitySizeW = 96\n\
+EntitySizeH = 128\n\
+# Leave at 128 !!!\n\
+TexSize = 128\n\
+# Should not be much larger than 256\n\
+PlayerSize = 128\n\n\
+# General\n\
+VSync = true\n\
+Multisamples = 8\n\n\
+# Debug Settings\n\
+ShowFPS = false\n");
 }

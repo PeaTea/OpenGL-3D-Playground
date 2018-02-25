@@ -26,20 +26,20 @@ void LevelData::init(const int& lvl_id, const std::unordered_map<int, GLTexture>
         break;
     case 2:
         m_entities.emplace_back(textures.at(MYSTERIOUS_ROBOT).id(),
-                                glm::vec3(levels[2].scaled_tex_size().x * 15.5f, Settings::entity_size().y * 0.5f, levels[2].scaled_tex_size().x * 6),
+                                glm::vec3(levels[2].scaled_tex_size().x * 16.0f, Settings::entity_size().y * 0.5f, levels[2].scaled_tex_size().x * 6.5f),
                                 cam_pos, Vec2<float>(levels[2].scaled_tex_size().x * 1.5f, levels[2].scaled_tex_size().y * 0.15f));
         m_entities.emplace_back(textures.at(MYSTERIOUS_ROBOT).id(),
-                                glm::vec3(levels[2].scaled_tex_size().x * 25, Settings::entity_size().y * 0.5f, levels[2].scaled_tex_size().x * 20),
+                                glm::vec3(levels[2].scaled_tex_size().x * 25.5f, Settings::entity_size().y * 0.5f, levels[2].scaled_tex_size().x * 20.5f),
                                 cam_pos, Vec2<float>(levels[2].scaled_tex_size().x * 1.5f, levels[2].scaled_tex_size().y * 0.15f));
         m_entities.emplace_back(textures.at(MYSTERIOUS_ROBOT).id(),
-                                glm::vec3(levels[2].scaled_tex_size().x * 6, Settings::entity_size().y * 0.5f, levels[2].scaled_tex_size().x * 20),
+                                glm::vec3(levels[2].scaled_tex_size().x * 6.5f, Settings::entity_size().y * 0.5f, levels[2].scaled_tex_size().x * 20.5f),
                                 cam_pos, Vec2<float>(levels[2].scaled_tex_size().x * 1.5f, levels[2].scaled_tex_size().y * 0.15f));
         m_entities.emplace_back(textures.at(GLASS_LIGHT).id(),
-                                glm::vec3(levels[2].scaled_tex_size().x * 15.5f, levels[2].scaled_tex_size().y * 0.465f, levels[2].scaled_tex_size().x * 9.5f),
+                                glm::vec3(levels[2].scaled_tex_size().x * 16.0f, levels[2].scaled_tex_size().y * 0.465f, levels[2].scaled_tex_size().x * 10.0f),
                                 Vec2<float>(levels[2].scaled_tex_size().x * 14.0f, levels[2].scaled_tex_size().y),
                                 180.0f, glm::vec3(1, 0, 0), BLUE);
         m_entities.emplace_back(textures.at(GLASS_LIGHT).id(),
-                                glm::vec3(levels[2].scaled_tex_size().x * 15.5f, levels[2].scaled_tex_size().y * 0.465f, levels[2].scaled_tex_size().x * 15.5f),
+                                glm::vec3(levels[2].scaled_tex_size().x * 16.0f, levels[2].scaled_tex_size().y * 0.465f, levels[2].scaled_tex_size().x * 16.0f),
                                 Vec2<float>(levels[2].scaled_tex_size().x * 14.0f, levels[2].scaled_tex_size().y),
                                 180.0f, glm::vec3(1, 0, 0), BLUE);
         break;

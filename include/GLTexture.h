@@ -27,7 +27,7 @@ public:
 
 private:
     GLuint texture_id;
-
+    GLfloat anisotropic_filtering;
 };
 
 class GLTextureCube

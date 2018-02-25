@@ -7,6 +7,7 @@
 #include "OutUtils.h"
 #include "RenderGame.h"
 #include "Settings.h"
+#include "Maths.h"
 
 /*
 ===============	Level notes	==============
@@ -65,8 +66,10 @@ const unsigned char* Level::get_data()
     return image.getPixelsPtr();
 }
 
-sf::Color Level::get_pixel(const uint& x, const uint& y) const
+sf::Color Level::get_pixel(int x, int y) const
 {
+    x = maths::clamp(x, 0, w - 1);
+    y = maths::clamp(y, 0, h - 1);
     return image.getPixel(x, y);
 }
 

@@ -9,7 +9,7 @@
 class Skybox
 {
 public:
-    Skybox(const GLTextureCube& cube_map, const glm::vec3& position, const int& size,
+    Skybox(const GLTextureCube& cube_map, const glm::vec3& position, const float& size,
            conststrref vspath, conststrref fspath);
 
     Skybox();
@@ -30,7 +30,7 @@ private:
     GLProgram m_program;
 
     glm::vec3 m_position;
-    int m_size;
+    GLfloat m_size;
 
     glm::mat4 model;
 };

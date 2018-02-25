@@ -2,6 +2,7 @@
 #include "Collision.h"
 #include "RenderGame.h"
 #include "Maths.h"
+#include "OutUtils.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -10,15 +11,19 @@
 static bool y_movement = false;
 
 Camera::Camera(glm::vec3 pos, glm::vec3 up, float yaw, float pitch)
-    :	front{glm::vec3(0, 0, -1)}
-    ,	movement_speed{SPEED}
-    ,	mouse_sensitivity{SENSITIVITY}
-    ,	zoom{ZOOM}
+    :	front               {glm::vec3(0, 0, -1)}
+    ,	movement_speed      {SPEED}
+    ,	mouse_sensitivity   {SENSITIVITY}
+    ,	zoom                {ZOOM}
+    ,   position            {pos}
+    ,   world_up            {up}
+    ,   yaw                 {yaw}
+    ,   pitch               {pitch}
+    ,   current_level       {0, "Data/Levels/tutorial.png",
+                             {-2000.0f, Settings::player_size() * 0.5f, 44.0f},
+                             1, 1}
+    ,   y_movement          {false}
 {
-    position = pos;
-    world_up = up;
-    this->yaw = yaw;
-    this->pitch = pitch;
     update_camera_vectors();
 }
 
@@ -36,47 +41,40 @@ void Camera::update_camera_vectors()
 }
 
 
-void Camera::process_keyboard(CameraMovement direction, float dt, const Level& lvl, const int& num_level,
-                              bool& collision, const int& v, const bool& output)
+void Camera::process_keyboard(CameraMovement direction, float dt, bool& collision, const float& v)
 {
-    float vel = movement_speed * dt;
+    float final_velocity = (movement_speed * v) * (dt * 0.5f);
 
     //To avoid "stuttering" when colliding - only change position, when it's viable
     glm::vec3 new_pos = position;
     switch(direction)
     {
     case FORWARD:
-        new_pos += front * (vel + v);
-        break;
+        new_pos += front * final_velocity;
+        break;    
     case BACKWARD:
-        new_pos -= front * (vel + v);
+        new_pos -= front * final_velocity;
         break;
     case RIGHT:
-        new_pos += right * (vel + v);
+        new_pos += right * final_velocity;
         break;
     case LEFT:
-        new_pos -= right * (vel + v);
+        new_pos -= right * final_velocity;
         break;
     case UP:
-        new_pos.y += (SPEED / 3 * v) * vel;
-        break;
-    case DOWN:
-        new_pos.y -= (SPEED / 3 * v) * vel;
+        new_pos.y += (SPEED * 0.01) * final_velocity;
+        break;                 
+    case DOWN:                 
+        new_pos.y -= (SPEED * 0.01) * final_velocity;
         break;
     }
 
-    if(collision) {
-        if(Collision::in_level(lvl, new_pos, position))
-            position = new_pos;
-    } else {
+    if(collision)
+        position = Collision::in_level(current_level, new_pos, *this);
+    else
         position = new_pos;
-    }
-
-
+    
     if(!y_movement)	position.y = 0.0f;
-
-    if(output)
-        std::cout << position.x << " | " << position.z << std::endl;
 }
 
 
@@ -86,13 +84,7 @@ void Camera::fall(float dt, int velocity)
 }
 
 
-void Camera::restrain_y_mov(bool& y_mov)
-{
-    y_movement = !y_mov;
-}
-
-
-void Camera::process_mouse_movement(float xoffset, float yoffset, bool constrain_pitch)
+void Camera::process_mouse_movement(float xoffset, float yoffset, const bool& constrain_pitch)
 {
     xoffset *= mouse_sensitivity;
     yoffset *= mouse_sensitivity;
@@ -118,9 +110,12 @@ glm::mat4 Camera::get_view_matrix()
 }
 
 
-glm::vec2 Camera::get_2D_pixel_pos(int lvlw, int lvlh)
+glm::vec2 Camera::get_2D_pixel_pos(const Vec2<float>& tex_size, const glm::vec3& position)
 {
-    return {maths::roundf(position.x) % lvlh, maths::roundf(position.z) % lvlw};
+    int x = maths::roundf(position.x) / maths::roundf(tex_size.x);
+    int y = maths::roundf(position.z) / maths::roundf(tex_size.x);
+
+    return {x, y};
 }
 
 

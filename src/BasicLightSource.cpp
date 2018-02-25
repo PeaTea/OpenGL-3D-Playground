@@ -75,5 +75,5 @@ glm::vec3 BasicLightSource::rotate_with_skybox(const float& speed)
 void BasicLightSource::render()
 {
     if(m_has_texture)
-        Renderer::draw_sprite_facing_cam(m_texture.id(), m_pos, m_level_center, {m_size.x, m_size.y}, m_color);
+        BasicRenderer::draw_sprite_facing_cam(m_texture.id(), m_pos, m_level_center, {m_size.x, m_size.y}, m_color);
 }

@@ -6,7 +6,7 @@
 
 namespace COORD_DEFS
 {
-    float size = 384.0f / Settings::tex_size();
+    const float size = 3;
 
     GLfloat vertices_upwards[] =
     {

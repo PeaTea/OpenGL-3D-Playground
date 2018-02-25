@@ -17,8 +17,9 @@ public:
     static bool show_fps();
     static bool vsync_enabled();
 
-    static int width();
-    static int height();
+    static uint width();
+    static uint height();
+    static uint8_t multisamples();
 
     static Vec2<float> entity_size();
     static float player_size();
@@ -28,13 +29,15 @@ public:
 
     static void revert_to_defaults();
 
+
 private:
     static bool m_fullscreen;
     static bool m_show_fps;
     static bool m_enable_vsync;
     static bool m_mode_found;
 
-    static int m_width, m_height;
+    static uint m_width, m_height;
+    static uint8_t m_multisamples;
 
     static float m_entity_sizew;
     static float m_entity_sizeh;

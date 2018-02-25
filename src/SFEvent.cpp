@@ -1,3 +1,6 @@
+/*
+This file is deprecated and no longer needed
+
 #include "SFEvent.h"
 
 sf::Event& SFEvent::get()
@@ -13,4 +16,4 @@ sf::Event::EventType SFEvent::type()
 sf::Event::SizeEvent SFEvent::size()
 {
     return event.size;
-}
+}*/

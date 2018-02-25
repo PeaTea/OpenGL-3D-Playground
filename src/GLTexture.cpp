@@ -1,8 +1,9 @@
 #include "GLTexture.h"
-#include <SFML/Graphics/Image.hpp>
+#include <stb_image.h>
 #include <iostream>
 #include "OutUtils.h"
 
+#define STB_IMAGE_IMPLEMENTATION
 
 GLTexture::GLTexture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags wrap_t, GLTexFlags min_filter, GLTexFlags mag_filter, bool prefix)
 {
@@ -11,13 +12,19 @@ GLTexture::GLTexture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags 
         glGenTextures(1, &texture_id);
         glBindTexture(GL_TEXTURE_2D, texture_id);
 
-        sf::Image texture;
-        if(!texture.loadFromFile(prefix ? "Data/Textures/" + filename : filename))
+        int w, h, channels;
+
+        std::string path = prefix ? "Data/Textures/" + filename : filename;
+
+        unsigned char* image = stbi_load(path.c_str(), &w, &h, &channels, STBI_rgb_alpha);
+        if(image == nullptr)
         {
-            std::cerr << "Could not load file: " << filename << std::endl;
+            output::print(stbi_failure_reason);
+            logging::log("Could not load file: ", lstream::error);
         }
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture.getSize().x, texture.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.getPixelsPtr());
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+        stbi_image_free(image);
         //glGenerateMipmap(GL_TEXTURE_2D);
 
         switch(wrap_s)
@@ -84,6 +91,12 @@ GLTexture::GLTexture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags 
             break;
         }
 
+        if(glewIsSupported("GL_EXT_texture_filter_anisotropic"))
+        {
+            glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &anisotropic_filtering);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropic_filtering);
+        }
+
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 }
@@ -119,12 +132,17 @@ void GLTextureCube::gen_cube_map(std::array<std::string, 6> filenames, GLTexFlag
 
     for(int i = 0; i < filenames.size(); i++)
     {
-        sf::Image texture;
-        if(!texture.loadFromFile(filenames[i]))
+        int w, h, channels;
+        unsigned char* image = stbi_load(filenames[i].c_str(), &w, &h, &channels, STBI_rgb_alpha);
+
+        if(image == nullptr)
         {
+            output::print(stbi_failure_reason);
             logging::log("Could not load file: " + filenames[i], lstream::error);
         }
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, texture.getSize().x, texture.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.getPixelsPtr());
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
+        stbi_image_free(image);
     }
 
     switch(wrap_r)

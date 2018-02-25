@@ -24,7 +24,7 @@ public:
     glm::vec3 center() const;
 
     const unsigned char* get_data();
-    sf::Color get_pixel(const uint& x, const uint& y) const;
+    sf::Color get_pixel(int x, int y) const;
 
     Vec2<float> scaling() const;
     glm::vec3& start();

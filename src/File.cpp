@@ -5,10 +5,14 @@
 #include <iterator>
 
 File::File(const std::string& filepath, bool create_new)
-    :   m_path  {filepath}
+    :   m_path          {filepath}
 {
     m_flags = ((create_new) ? std::ios::trunc : std::ios::app) | std::ios::out | std::ios::in;
     m_file.open(m_path, m_flags);
+    if(m_file.fail())
+    {
+        logging::log("Failed to open file " + filepath, lstream::error);
+    }
 }
 
 File::~File()
@@ -27,32 +31,24 @@ void File::path(const std::string& filepath, bool create_new)
     m_file.close();
     m_flags = ((create_new) ? std::ios::trunc : std::ios::app) | std::ios::out | std::ios::in;
     m_file.open(m_path, m_flags);
+    if(m_file.fail())
+    {
+        logging::log("Failed to open file " + filepath, lstream::error);
+    }
 }
 
-std::string File::read()
+std::string File::read(const bool& reset_fp)
 {
-    if(m_not_read)
-    {
-        m_file.seekg(0);
-        m_not_read = false;
-        m_not_written = true;
-    }
-
+    if(reset_fp) m_file.seekg(0);
     std::stringstream ss;
     ss << m_file.rdbuf();
     
     return ss.str();
 }
 
-std::vector<std::string> File::read_lines()
+std::vector<std::string> File::read_lines(const bool& reset_fp)
 {
-    if(m_not_read)
-    {
-        m_file.seekg(0);
-        m_not_read = false;
-        m_not_written = true;
-    }
-
+    if(reset_fp) m_file.seekg(0);
     std::vector<std::string> lines;
 
     std::string line;
@@ -64,15 +60,9 @@ std::vector<std::string> File::read_lines()
     return lines;
 }
 
-std::vector<std::string> File::read_words()
+std::vector<std::string> File::read_words(const bool& reset_fp)
 {
-    if(m_not_read)
-    {
-        m_file.seekg(0);
-        m_not_read = false;
-        m_not_written = true;
-    }
-
+    if(reset_fp) m_file.seekg(0);
     std::vector<std::string> lines;
 
     std::copy(std::istream_iterator<std::string>(m_file),
@@ -82,15 +72,16 @@ std::vector<std::string> File::read_words()
     return lines;
 }
 
-void File::write(const std::string& txt)
+uint File::lines()
 {
-    if(m_not_written)
-    {
-        m_file.seekp(m_file.tellg());
-        m_not_written = false;
-        m_not_read = true;
-    }
+    return std::count(std::istream_iterator<char>(m_file),
+                      std::istream_iterator<char>(),
+                      '\n');
+}
 
+void File::write(const std::string& txt, const bool& reset_fp)
+{
+    if(reset_fp) m_file.seekp(0);
     m_file << txt;
 }
 
