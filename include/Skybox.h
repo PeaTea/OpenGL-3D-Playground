@@ -10,12 +10,12 @@ class Skybox
 {
 public:
     Skybox(const GLTextureCube& cube_map, const glm::vec3& position, const float& size,
-           conststrref vspath, conststrref fspath);
+           conststrref path);
 
     Skybox();
 
     void init(const GLTextureCube& cube_map, const glm::vec3& position, const int& size,
-              conststrref vspath, conststrref fspath);
+              conststrref path);
 
     void render(glm::mat4 view_mat, const glm::mat4& proj_mat, float dt, float rotation_angle = 1.0f, const glm::vec3& rotation_vec = {1, 1, 1});
 
@@ -23,7 +23,7 @@ public:
 
 private:
     void generate_vao();
-    void generate_program(conststrref vspath, conststrref fspath);
+    void generate_program(conststrref path);
 
     GLuint m_vao;
     GLTextureCube m_cube_map;

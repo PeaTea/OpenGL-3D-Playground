@@ -21,6 +21,7 @@ public:
     void close();
     
     bool close_requested();
+    bool is_active();
 
 private:
     GLFWwindow* m_window;

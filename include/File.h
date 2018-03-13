@@ -14,6 +14,7 @@ class File
 public:
     File(const std::string& filepath, bool create_new = false);
     ~File();
+    File(const File& o);
 
     std::string path() const;
     void path(const std::string& filepath, bool create_new = false);

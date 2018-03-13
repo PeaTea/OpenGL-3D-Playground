@@ -27,6 +27,9 @@ public:
 
     static void switch_wireframe_mode(const bool& wireframe);
 
+    static glm::mat4 view;
+    static glm::mat4 proj;
+
 private:
     static void init_quad_render_data();
     static void init_cube_render_data();

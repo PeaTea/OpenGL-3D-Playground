@@ -18,6 +18,7 @@ void InputHandler::init(GLFWwindow* window)
     m_window = window;
     glfwSetKeyCallback(window, key_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
 }
 
 void InputHandler::update_dt(const float& dt)
@@ -74,6 +75,7 @@ void InputHandler::handle_input()
 void InputHandler::key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
     static bool wireframe_switch = false;
+    static bool speed_switch = false;
 
     // Only Executes this once, even if key is being pressed constantly
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -88,6 +90,11 @@ void InputHandler::key_callback(GLFWwindow* window, int key, int scancode, int a
     {
         m_camera.y_movement = !m_camera.y_movement;
         m_collision = !m_collision;
+    }
+    if(key == GLFW_KEY_F3 && action == GLFW_PRESS)
+    {
+        m_camera.mouse_sensitivity = (speed_switch = !speed_switch) ? 0.001 : 0.1;
+        m_camera.movement_speed = (speed_switch) ? 1.0f : 100.0f;
     }
 
     if(action == GLFW_PRESS)
@@ -116,4 +123,9 @@ void InputHandler::mouse_callback(GLFWwindow* window, double xpos, double ypos)
     last_mousey = ypos;
 
     m_camera.process_mouse_movement(xoffset, -yoffset, m_constrain_pitch);
+}
+
+void InputHandler::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    m_camera.process_mouse_scrolling(xoffset, yoffset);
 }

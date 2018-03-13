@@ -8,7 +8,7 @@ const float YAW = 112.5f;
 const float PITCH = 0.0f;
 const float SPEED = 100.0f;
 const float SENSITIVITY = 0.1f;
-const float ZOOM = 80.0f;
+const float FOV = 80.0f;
 
 enum CameraMovement
 {
@@ -29,6 +29,7 @@ public:
     void process_keyboard(CameraMovement direction, float dt, bool& collision, const float& v = 8);
     void process_mouse_movement(float xoffset, float yoffset,
                                 const bool& constrain_pitch = true);
+    void process_mouse_scrolling(double xoffset, double yoffset);
     void fall(float dt, int velocity = SPEED);
     
     glm::vec2 get_2D_pixel_pos(const Vec2<float>& tex_size, const glm::vec3& position);
@@ -46,7 +47,7 @@ public:
 
     float movement_speed;
     float mouse_sensitivity;
-    float zoom;
+    float fov;
 
     Level current_level;
 

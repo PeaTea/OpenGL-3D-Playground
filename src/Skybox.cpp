@@ -10,13 +10,13 @@ const uint ROTATION_DIV = 5000000;
 glm::vec3 Skybox::s_rotation_vec = {0, 0, 0};
 
 Skybox::Skybox(const GLTextureCube& cube_map, const glm::vec3& position, const float& size,
-               conststrref vspath, conststrref fspath)
+               conststrref path)
     :   m_cube_map  {cube_map}
     ,   m_position  {position}
     ,   m_size      {size}
 {
     generate_vao();
-    generate_program(vspath, fspath);
+    generate_program(path);
 }
 
 Skybox::Skybox()
@@ -24,14 +24,14 @@ Skybox::Skybox()
 }
 
 void Skybox::init(const GLTextureCube& cube_map, const glm::vec3& position, const int& size,
-                  conststrref vspath, conststrref fspath)
+                  conststrref path)
 {
     m_cube_map = cube_map;
     m_position = position;
     m_size = size;
 
     generate_vao();
-    generate_program(vspath, fspath);
+    generate_program(path);
 }
 
 void Skybox::render(glm::mat4 view_mat, const glm::mat4& proj_mat, float dt, float rotation_angle, const glm::vec3& rotation_vec)
@@ -58,15 +58,11 @@ void Skybox::render(glm::mat4 view_mat, const glm::mat4& proj_mat, float dt, flo
 }
 
 
-void Skybox::generate_program(conststrref vspath, conststrref fspath)
+void Skybox::generate_program(conststrref path)
 {
-    GLShader vertex({vspath}, Shadertype::VERTEX);
-    GLShader fragment({fspath}, Shadertype::FRAGMENT);
+    shaderfile::Data result = shaderfile::parse(path);
 
-    m_program.create();
-    m_program.attach_shader(vertex);
-    m_program.attach_shader(fragment);
-    m_program.link();
+    m_program.auto_gen(result);
 }
 
 

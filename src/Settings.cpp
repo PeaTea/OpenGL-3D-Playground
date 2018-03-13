@@ -13,6 +13,7 @@ bool    Settings::m_fullscreen      = false;
 bool    Settings::m_mode_found      = false;
 bool    Settings::m_show_fps        = false;
 bool    Settings::m_enable_vsync    = false;
+bool    Settings::m_hide_mouse      = false;
 uint8_t Settings::m_multisamples    = 0;
 uint    Settings::m_width           = 0;
 uint    Settings::m_height          = 0;
@@ -120,6 +121,10 @@ bool Settings::get_config()
         {
             m_enable_vsync = (words[2] == "true") ? true : false;
         }
+        else if(words[0] == "hidemousecursor")
+        {
+            m_hide_mouse = (words[2] == "true") ? true : false;
+        }
         else if(words[0] == "multisamples")
         {
             m_multisamples = std::stoi(words[2]);
@@ -146,6 +151,11 @@ bool Settings::show_fps()
 bool Settings::vsync_enabled()
 {
     return m_enable_vsync;
+}
+
+bool Settings::mouse_cursor_hidden()
+{
+    return m_hide_mouse;
 }
 
 uint Settings::width()
@@ -223,7 +233,8 @@ Mode = FULLSCREEN\n\n\
 # PC\n\
 Fullscreen = false\n\
 Width = 800\n\
-Height = 600\n\n\
+Height = 600\n\
+HideMouseCursor = false\n\n\
 # Sizes\n\
 EntitySizeW = 96\n\
 EntitySizeH = 128\n\

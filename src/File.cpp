@@ -15,6 +15,12 @@ File::File(const std::string& filepath, bool create_new)
     }
 }
 
+File::File(const File& o)
+{
+    m_path = o.m_path;
+    m_flags = o.m_flags;
+}
+
 File::~File()
 {
     close();

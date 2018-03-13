@@ -58,32 +58,32 @@ void GLProgram::unuse()
     glUseProgram(0);
 }
 
-void GLProgram::set_int(const GLchar* varname, GLint i)
+void GLProgram::set_int(const GLchar* varname, const GLint& i)
 {
     glUniform1i(glGetUniformLocation(program_id, varname), i);
 }
 
-void GLProgram::set_float(const GLchar* varname, GLfloat f)
+void GLProgram::set_float(const GLchar* varname, const GLfloat& f)
 {
     glUniform1f(glGetUniformLocation(program_id, varname), f);
 }
 
-void GLProgram::set_vec2(const GLchar* varname, glm::vec2 v2)
+void GLProgram::set_vec2(const GLchar* varname, const glm::vec2& v2)
 {
     glUniform2f(glGetUniformLocation(program_id, varname), v2.x, v2.y);
 }
 
-void GLProgram::set_vec3(const GLchar* varname, glm::vec3 v3)
+void GLProgram::set_vec3(const GLchar* varname, const glm::vec3& v3)
 {
     glUniform3f(glGetUniformLocation(program_id, varname), v3.x, v3.y, v3.z);
 }
 
-void GLProgram::set_vec4(const GLchar* varname, glm::vec4 v4)
+void GLProgram::set_vec4(const GLchar* varname, const glm::vec4& v4)
 {
     glUniform4f(glGetUniformLocation(program_id, varname), v4.x, v4.y, v4.z, v4.w);
 }
 
-void GLProgram::set_mat4(const GLchar* varname, glm::mat4 m4)
+void GLProgram::set_mat4(const GLchar* varname, const glm::mat4& m4)
 {
     glUniformMatrix4fv(glGetUniformLocation(program_id, varname), 1, GL_FALSE, glm::value_ptr(m4));
 }
@@ -91,4 +91,19 @@ void GLProgram::set_mat4(const GLchar* varname, glm::mat4 m4)
 bool GLProgram::exists()
 {
     return (program_id == 0) ? false : true;
+}
+
+void GLProgram::auto_gen(const shaderfile::Data& shader_sources)
+{
+    int num_shaders = shader_sources.data.size() - 1;
+    create();
+    for(int i{-1}; i < num_shaders;)
+    {
+        if(shader_sources.data[++i] != "")
+        {
+            GLShader shader{shader_sources.data[i], (Shadertype)i};
+            attach_shader(shader);
+        }
+    }
+    link();
 }

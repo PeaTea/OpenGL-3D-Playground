@@ -16,6 +16,7 @@ public:
     static bool fullscreen();
     static bool show_fps();
     static bool vsync_enabled();
+    static bool mouse_cursor_hidden();
 
     static uint width();
     static uint height();
@@ -35,6 +36,7 @@ private:
     static bool m_show_fps;
     static bool m_enable_vsync;
     static bool m_mode_found;
+    static bool m_hide_mouse;
 
     static uint m_width, m_height;
     static uint8_t m_multisamples;

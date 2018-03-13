@@ -12,6 +12,9 @@ GLShader::GLShader(File file, Shadertype type)
     case Shadertype::FRAGMENT:
         shader_id = glCreateShader(GL_FRAGMENT_SHADER);
         break;
+    case Shadertype::GEOMETRY:
+        shader_id = glCreateShader(GL_GEOMETRY_SHADER);
+        break;
     }
 
     std::string temp = file.read();
@@ -21,6 +24,34 @@ GLShader::GLShader(File file, Shadertype type)
 
     glCompileShader(shader_id);
     check_for_errors();
+}
+
+GLShader::GLShader(conststrref data, Shadertype type)
+{
+    switch(type)
+    {
+    case Shadertype::VERTEX:
+        shader_id = glCreateShader(GL_VERTEX_SHADER);
+        break;
+    case Shadertype::FRAGMENT:
+        shader_id = glCreateShader(GL_FRAGMENT_SHADER);
+        break;
+    case Shadertype::GEOMETRY:
+        shader_id = glCreateShader(GL_GEOMETRY_SHADER);
+        break;
+    }
+
+    const GLchar* source[1] = {data.c_str()};
+
+    glShaderSource(shader_id, 1, source, nullptr);
+
+    glCompileShader(shader_id);
+    check_for_errors();
+}
+
+GLShader::~GLShader()
+{
+    destroy();
 }
 
 GLuint GLShader::id()
@@ -38,10 +69,10 @@ void GLShader::check_for_errors()
         glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &log_size);
 
         std::vector<GLchar> info_log(log_size);
-        glGetShaderInfoLog(shader_id, 1024, nullptr, &info_log[0]);
+        glGetShaderInfoLog(shader_id, log_size, nullptr, &info_log[0]);
 
         std::cerr << "Shader failed to compile: " << std::endl;
-        for(auto e : info_log)
+        for(const auto& e : info_log)
         {
             std::cerr << e;
         }

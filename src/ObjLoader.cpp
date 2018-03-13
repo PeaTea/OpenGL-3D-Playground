@@ -3,21 +3,15 @@
 #include "OutUtils.h"
 
 #include <sstream>
-
-
-ObjLoader::ObjLoader()
-    :   found_normals   {false}
-{
-}
-
-ObjLoader::ObjLoader(File& file)
-    :   found_normals   {false}
-{
-    load_obj_file(file);
-}
+#include <algorithm>
 
 void ObjLoader::load_obj_file(File& file)
 {
+    m_data.vertices.clear();
+    m_data.uvs.clear();
+    m_data.elements.clear();
+    m_data.normals.clear();
+
     std::vector<std::string> lines = file.read_lines();
     for(const auto& line : lines)
     {
@@ -26,17 +20,25 @@ void ObjLoader::load_obj_file(File& file)
         if(identifier == "v ")
         {
             std::istringstream ss{data};
-            glm::vec4 v;
-            ss >> v.x; ss >> v.y; ss >> v.z; v.w = 1.0f;
+            glm::vec3 v;
+            ss >> v.x; ss >> v.y; ss >> v.z;
             m_data.vertices.push_back(v);
-        } else if(identifier == "f ")
+        }
+        else if(identifier == "vt")
         {
-            if(data.find("//"))
+            std::istringstream ss{data};
+            glm::vec3 v;
+            ss >> v.x; ss >> v.y; ss >> v.z;
+            m_data.uvs.push_back(v);
+        }
+        else if(identifier == "f ")
+        {
+            if(data.find("/") != std::string::npos)
             {
-                std::vector<std::string> values = utils::split(data, '/');
                 logging::log("Obj File with included normals not yet supported!", lstream::error);
 
                 found_normals = true;
+                std::vector<std::string> values = utils::split(data, '/');
             }
             else
             {
@@ -48,17 +50,18 @@ void ObjLoader::load_obj_file(File& file)
                 m_data.elements.push_back(b);
                 m_data.elements.push_back(c);
             }
-        } else continue;
+        } 
+        else continue;
     }
 
     if(!found_normals)
     {
         m_data.normals.resize(m_data.vertices.size(), {0, 0, 0});
-        for(int i{-1}; i < m_data.elements.size(); )
+        for(int i{0}; i < m_data.elements.size(); i += 3)
         {
-            uint a = m_data.elements[++i];
-            uint b = m_data.elements[++i];
-            uint c = m_data.elements[++i];
+            uint a = m_data.elements[i];
+            uint b = m_data.elements[i + 1];
+            uint c = m_data.elements[i + 2];
 
             glm::vec3 normal = glm::normalize(glm::cross(
                 glm::vec3{m_data.vertices[b]} -glm::vec3{m_data.vertices[a]},
@@ -67,4 +70,15 @@ void ObjLoader::load_obj_file(File& file)
             m_data.normals[a] = m_data.normals[b] = m_data.normals[c] = normal;
         }
     }
+}
+
+void ObjLoader::store_obj_file(File& file, conststr name)
+{
+    load_obj_file(file);
+    objects[name] = m_data;
+}
+
+ObjData& ObjLoader::data()
+{
+    return m_data;
 }

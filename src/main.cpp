@@ -7,6 +7,7 @@
 #include "Timer.h"
 #include "RenderGame.h"
 #include "InputHandler.h"
+#include "ObjLoader.h"
 
 #include <iostream>
 
@@ -35,10 +36,6 @@ struct ExitOperations
 
 #if !TEST
 #define DEBUGMODE
-
-static bool wire_frame = false;
-static bool y_mov_switch = false;
-static bool out_of_focus = false;
 
 // Everything I need to know for a PC platform
 namespace PC
@@ -72,19 +69,15 @@ int main()
     //Enabling OpenGL stuff
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glFrontFace(GL_CW);
-    glCullFace(GL_FRONT);
-    glAlphaFunc(GL_GREATER, 0.5f);
     //glDepthFunc(GL_LESS);
     //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-    glEnable(GL_STENCIL_TEST);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
-    glEnable(GL_ALPHA_TEST);
-
     glEnable(GL_MULTISAMPLE);
+    glEnable(GL_CULL_FACE);
 
-    //glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
+    glCullFace(GL_FRONT);
 
     while(!display.close_requested())
     {
@@ -97,26 +90,24 @@ int main()
 
         InputHandler::update_dt(delta_time);
 
-        if(!out_of_focus)
+        if(display.is_active())
         {
-            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+            glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             InputHandler::handle_input();
 
             render_game.render(InputHandler::m_camera);
 
-            glDisable(GL_CULL_FACE);
             render_game.render_transparent();
 
             if(Main_GB::show_fps)
             {
                 output::print("FPS: " + std::to_string((1.0f / delta_time)));
             }
-
-            glfwPollEvents();
         }
 
+        glfwPollEvents();
         glfwSwapBuffers(&display.get_instance());
     }
 }
@@ -128,10 +119,13 @@ int main()
 
 int main()
 {
-    //ptest_files_write();
-    //ptest_files_read();
-    //test_files_multiple_read();
-    //test_files_read_line();
+    ObjLoader loader;
+    loader.load_obj_file(File{"Data/Models/cube.obj"});
+
+    for(const auto& e : loader.data().vertices)
+    {
+        std::cout << e.x << ", " << e.y << ", " << e.z << ", " << e.w << "\n";
+    }
 }
 
 #endif

@@ -14,7 +14,7 @@ Camera::Camera(glm::vec3 pos, glm::vec3 up, float yaw, float pitch)
     :	front               {glm::vec3(0, 0, -1)}
     ,	movement_speed      {SPEED}
     ,	mouse_sensitivity   {SENSITIVITY}
-    ,	zoom                {ZOOM}
+    ,	fov                 {FOV}
     ,   position            {pos}
     ,   world_up            {up}
     ,   yaw                 {yaw}
@@ -101,6 +101,16 @@ void Camera::process_mouse_movement(float xoffset, float yoffset, const bool& co
     }
 
     update_camera_vectors();
+}
+
+void Camera::process_mouse_scrolling(double xoffset, double yoffset)
+{
+    if(fov >= 1.0f && fov <= 100.0f)
+        fov -= yoffset;
+    if(fov < 1.0f)
+        fov = 1.0f;
+    else if(FOV > 100.0f)
+        fov = 100.0f;
 }
 
 

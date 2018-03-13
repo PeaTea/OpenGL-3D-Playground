@@ -5,7 +5,19 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 
-GLTexture::GLTexture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags wrap_t, GLTexFlags min_filter, GLTexFlags mag_filter, bool prefix)
+GLTexture::GLTexture()
+    :   texture_id  {0}
+{
+}
+
+GLTexture::GLTexture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags wrap_t, GLTexFlags min_filter,
+                     GLTexFlags mag_filter, bool prefix)
+{
+    create_texture(filename, wrap_s, wrap_t, min_filter, mag_filter, prefix);
+}
+
+void GLTexture::create_texture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags wrap_t,
+                               GLTexFlags min_filter, GLTexFlags mag_filter, bool prefix)
 {
     if(filename != "NONE")
     {
@@ -39,7 +51,7 @@ GLTexture::GLTexture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
             break;
         case CLAMP:
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             break;
         case MIRRORED_REPEAT:
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
@@ -61,7 +73,7 @@ GLTexture::GLTexture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
             break;
         case CLAMP:
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             break;
         case MIRRORED_REPEAT:
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
@@ -101,7 +113,6 @@ GLTexture::GLTexture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags 
     }
 }
 
-
 GLuint GLTexture::id() const
 {
     return texture_id;
@@ -126,7 +137,6 @@ GLTextureCube::~GLTextureCube()
 
 void GLTextureCube::gen_cube_map(std::array<std::string, 6> filenames, GLTexFlags wrap_r, GLTexFlags wrap_s, GLTexFlags wrap_t, GLTexFlags min_filter, GLTexFlags mag_filter)
 {
-    glEnable(GL_TEXTURE_CUBE_MAP);
     glGenTextures(1, &m_texture_id);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_texture_id);
 
@@ -157,7 +167,7 @@ void GLTextureCube::gen_cube_map(std::array<std::string, 6> filenames, GLTexFlag
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
         break;
     case CLAMP:
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
         break;
     case MIRRORED_REPEAT:
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
@@ -179,7 +189,7 @@ void GLTextureCube::gen_cube_map(std::array<std::string, 6> filenames, GLTexFlag
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
         break;
     case CLAMP:
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         break;
     case MIRRORED_REPEAT:
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
@@ -201,7 +211,7 @@ void GLTextureCube::gen_cube_map(std::array<std::string, 6> filenames, GLTexFlag
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
         break;
     case CLAMP:
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         break;
     case MIRRORED_REPEAT:
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);

@@ -20,8 +20,13 @@ enum GLTexFlags
 class GLTexture
 {
 public:
+    GLTexture();
+
     GLTexture(const std::string& filename, GLTexFlags wrap_s = REPEAT, GLTexFlags wrap_t = REPEAT,
               GLTexFlags min_filter = LINEAR, GLTexFlags mag_filter = LINEAR, bool prefix = true);
+
+    void create_texture(const std::string& filename, GLTexFlags wrap_s = REPEAT, GLTexFlags wrap_t = REPEAT,
+                        GLTexFlags min_filter = LINEAR, GLTexFlags mag_filter = LINEAR, bool prefix = true);
 
     GLuint id() const;
 

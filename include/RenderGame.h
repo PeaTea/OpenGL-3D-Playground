@@ -11,13 +11,9 @@
 #include "Level.h"
 #include "BasicLightSource.h"
 #include "Skybox.h"
+#include "Model.h"
 
 #include <unordered_map>
-
-namespace RG_GB
-{
-    const float FOV = 100.0f;
-}
 
 enum Textures
 {
@@ -33,7 +29,6 @@ enum Textures
     TRANSPARENCY_TEST,
     GLASS_LIGHT,
     BASIC_CIRCLE,
-    MAIN_STAR,
     SUN,
     SKYBOX
 };
@@ -57,8 +52,7 @@ public:
     std::vector<BasicLightSource> m_light_sources;
 
 private:
-    void set_uniforms();
-    void update_matrices(const glm::mat4& view_mat, const glm::mat4& projection_mat);
+    void update(const glm::mat4& view_mat, const glm::mat4& projection_mat, const glm::vec3& cam_pos);
 
     void load_shaders();
     void load_levels();
@@ -69,6 +63,7 @@ private:
 
 private:
     std::unordered_map<std::string, GLProgram> m_programs;
+    std::unordered_map<std::string, Model> m_models;
 
     uint m_screen_w;
     uint m_screen_h;
@@ -78,6 +73,7 @@ private:
 
     std::unordered_map<int, GLTexture> m_textures;
     ImageDrawer m_image_drawer;
+    ObjLoader obj_loader;
     GLTextureCube m_skybox_cube_map;
     Skybox m_skybox;
 

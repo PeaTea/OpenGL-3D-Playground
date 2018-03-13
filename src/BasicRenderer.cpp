@@ -8,6 +8,8 @@
 GLProgram   BasicRenderer::gl_program;
 GLuint      BasicRenderer::vao;
 GLuint      BasicRenderer::cube_vao;
+glm::mat4   BasicRenderer::view;
+glm::mat4   BasicRenderer::proj;
 
 BasicRenderer::BasicRenderer()
 {
@@ -75,6 +77,8 @@ void BasicRenderer::draw_sprite(const GLuint& texture_id, const glm::vec3& pos, 
     model = glm::rotate(model, glm::radians(rotation), rotation_vec);
     model = glm::scale(model, glm::vec3(size.x, size.y, 1));
 
+    gl_program.set_mat4("projection", proj);
+    gl_program.set_mat4("view", view);
     gl_program.set_mat4("model", model);
     gl_program.set_vec4("spritecolor", color);
 
@@ -101,6 +105,8 @@ void BasicRenderer::draw_sprite_facing_cam(const GLuint& texture_id, const glm::
     model = glm::rotate(model, 135.0f, {1, 0, 0});
     model = glm::scale(model, glm::vec3(size.x, size.y, 1));
 
+    gl_program.set_mat4("projection", proj);
+    gl_program.set_mat4("view", view);
     gl_program.set_mat4("model", model);
     gl_program.set_vec4("spritecolor", color);
 
@@ -166,6 +172,8 @@ void BasicRenderer::draw_cube(const GLuint& texture_id, const glm::vec3& pos, co
     model = glm::rotate(model, rotation, rotation_vec);
     model = glm::scale(model, size);
 
+    gl_program.set_mat4("projection", proj);
+    gl_program.set_mat4("view", view);
     gl_program.set_mat4("model", model);
     gl_program.set_vec4("spritecolor", color);
 

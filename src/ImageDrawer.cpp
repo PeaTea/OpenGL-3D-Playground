@@ -32,6 +32,26 @@ ImageDrawer::ImageDrawer()
     m_cf_height = (int)(m_tex_size * 0.5f);
 }
 
+void ImageDrawer::set_lvl(Level& lvl)
+{
+    xz_scaling = lvl.scaling().x;
+    y_scaling= lvl.scaling().y;
+    
+    level_width = lvl.width();
+    level_height = lvl.height();
+
+    scaled_tex_size_xz = m_tex_size * xz_scaling;
+    scaled_tex_size_y = m_tex_size * y_scaling;
+
+    for(int i{}; i < level_width; i++)
+    {
+        for(int j{}; j < level_height; j++)
+        {
+            level_pixel_colors.emplace_back(lvl.get_pixel(i, j));
+        }
+    }
+}
+
 void ImageDrawer::render_2D(const std::unordered_map<int, GLTexture>& textures, const Level& lvl, GLProgram& program)
 {
     BasicRenderer::set_program(program);
@@ -146,46 +166,36 @@ void ImageDrawer::render_2D(const std::unordered_map<int, GLTexture>& textures, 
 void ImageDrawer::render_cubes(const std::unordered_map<int, GLTexture>& textures, const Level& lvl, GLProgram& program)
 {
     BasicRenderer::set_program(program);
-    float xz_scaling = lvl.scaling().x;
-    float y_scaling = lvl.scaling().y;
 
-    int level_width = lvl.width();
-    int level_height = lvl.height();
-
-    sf::Color color;
-
-    const float SCALED_TEX_SIZE_XZ = m_tex_size * xz_scaling;
-    const float SCALED_TEX_SIZE_Y = m_tex_size * y_scaling;
-
-    for(int i {}; i < level_width; ++i)
+    int i = 0, j = 0;
+    for(const auto& color : level_pixel_colors)
     {
-        for(int j {}; j < level_height; ++j)
+        if(color == sf::Color::Black)
         {
-            //if(i == 20 && j == 30) continue;
-            color = lvl.get_pixel(i, j);
-
-            if(color == sf::Color::Black)
-            {
-                //Walls
-                BasicRenderer::draw_cube(textures.at(METAL_CUBE).id(),
-                {SCALED_TEX_SIZE_XZ * i + m_tex_size / 2, SCALED_TEX_SIZE_Y / 2 - (m_tex_size + m_cf_height) / 2, SCALED_TEX_SIZE_XZ * j + m_tex_size / 2},
-                {SCALED_TEX_SIZE_XZ, SCALED_TEX_SIZE_Y, SCALED_TEX_SIZE_XZ}, 0.0f, {0, 1, 0}, WHITE);
-            }
-            else if(color == sf::Color::White || color == sf::Color(192, 192, 192, 255))
-            {
-                //Floor
-                BasicRenderer::draw_cube(textures.at(m_pixeldata[FLOOR].texture).id(),
-                {SCALED_TEX_SIZE_XZ * i + m_tex_size / 2, -m_cf_height * 2, SCALED_TEX_SIZE_XZ * j + m_tex_size / 2},
-                {SCALED_TEX_SIZE_XZ, m_cf_height, SCALED_TEX_SIZE_XZ}, 0.0f, {1, 0, 0},
-                                         m_pixeldata[FLOOR].color);
+            //Walls
+            BasicRenderer::draw_cube(textures.at(METAL_CUBE).id(),
+            {scaled_tex_size_xz * i + m_tex_size / 2, scaled_tex_size_y / 2 - (m_tex_size + m_cf_height) / 2, scaled_tex_size_xz * j + m_tex_size / 2},
+            {scaled_tex_size_xz, scaled_tex_size_y, scaled_tex_size_xz}, 0.0f, {0, 1, 0}, WHITE);
+        }
+        else if(color == sf::Color::White || color == sf::Color(192, 192, 192, 255))
+        {
+            //Floor
+            BasicRenderer::draw_cube(textures.at(m_pixeldata[FLOOR].texture).id(),
+            {scaled_tex_size_xz * i + m_tex_size / 2, -m_cf_height * 2, scaled_tex_size_xz * j + m_tex_size / 2},
+            {scaled_tex_size_xz, m_cf_height, scaled_tex_size_xz}, 0.0f, {1, 0, 0},
+                                        m_pixeldata[FLOOR].color);
 
 
-                //Ceiling
-                BasicRenderer::draw_cube(textures.at(m_pixeldata[CEILING].texture).id(),
-                {SCALED_TEX_SIZE_XZ * i + m_tex_size / 2, SCALED_TEX_SIZE_Y - m_cf_height, SCALED_TEX_SIZE_XZ * j + m_tex_size / 2},
-                {SCALED_TEX_SIZE_XZ, -m_cf_height, SCALED_TEX_SIZE_XZ}, maths::PI, {1, 0, 0},
-                                         m_pixeldata[CEILING].color);
-            }
+            //Ceiling
+            BasicRenderer::draw_cube(textures.at(m_pixeldata[CEILING].texture).id(),
+            {scaled_tex_size_xz * i + m_tex_size / 2, scaled_tex_size_y - m_cf_height, scaled_tex_size_xz * j + m_tex_size / 2},
+            {scaled_tex_size_xz, -m_cf_height, scaled_tex_size_xz}, maths::PI, {1, 0, 0},
+                                        m_pixeldata[CEILING].color);
+        }
+        if(++j % level_height == 0) 
+        {
+            ++i;
+            j = 0;
         }
     }
 }
