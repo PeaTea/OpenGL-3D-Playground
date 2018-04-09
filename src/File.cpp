@@ -11,7 +11,7 @@ File::File(const std::string& filepath, bool create_new)
     m_file.open(m_path, m_flags);
     if(m_file.fail())
     {
-        logging::log("Failed to open file " + filepath, lstream::error);
+        logging::log("Failed to open file " + filepath, lstream::exception);
     }
 }
 
@@ -39,7 +39,7 @@ void File::path(const std::string& filepath, bool create_new)
     m_file.open(m_path, m_flags);
     if(m_file.fail())
     {
-        logging::log("Failed to open file " + filepath, lstream::error);
+        logging::log("Failed to open file " + filepath, lstream::exception);
     }
 }
 

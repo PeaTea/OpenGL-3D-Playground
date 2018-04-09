@@ -8,8 +8,9 @@ double      InputHandler::last_mousey;
 float       InputHandler::m_dt;
 int         InputHandler::m_mov_speed;
 bool        InputHandler::m_constrain_pitch = true;
-bool        InputHandler::m_collision = true;
+bool        InputHandler::m_collision = false;
 bool        InputHandler::first_mouse_movement = true;
+bool        InputHandler::m_draw_normals = false;
 bool        InputHandler::m_keys[512];
 GLFWwindow* InputHandler::m_window;
 
@@ -80,24 +81,28 @@ void InputHandler::key_callback(GLFWwindow* window, int key, int scancode, int a
     // Only Executes this once, even if key is being pressed constantly
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     {
-        glfwSetWindowShouldClose(m_window, true);
+        glfwSetWindowShouldClose(window, true);
     }
-    if(key == GLFW_KEY_F1 && action == GLFW_PRESS)
+    else if(key == GLFW_KEY_F1 && action == GLFW_PRESS)
     {
         BasicRenderer::switch_wireframe_mode(wireframe_switch = !wireframe_switch);
     }
-    if(key == GLFW_KEY_F2 && action == GLFW_PRESS)
+    else if(key == GLFW_KEY_F2 && action == GLFW_PRESS)
     {
+        //m_collision = !m_collision;
         m_camera.y_movement = !m_camera.y_movement;
-        m_collision = !m_collision;
     }
-    if(key == GLFW_KEY_F3 && action == GLFW_PRESS)
+    else if(key == GLFW_KEY_F3 && action == GLFW_PRESS)
     {
-        m_camera.mouse_sensitivity = (speed_switch = !speed_switch) ? 0.001 : 0.1;
-        m_camera.movement_speed = (speed_switch) ? 1.0f : 100.0f;
+        m_camera.mouse_sensitivity = (speed_switch = !speed_switch) ? 0.01 : 0.1;
+        //m_camera.movement_speed = (speed_switch) ? 1.0f : 100.0f;
+    }
+    else if(key == GLFW_KEY_F4 && action == GLFW_PRESS)
+    {
+        m_draw_normals = !m_draw_normals;
     }
 
-    if(action == GLFW_PRESS)
+    else if(action == GLFW_PRESS)
     {
         m_keys[key] = true;
     }

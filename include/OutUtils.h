@@ -6,7 +6,8 @@ enum class lstream
 {
     info,
     warning,
-    error
+    exception,
+    fatal_error
 };
 
 namespace logging

@@ -22,11 +22,13 @@ class GLTexture
 public:
     GLTexture();
 
-    GLTexture(const std::string& filename, GLTexFlags wrap_s = REPEAT, GLTexFlags wrap_t = REPEAT,
+    GLTexture(const std::string& filename, const bool& error = true, GLTexFlags wrap_s = REPEAT, GLTexFlags wrap_t = REPEAT,
               GLTexFlags min_filter = LINEAR, GLTexFlags mag_filter = LINEAR, bool prefix = true);
 
-    void create_texture(const std::string& filename, GLTexFlags wrap_s = REPEAT, GLTexFlags wrap_t = REPEAT,
+    void create_texture(const std::string& filename, const bool& error, GLTexFlags wrap_s = REPEAT, GLTexFlags wrap_t = REPEAT,
                         GLTexFlags min_filter = LINEAR, GLTexFlags mag_filter = LINEAR, bool prefix = true);
+
+    void destroy_texture();
 
     GLuint id() const;
 

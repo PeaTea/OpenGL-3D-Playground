@@ -2,11 +2,11 @@
 #define CAMERA_H
 
 #include <glm/glm.hpp>
-#include "Level.h"
+#include "Image.h"
 
 const float YAW = 112.5f;
 const float PITCH = 0.0f;
-const float SPEED = 100.0f;
+const float SPEED = 1.0f;
 const float SENSITIVITY = 0.1f;
 const float FOV = 80.0f;
 
@@ -49,7 +49,7 @@ public:
     float mouse_sensitivity;
     float fov;
 
-    Level current_level;
+    Image current_level;
 
     bool y_movement;
 

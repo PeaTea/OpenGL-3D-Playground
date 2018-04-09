@@ -3,7 +3,7 @@
 #include "Maths.h"
 
 /*
-===============	Level notes	==============
+===============	Image notes	==============
 levels[0] = Tutorial:
 Starting Positions:	-2000.0f, PlayerSize / 2, 44.0f
 */
@@ -32,7 +32,7 @@ ImageDrawer::ImageDrawer()
     m_cf_height = (int)(m_tex_size * 0.5f);
 }
 
-void ImageDrawer::set_lvl(Level& lvl)
+void ImageDrawer::set_lvl(Image& lvl)
 {
     xz_scaling = lvl.scaling().x;
     y_scaling= lvl.scaling().y;
@@ -52,7 +52,7 @@ void ImageDrawer::set_lvl(Level& lvl)
     }
 }
 
-void ImageDrawer::render_2D(const std::unordered_map<int, GLTexture>& textures, const Level& lvl, GLProgram& program)
+void ImageDrawer::render_2D(const std::unordered_map<int, GLTexture>& textures, const Image& lvl, GLProgram& program)
 {
     BasicRenderer::set_program(program);
     for(int i = 0; i < lvl.width(); i++)
@@ -163,7 +163,7 @@ void ImageDrawer::render_2D(const std::unordered_map<int, GLTexture>& textures, 
     }
 }
 
-void ImageDrawer::render_cubes(const std::unordered_map<int, GLTexture>& textures, const Level& lvl, GLProgram& program)
+void ImageDrawer::render_cubes(const std::unordered_map<int, GLTexture>& textures, const Image& lvl, GLProgram& program)
 {
     BasicRenderer::set_program(program);
 

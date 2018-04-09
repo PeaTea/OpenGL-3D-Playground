@@ -9,6 +9,8 @@
 
 #include "Types.h"
 
+const std::string FILE_FAILED_TO_OPEN = "Failed to open file: ";
+
 class File
 {
 public:

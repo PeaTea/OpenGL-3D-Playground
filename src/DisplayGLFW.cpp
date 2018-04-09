@@ -24,7 +24,7 @@ DisplayGLFW::DisplayGLFW(const uint& w, const uint& h, conststrref title,
     glewExperimental = GL_TRUE;
     GLenum status = glewInit();
     if(status != GLEW_OK)
-        logging::log("Failed to initialize GLEW", lstream::error);
+        logging::log("Failed to initialize GLEW", lstream::exception);
 
     glfwSetInputMode(m_window, GLFW_CURSOR, Settings::mouse_cursor_hidden() ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 

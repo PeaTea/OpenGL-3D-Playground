@@ -8,6 +8,7 @@
 #include "RenderGame.h"
 #include "InputHandler.h"
 #include "ObjLoader.h"
+#include "GlobalMacros.h"
 
 #include <iostream>
 
@@ -49,7 +50,7 @@ namespace PC
 
 namespace Main_GB
 {
-    bool collision = true;
+    bool collision = false;
     bool show_fps = Settings::show_fps();
     int current_level = 2;
 }
@@ -57,14 +58,22 @@ namespace Main_GB
 
 int main()
 {
+#ifdef PERFORMANCE_TESTS
+    StartStopTimer timer{"Startup"};
+    timer.start();
+#endif
     DisplayGLFW display {PC::WIDTH, PC::HEIGHT, PC::TITLE, PC::FULLSCREEN ? FULLSCREEN : WINDOWED};
     InputHandler::init(&display.get_instance());
+    InputHandler::update_collision(Main_GB::collision);
+
     RenderGame render_game {PC::WIDTH, PC::HEIGHT, Main_GB::current_level, InputHandler::m_camera};
     InputHandler::m_camera.current_level = render_game.m_levels[Main_GB::current_level];
 
     float delta_time;
     float current_time;
-    float last_time {0.0f};
+    float last_time {0};
+    float sum {0};
+    float fps {0};
 
     //Enabling OpenGL stuff
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -78,6 +87,9 @@ int main()
     glEnable(GL_CULL_FACE);
 
     glCullFace(GL_FRONT);
+#ifdef PERFORMANCE_TESTS
+    timer.stop();
+#endif
 
     while(!display.close_requested())
     {
@@ -92,19 +104,22 @@ int main()
 
         if(display.is_active())
         {
-            glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
+            glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             InputHandler::handle_input();
 
-            render_game.render(InputHandler::m_camera);
+            render_game.render(InputHandler::m_camera, InputHandler::m_draw_normals);
 
-            render_game.render_transparent();
-
-            if(Main_GB::show_fps)
+            render_game.render_transparent(Main_GB::show_fps, (int)(fps + 0.5f), {0, -10, 0});
+            
+            if(sum >= 0.1f)
             {
-                output::print("FPS: " + std::to_string((1.0f / delta_time)));
+                fps = 1 / delta_time;
+                sum = 0;
             }
+
+            sum += delta_time;
         }
 
         glfwPollEvents();

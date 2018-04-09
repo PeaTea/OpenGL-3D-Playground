@@ -34,19 +34,16 @@ void BasicRenderer::init_quad_render_data()
     glBindVertexArray(vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(COORD_DEFS::vertices_upwards), COORD_DEFS::vertices_upwards, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(COORD_DEFS::vertices), COORD_DEFS::vertices, GL_STATIC_DRAW);
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(COORD_DEFS::indices), COORD_DEFS::indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (GLvoid*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GL_FLOAT), (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (GLvoid*)(3 * sizeof(GL_FLOAT)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GL_FLOAT), (GLvoid*)(3 * sizeof(GL_FLOAT)));
     glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (GLvoid*)(6 * sizeof(GL_FLOAT)));
-    glEnableVertexAttribArray(2);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -67,7 +64,7 @@ void BasicRenderer::draw_sprite(const GLuint& texture_id, const glm::vec3& pos, 
 {
     if(!gl_program.exists())
     {
-        logging::log("No program set for BasicRenderer", lstream::error);
+        logging::log("No program set for BasicRenderer", lstream::exception);
     }
 
     gl_program.use();
@@ -89,12 +86,37 @@ void BasicRenderer::draw_sprite(const GLuint& texture_id, const glm::vec3& pos, 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
+void BasicRenderer::draw_sprite(const GLuint& texture_id, const glm::vec3& pos, const Vec2<float>& size, const glm::vec4& color)
+{
+    if(!gl_program.exists())
+    {
+        logging::log("No program set for BasicRenderer", lstream::exception);
+    }
+
+    gl_program.use();
+    glm::mat4 model;
+
+    model = glm::translate(model, {pos.x, pos.y, 1});
+    model = glm::scale(model, glm::vec3(size.x, size.y, 1));
+
+    gl_program.set_mat4("projection", proj);
+    gl_program.set_mat4("view", view);
+    gl_program.set_mat4("model", model);
+    gl_program.set_vec4("spritecolor", color);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    glBindVertexArray(vao);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+}
+
 void BasicRenderer::draw_sprite_facing_cam(const GLuint& texture_id, const glm::vec3& pos, const glm::vec3& cam_pos,
                                       const Vec2<float>& size, const glm::vec4& color)
 {
     if(!gl_program.exists())
     {
-        logging::log("No program set for BasicRenderer", lstream::error);
+        logging::log("No program set for BasicRenderer", lstream::exception);
     }
 
     gl_program.use();

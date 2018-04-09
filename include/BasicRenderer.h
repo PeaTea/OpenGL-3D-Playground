@@ -16,6 +16,7 @@ public:
     static void set_program(GLProgram program);
     static void draw_sprite(const GLuint& texture_id, const glm::vec3& pos, const Vec2<float>& size,
                             const GLfloat& rotation = 180.0f, const glm::vec3& rotation_vec = {1, 0, 0}, const glm::vec4& color = {1, 1, 1, 1});
+    static void draw_sprite(const GLuint& texture_id, const glm::vec3& pos, const Vec2<float>& size, const glm::vec4& color = {1, 1, 1, 1});
     static void draw_sprite_facing_cam(const GLuint& texture_id, const glm::vec3& pos, const glm::vec3& cam_pos,
                                        const Vec2<float>& size, const glm::vec4& color = {1, 1, 1, 1});
     static void draw_texture(GLuint texture_id);

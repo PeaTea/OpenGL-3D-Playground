@@ -2,6 +2,7 @@
 #include <stb_image.h>
 #include <iostream>
 #include "OutUtils.h"
+#include "File.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 
@@ -10,20 +11,17 @@ GLTexture::GLTexture()
 {
 }
 
-GLTexture::GLTexture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags wrap_t, GLTexFlags min_filter,
-                     GLTexFlags mag_filter, bool prefix)
+GLTexture::GLTexture(const std::string& filename, const bool& error, GLTexFlags wrap_s, GLTexFlags wrap_t, 
+                     GLTexFlags min_filter, GLTexFlags mag_filter, bool prefix)
 {
-    create_texture(filename, wrap_s, wrap_t, min_filter, mag_filter, prefix);
+    create_texture(filename, error, wrap_s, wrap_t, min_filter, mag_filter, prefix);
 }
 
-void GLTexture::create_texture(const std::string& filename, GLTexFlags wrap_s, GLTexFlags wrap_t,
+void GLTexture::create_texture(const std::string& filename, const bool& error, GLTexFlags wrap_s, GLTexFlags wrap_t,
                                GLTexFlags min_filter, GLTexFlags mag_filter, bool prefix)
 {
     if(filename != "NONE")
     {
-        glGenTextures(1, &texture_id);
-        glBindTexture(GL_TEXTURE_2D, texture_id);
-
         int w, h, channels;
 
         std::string path = prefix ? "Data/Textures/" + filename : filename;
@@ -31,11 +29,13 @@ void GLTexture::create_texture(const std::string& filename, GLTexFlags wrap_s, G
         unsigned char* image = stbi_load(path.c_str(), &w, &h, &channels, STBI_rgb_alpha);
         if(image == nullptr)
         {
-            output::print(stbi_failure_reason);
-            logging::log("Could not load file: ", lstream::error);
+            throw std::runtime_error("STBI_Load failed");
         }
 
+        glGenTextures(1, &texture_id);
+        glBindTexture(GL_TEXTURE_2D, texture_id);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
         stbi_image_free(image);
         //glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -113,6 +113,11 @@ void GLTexture::create_texture(const std::string& filename, GLTexFlags wrap_s, G
     }
 }
 
+void GLTexture::destroy_texture()
+{
+    glDeleteTextures(1, &texture_id);
+}
+
 GLuint GLTexture::id() const
 {
     return texture_id;
@@ -148,7 +153,7 @@ void GLTextureCube::gen_cube_map(std::array<std::string, 6> filenames, GLTexFlag
         if(image == nullptr)
         {
             output::print(stbi_failure_reason);
-            logging::log("Could not load file: " + filenames[i], lstream::error);
+            logging::log("Could not load file: " + filenames[i], lstream::exception);
         }
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 

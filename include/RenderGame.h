@@ -8,9 +8,10 @@
 #include "Camera.h"
 #include "Settings.h"
 #include "ImageDrawer.h"
-#include "Level.h"
+#include "Image.h"
 #include "BasicLightSource.h"
 #include "Skybox.h"
+#include "FontRenderer.h"
 #include "Model.h"
 
 #include <unordered_map>
@@ -39,8 +40,9 @@ class RenderGame
 public:
     RenderGame(const uint& width, const uint& height, const int& current_lvl, Camera& camera);
 
-    void render(Camera& camera);
-    void render_transparent();
+    void render(Camera& camera, const bool& draw_normals);
+    void render_transparent(const bool& draw_fps, const int& fps, const glm::vec3& pos);
+    void render_fps(const int& fps, const glm::vec3& pos);
 
     void update_camera_pos(const glm::vec3& cam_pos);
 
@@ -48,7 +50,7 @@ public:
 
     glm::vec3 get_cam_pos();
 
-    std::vector<Level> m_levels;
+    std::vector<Image> m_levels;
     std::vector<BasicLightSource> m_light_sources;
 
 private:
@@ -73,6 +75,7 @@ private:
 
     std::unordered_map<int, GLTexture> m_textures;
     ImageDrawer m_image_drawer;
+    FontRenderer font_renderer;
     ObjLoader obj_loader;
     GLTextureCube m_skybox_cube_map;
     Skybox m_skybox;

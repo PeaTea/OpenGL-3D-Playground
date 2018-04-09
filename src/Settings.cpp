@@ -163,7 +163,7 @@ uint Settings::width()
     if(m_width > 0)
         return m_width;
     else
-        logging::log("Invalid value for width (width <= 0)", lstream::error);
+        logging::log("Invalid value for width (width <= 0)", lstream::exception);
 }
 
 uint Settings::height()
@@ -171,7 +171,7 @@ uint Settings::height()
     if(m_height > 0)
         return m_height;
     else
-        logging::log("Invalid value for height (height <= 0)", lstream::error);
+        logging::log("Invalid value for height (height <= 0)", lstream::exception);
 }
 
 uint8_t Settings::multisamples()
@@ -180,7 +180,7 @@ uint8_t Settings::multisamples()
         return m_multisamples;
     else
         logging::log("Value greater than 16 is not allowed for Multisamples\nValue received: " +
-                     std::to_string(m_multisamples), lstream::error);
+                     std::to_string(m_multisamples), lstream::exception);
 }
 
 Vec2<float> Settings::entity_size()
@@ -189,7 +189,7 @@ Vec2<float> Settings::entity_size()
         return {m_entity_sizew, m_entity_sizeh};
     else
         logging::log("Invalid or missing value for entity_size (component uninitialized or <= 0)",
-                     lstream::error);
+                     lstream::exception);
 }
 
 float Settings::tex_size()
@@ -197,7 +197,7 @@ float Settings::tex_size()
     if(m_tex_size > 0)
         return m_tex_size;
     else
-        logging::log("Invalid or missing value for TEX_SIZE (<= 0)", lstream::error);
+        logging::log("Invalid or missing value for TEX_SIZE (<= 0)", lstream::exception);
 }
 
 float Settings::player_size()
@@ -206,7 +206,7 @@ float Settings::player_size()
         return m_player_size;
     else
         logging::log("Invalid or missing value for player_size (playersizeh <= 0)",
-                     lstream::error);
+                     lstream::exception);
 }
 
 std::string Settings::settings_file_name()

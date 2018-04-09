@@ -4,6 +4,8 @@
 #include "OutUtils.h"
 #include "ObjLoader.h"
 #include "ObjRenderer.h"
+#include "GlobalMacros.h"
+#include "Timer.h"
 
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
@@ -30,7 +32,8 @@ RenderGame::RenderGame(const uint& width, const uint& height, const int& current
     output::print("Loading objects...");
     load_objects();
 
-    camera.position = m_levels[current_lvl].start();
+    //camera.position = m_levels[current_lvl].start();
+    camera.position = {0, 0, 0};
     update_camera_pos(camera.position);
 
     BasicRenderer::enable_cube();
@@ -38,6 +41,10 @@ RenderGame::RenderGame(const uint& width, const uint& height, const int& current
 
 void RenderGame::load_shaders()
 {
+#ifdef PERFORMANCE_TESTS
+    {
+    RAIITimer timer{"Shader loading"};
+#endif
     shaderfile::Data darken_src = shaderfile::parse("Data/Shaders/Darken.glsl");
     shaderfile::Data normal_src = shaderfile::parse("Data/Shaders/Normal.glsl");
     shaderfile::Data point_src = shaderfile::parse("Data/Shaders/Point.glsl");
@@ -57,8 +64,9 @@ void RenderGame::load_shaders()
     m_programs["point"] = point;
     m_programs["test_model"] = test_model;
     m_programs["draw_normals"] = draw_normals;
-
-    BasicRenderer::set_program(m_programs["point"]);
+#ifdef PERFORMANCE_TESTS
+    }
+#endif
 }
 
 void RenderGame::load_levels()
@@ -74,19 +82,37 @@ void RenderGame::load_levels()
 
 void RenderGame::load_textures()
 {
-    m_textures.emplace(METAL_CUBE, GLTexture{"MetalCube.png", REPEAT, REPEAT, LINEAR, LINEAR});
-    m_textures.emplace(ACID, GLTexture{"Acid.png", REPEAT, REPEAT, NEAREST, NEAREST});
-    m_textures.emplace(STONE, GLTexture{"Stone.png", REPEAT, REPEAT, LINEAR, LINEAR});
-    m_textures.emplace(LAVA, GLTexture{"Lava.png", REPEAT, REPEAT, LINEAR, LINEAR});
-    m_textures.emplace(MARBLE, GLTexture{"Marble.png", REPEAT, REPEAT, NEAREST, NEAREST});
-    m_textures.emplace(WOOD, GLTexture{"Wood.png", REPEAT, REPEAT, LINEAR, LINEAR});
-    m_textures.emplace(QUAD_TEMPLATE, GLTexture{"QuadTemplate.png", REPEAT, REPEAT, LINEAR, LINEAR});
-    m_textures.emplace(DIAGONAL_TEMPLATE, GLTexture{"DiagonalTemplate.png", REPEAT, REPEAT, LINEAR, LINEAR});
-    m_textures.emplace(MYSTERIOUS_ROBOT, GLTexture{"MysteriousRobot.png", CLAMP, CLAMP, NEAREST, NEAREST});
-    m_textures.emplace(TRANSPARENCY_TEST, GLTexture{"TransparencyTest.png", CLAMP, CLAMP, LINEAR, LINEAR});
-    m_textures.emplace(GLASS_LIGHT, GLTexture{"Glass_Light.png", CLAMP, CLAMP, LINEAR, LINEAR});
-    m_textures.emplace(BASIC_CIRCLE, GLTexture{"BasicCircle.png", CLAMP, CLAMP, LINEAR, LINEAR});
-    m_textures.emplace(SUN, GLTexture{"Sun.png", CLAMP, CLAMP, NEAREST, NEAREST});
+#ifdef PERFORMANCE_TESTS
+    {
+    RAIITimer timer{"Texture loading"};
+#endif
+    m_textures.emplace(METAL_CUBE, GLTexture{"MetalCube.png", true, REPEAT, REPEAT, LINEAR, LINEAR});
+    m_textures.emplace(ACID, GLTexture{"Acid.png", true, REPEAT, REPEAT, NEAREST, NEAREST});
+    m_textures.emplace(STONE, GLTexture{"Stone.png", true, REPEAT, REPEAT, LINEAR, LINEAR});
+    m_textures.emplace(LAVA, GLTexture{"Lava.png", true, REPEAT, REPEAT, LINEAR, LINEAR});
+    m_textures.emplace(MARBLE, GLTexture{"Marble.png", true, REPEAT, REPEAT, NEAREST, NEAREST});
+    m_textures.emplace(WOOD, GLTexture{"Wood.png", true, REPEAT, REPEAT, LINEAR, LINEAR});
+    m_textures.emplace(QUAD_TEMPLATE, GLTexture{"QuadTemplate.png", true, REPEAT, REPEAT, LINEAR, LINEAR});
+    m_textures.emplace(DIAGONAL_TEMPLATE, GLTexture{"DiagonalTemplate.png", true, REPEAT, REPEAT, LINEAR, LINEAR});
+    m_textures.emplace(MYSTERIOUS_ROBOT, GLTexture{"MysteriousRobot.png", true, CLAMP, CLAMP, NEAREST, NEAREST});
+    m_textures.emplace(TRANSPARENCY_TEST, GLTexture{"TransparencyTest.png", true, CLAMP, CLAMP, LINEAR, LINEAR});
+    m_textures.emplace(GLASS_LIGHT, GLTexture{"Glass_Light.png", true, CLAMP, CLAMP, LINEAR, LINEAR});
+    m_textures.emplace(BASIC_CIRCLE, GLTexture{"BasicCircle.png", true, CLAMP, CLAMP, LINEAR, LINEAR});
+    m_textures.emplace(SUN, GLTexture{"Sun.png", true, CLAMP, CLAMP, NEAREST, NEAREST});
+#ifdef PERFORMANCE_TESTS
+    }
+#endif
+
+#ifdef PERFORMANCE_TESTS
+    {
+    RAIITimer timer{"Font loading"};
+#endif
+    font_renderer.load_numbers("Data/Fonts/Simple/Numbers");
+    font_renderer.load_upper_letters("Data/Fonts/Simple/Letters");
+    font_renderer.load_other("Data/Fonts/Simple/Other");
+#ifdef PERFORMANCE_TESTS
+    }
+#endif
 }
 
 void RenderGame::load_entities()
@@ -162,7 +188,7 @@ void RenderGame::update(const glm::mat4& view_mat, const glm::mat4& projection_m
     BasicRenderer::proj = projection_mat;
 }
 
-void RenderGame::render(Camera& camera)
+void RenderGame::render(Camera& camera, const bool& draw_normals)
 {
     BasicRenderer::view = camera.get_view_matrix();
     BasicRenderer::proj = glm::perspective(glm::radians(camera.fov), (float)(m_screen_w / m_screen_h), 0.1f, 80000.0f);   // Interesting "horror" effect: 0.0f (epileptic!)
@@ -170,16 +196,27 @@ void RenderGame::render(Camera& camera)
 
     glDisable(GL_CULL_FACE);
     m_skybox.render(camera.get_view_matrix(), BasicRenderer::proj, m_deltatime);
-    //glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
     //m_image_drawer.render_cubes(m_textures, m_levels[m_current_lvl], m_programs["point"]);
     ObjRenderer::set_program(m_programs["test_model"]);
-    ObjRenderer::render(m_models["test"], m_textures[METAL_CUBE].id(), {512, 0, 512}, {1, 1});
-    ObjRenderer::set_program(m_programs["draw_normals"]);
-    ObjRenderer::render(m_models["test"], m_textures[METAL_CUBE].id(), {512, 0, 512}, {1, 1});
+    ObjRenderer::render(m_models["test"], m_textures[METAL_CUBE].id(), {10, 0, 10}, {1, 1});
+
+    //BasicRenderer::draw_texture(m_textures[METAL_CUBE].id());
+
+    if(draw_normals)
+    {
+        ObjRenderer::set_program(m_programs["draw_normals"]);
+        ObjRenderer::render(m_models["test"], m_textures[METAL_CUBE].id(), {10, 0, 10}, {1, 1});
+    }
 }
 
-void RenderGame::render_transparent()
+void RenderGame::render_transparent(const bool& draw_fps, const int& fps, const glm::vec3& pos)
 {
+    glDisable(GL_CULL_FACE);
+    BasicRenderer::set_program(m_programs["normal"]);
+    font_renderer.draw("12345\n67890", {0, 0, 1}, {1, 1}, 1, {1, 1, 0, 1});
+    if(draw_fps)
+        render_fps(fps, pos);
     //BasicRenderer::set_program(m_programs["normal"]);
     //m_light_sources[0].rotate_around_center(0.1f);
     //m_programs["point"].set_vec3("point_lights[0].position", m_light_sources[0].position());
@@ -188,6 +225,12 @@ void RenderGame::render_transparent()
     //BasicRenderer::set_program(m_programs["point"]);
 
     //m_levels[m_current_lvl].data.update_and_render(m_cam_pos, m_image_drawer.get_cf_height() / 2);
+}
+
+void RenderGame::render_fps(const int& fps, const glm::vec3& pos)
+{
+    BasicRenderer::set_program(m_programs["normal"]);
+    font_renderer.draw(std::to_string(fps) + " FPS", pos, {1, 1}, 1, {0, 1, 0, 1});
 }
 
 void RenderGame::update_camera_pos(const glm::vec3& cam_pos)

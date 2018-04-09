@@ -35,7 +35,7 @@ void ObjLoader::load_obj_file(File& file)
         {
             if(data.find("/") != std::string::npos)
             {
-                logging::log("Obj File with included normals not yet supported!", lstream::error);
+                logging::log("Obj File with included normals not yet supported!", lstream::exception);
 
                 found_normals = true;
                 std::vector<std::string> values = utils::split(data, '/');

@@ -4,7 +4,7 @@
 #include <array>
 
 #include "GLTexture.h"
-#include "Level.h"
+#include "Image.h"
 #include "Types.h"
 
 struct PixelPosition
@@ -25,14 +25,14 @@ struct ImageDrawer
     ImageDrawer();
     
     // Fast performance
-    void render_2D(const std::unordered_map<int, GLTexture>& textures, const Level& lvl, GLProgram& program);
+    void render_2D(const std::unordered_map<int, GLTexture>& textures, const Image& lvl, GLProgram& program);
 
     // For complex lightning
-    void render_cubes(const std::unordered_map<int, GLTexture>& textures, const Level& lvl, GLProgram& program);
+    void render_cubes(const std::unordered_map<int, GLTexture>& textures, const Image& lvl, GLProgram& program);
 
     int get_cf_height() const;
 
-    void set_lvl(Level& lvl);
+    void set_lvl(Image& lvl);
 
 private:
     std::array<PixelData, 6> m_pixeldata;

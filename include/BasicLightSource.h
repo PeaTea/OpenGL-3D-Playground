@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <SFML/System/Clock.hpp>
 
-#include "Level.h"
+#include "Image.h"
 
 class Skybox;
 
@@ -11,8 +11,8 @@ class BasicLightSource
 {
 public:
     BasicLightSource(GLTexture texture, const glm::vec3& pos, const glm::vec2& size, const glm::vec4& color, 
-                     float radius, float distance, Level lvl);
-    BasicLightSource(const glm::vec3& pos, float radius, float distance, const glm::vec4& color, Level lvl);
+                     float radius, float distance, Image lvl);
+    BasicLightSource(const glm::vec3& pos, float radius, float distance, const glm::vec4& color, Image lvl);
 
     glm::vec3 position() const;
     glm::vec4 color() const;

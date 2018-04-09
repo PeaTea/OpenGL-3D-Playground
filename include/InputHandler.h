@@ -2,7 +2,7 @@
 
 #include "DisplayGLFW.h"
 #include "Camera.h"
-#include "Level.h"
+#include "Image.h"
 
 
 class InputHandler
@@ -18,6 +18,7 @@ public:
 
     static Camera m_camera;
     static bool m_constrain_pitch;
+    static bool m_draw_normals;
 
 private:
     static void key_callback(GLFWwindow* window, int key, int scancode, int action,

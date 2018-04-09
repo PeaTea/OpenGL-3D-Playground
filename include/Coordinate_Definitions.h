@@ -8,20 +8,12 @@ namespace COORD_DEFS
 {
     const float size = 3;
 
-    GLfloat vertices_upwards[] =
+    GLfloat vertices[] =
     {
-         0.5f,	0.5f, 0.0f,     0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
-        -0.5f,	0.5f, 0.0f,     0.0f, 1.0f, 0.0f,   0.0f, 1.0f,
-        -0.5f, -0.5f, 0.0f,     0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
-         0.5f, -0.5f, 0.0f,     0.0f, 1.0f, 0.0f,   1.0f, 0.0f
-    };
-
-    GLfloat vertices_downwards[] = 
-    {
-        0.5f,  0.5f, 0.0f,      0.0f, -1.0f, 0.0f,  1.0f, 1.0f,
-       -0.5f,  0.5f, 0.0f,      0.0f, -1.0f, 0.0f,  0.0f, 1.0f,
-       -0.5f, -0.5f, 0.0f,      0.0f, -1.0f, 0.0f,  0.0f, 0.0f,
-        0.5f, -0.5f, 0.0f,      0.0f, -1.0f, 0.0f,  1.0f, 0.0f
+         0.5f,	0.5f, 0.0f, 1.0f, 1.0f,
+        -0.5f,	0.5f, 0.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+         0.5f, -0.5f, 0.0f, 1.0f, 0.0f
     };
 
     GLint indices[] =

@@ -2,7 +2,7 @@
 #include "OutUtils.h"
 
 /*
-bool Collision::in_level(const Level& level, const glm::vec3& new_pos, const glm::vec3& old_pos)
+bool Collision::in_level(const Image& level, const glm::vec3& new_pos, const glm::vec3& old_pos)
 {
     static Vec2<float> texture_size = level.scaled_tex_size();
     for(int i = 0; i < level.width(); i++)
@@ -31,7 +31,7 @@ bool Collision::in_level(const Level& level, const glm::vec3& new_pos, const glm
 }
 */
 
-glm::vec3 Collision::in_level(const Level& level, glm::vec3& new_pos, Camera& camera)
+glm::vec3 Collision::in_level(const Image& level, glm::vec3& new_pos, Camera& camera)
 {
     static Vec2<float> texture_size = level.scaled_tex_size();
 

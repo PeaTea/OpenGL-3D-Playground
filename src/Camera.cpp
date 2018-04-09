@@ -62,10 +62,10 @@ void Camera::process_keyboard(CameraMovement direction, float dt, bool& collisio
         new_pos -= right * final_velocity;
         break;
     case UP:
-        new_pos.y += (SPEED * 0.01) * final_velocity;
+        new_pos.y += (SPEED) * final_velocity;
         break;                 
     case DOWN:                 
-        new_pos.y -= (SPEED * 0.01) * final_velocity;
+        new_pos.y -= (SPEED) * final_velocity;
         break;
     }
 
