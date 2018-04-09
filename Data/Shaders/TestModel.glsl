@@ -28,11 +28,12 @@ out vec4 color;
 uniform vec3 view_pos;
 uniform mat4 model;
 
+vec3 light_dir = normalize(-vec3(-1, 1, -1));
+float darkest = 0.4f;
+float specular_str = 0.5f;
+
 void main(void)
 {
-    float darkest = 0.4f;
-    float specular_str = 0.5f;
-    vec3 light_dir = normalize(-vec3(-1, 2, -1));
     vec3 norm = normalize(_normal);
 
     vec3 ambient = vec3(darkest, darkest, darkest);
@@ -47,5 +48,5 @@ void main(void)
     float spec = pow(max(dot(view_dir, reflect_dir), 0), 64);
     vec3 specular = specular_str * spec * vec3(1, 1, 0.5);
 
-    color = vec4(ambient + diffuse, 1.0);
+    color = vec4(ambient + diffuse + specular, 1.0);
 }
