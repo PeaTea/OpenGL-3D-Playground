@@ -43,7 +43,7 @@ in VS_OUT
     vec3 normal;
 } gs_in[];
 
-const float STRENGTH = 0.4;
+const float STRENGTH = 0.5f;
 
 void generate_line(int index)
 {
