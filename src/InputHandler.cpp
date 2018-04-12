@@ -94,8 +94,8 @@ void InputHandler::key_callback(GLFWwindow* window, int key, int scancode, int a
     }
     else if(key == GLFW_KEY_F3 && action == GLFW_PRESS)
     {
-        m_camera.mouse_sensitivity = (speed_switch = !speed_switch) ? 0.01 : 0.1;
-        //m_camera.movement_speed = (speed_switch) ? 1.0f : 100.0f;
+        //m_camera.mouse_sensitivity = (speed_switch = !speed_switch) ? 0.01 : 0.1;
+        m_camera.movement_speed = (speed_switch) ? 10000.0f : 100.0f;
     }
     else if(key == GLFW_KEY_F4 && action == GLFW_PRESS)
     {

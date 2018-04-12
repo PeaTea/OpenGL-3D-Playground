@@ -7,5 +7,5 @@
 namespace utils
 {
     std::string discard(conststrref str, conststrref exclude);
-    std::vector<std::string> split(conststrref str, const char& exclude);
+    void split(conststrref str, const char& exclude, std::vector<std::string>& parts);
 }

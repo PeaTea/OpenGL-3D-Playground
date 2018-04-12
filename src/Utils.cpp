@@ -23,17 +23,14 @@ namespace utils
         return stream.str();
     }
 
-    std::vector<std::string> split(conststrref str, const char& exclude)
+    void split(conststrref str, const char& exclude, std::vector<std::string>& parts)
     {
         std::istringstream stream {str};
         std::string part;
-        std::vector<std::string> parts;
 
         while(std::getline(stream, part, exclude))
         {
-            parts.push_back(part);
+            parts.emplace_back(part);
         }
-
-        return parts;
     }
 }

@@ -17,7 +17,7 @@ struct ObjData
 class ObjLoader
 {
 public:
-    void load_obj_file(File& file);
+    void load_obj_file(File& file, ObjData& data);
     void store_obj_file(File& file, conststr name);
 
     ObjData& data();

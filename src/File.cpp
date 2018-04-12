@@ -4,12 +4,12 @@
 #include <sstream>
 #include <iterator>
 
-File::File(const std::string& filepath, bool create_new)
+File::File(conststrref filepath, bool create_new)
     :   m_path          {filepath}
 {
     m_flags = ((create_new) ? std::ios::trunc : std::ios::app) | std::ios::out | std::ios::in;
     m_file.open(m_path, m_flags);
-    if(m_file.fail())
+    if(!m_file.is_open())
     {
         logging::log("Failed to open file " + filepath, lstream::exception);
     }
@@ -31,7 +31,7 @@ std::string File::path() const
     return m_path;
 }
 
-void File::path(const std::string& filepath, bool create_new)
+void File::path(conststrref filepath, bool create_new)
 {
     m_path = filepath;
     m_file.close();
@@ -85,7 +85,7 @@ uint File::lines()
                       '\n');
 }
 
-void File::write(const std::string& txt, const bool& reset_fp)
+void File::write(conststrref txt, const bool& reset_fp)
 {
     if(reset_fp) m_file.seekp(0);
     m_file << txt;
@@ -116,4 +116,14 @@ void File::copy_from(conststrref filepath)
 {
     File target {filepath};
     write(target.read());
+}
+
+
+
+namespace file
+{
+    bool exists(conststrref filepath)
+    {
+        return std::ifstream{filepath}.good();
+    }
 }

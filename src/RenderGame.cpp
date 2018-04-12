@@ -71,6 +71,10 @@ void RenderGame::load_shaders()
 
 void RenderGame::load_levels()
 {
+#ifdef PERFORMANCE_TESTS
+    {
+    RAIITimer timer {"Level loading"};
+#endif
     m_levels.emplace_back(m_levels.size(), "Data/Levels/tutorial.png", glm::vec3(-2000.0f, Settings::player_size() * 0.5f, 44.0f), 10.0f, 50.0f);
     m_levels.emplace_back(m_levels.size(), "Data/Levels/cathedral.png", glm::vec3(2000.0f, 0, Settings::player_size() * 2.0f), 1.0f, 15.0f);
     m_levels.emplace_back(m_levels.size(), "Data/Levels/cathedral_extended_test.png",
@@ -78,6 +82,9 @@ void RenderGame::load_levels()
     m_levels.emplace_back(m_levels.size(), "Data/Levels/window_test.png", glm::vec3(500, 500, 500), 1.0f, 2.0f);
 
     m_image_drawer.set_lvl(m_levels[m_current_lvl]);
+#ifdef PERFORMANCE_TESTS
+    }
+#endif
 }
 
 void RenderGame::load_textures()
@@ -86,19 +93,18 @@ void RenderGame::load_textures()
     {
     RAIITimer timer{"Texture loading"};
 #endif
-    m_textures.emplace(METAL_CUBE, GLTexture{"MetalCube.png", true, REPEAT, REPEAT, LINEAR, LINEAR});
-    m_textures.emplace(ACID, GLTexture{"Acid.png", true, REPEAT, REPEAT, NEAREST, NEAREST});
-    m_textures.emplace(STONE, GLTexture{"Stone.png", true, REPEAT, REPEAT, LINEAR, LINEAR});
-    m_textures.emplace(LAVA, GLTexture{"Lava.png", true, REPEAT, REPEAT, LINEAR, LINEAR});
-    m_textures.emplace(MARBLE, GLTexture{"Marble.png", true, REPEAT, REPEAT, NEAREST, NEAREST});
-    m_textures.emplace(WOOD, GLTexture{"Wood.png", true, REPEAT, REPEAT, LINEAR, LINEAR});
-    m_textures.emplace(QUAD_TEMPLATE, GLTexture{"QuadTemplate.png", true, REPEAT, REPEAT, LINEAR, LINEAR});
-    m_textures.emplace(DIAGONAL_TEMPLATE, GLTexture{"DiagonalTemplate.png", true, REPEAT, REPEAT, LINEAR, LINEAR});
-    m_textures.emplace(MYSTERIOUS_ROBOT, GLTexture{"MysteriousRobot.png", true, CLAMP, CLAMP, NEAREST, NEAREST});
-    m_textures.emplace(TRANSPARENCY_TEST, GLTexture{"TransparencyTest.png", true, CLAMP, CLAMP, LINEAR, LINEAR});
-    m_textures.emplace(GLASS_LIGHT, GLTexture{"Glass_Light.png", true, CLAMP, CLAMP, LINEAR, LINEAR});
-    m_textures.emplace(BASIC_CIRCLE, GLTexture{"BasicCircle.png", true, CLAMP, CLAMP, LINEAR, LINEAR});
-    m_textures.emplace(SUN, GLTexture{"Sun.png", true, CLAMP, CLAMP, NEAREST, NEAREST});
+    m_textures[METAL_CUBE] = {"MetalCube.png", true, REPEAT, REPEAT, LINEAR, LINEAR};
+    m_textures[ACID] = {"Acid.png", true, REPEAT, REPEAT, NEAREST, NEAREST};
+    m_textures[STONE] = {"Stone.png", true, REPEAT, REPEAT, LINEAR, LINEAR};
+    m_textures[LAVA] = {"Lava.png", true, REPEAT, REPEAT, LINEAR, LINEAR};
+    m_textures[MARBLE] = {"Marble.png", true, REPEAT, REPEAT, NEAREST, NEAREST};
+    m_textures[WOOD] = {"Wood.png", true, REPEAT, REPEAT, LINEAR, LINEAR};
+    m_textures[QUAD_TEMPLATE] = {"QuadTemplate.png", true, REPEAT, REPEAT, LINEAR, LINEAR};
+    m_textures[DIAGONAL_TEMPLATE] = {"DiagonalTemplate.png", true, REPEAT, REPEAT, LINEAR, LINEAR};
+    m_textures[MYSTERIOUS_ROBOT] = {"MysteriousRobot.png", true, CLAMP, CLAMP, NEAREST, NEAREST};
+    m_textures[TRANSPARENCY_TEST] = {"TransparencyTest.png", true, CLAMP, CLAMP, LINEAR, LINEAR};
+    m_textures[GLASS_LIGHT] = {"Glass_Light.png", true, CLAMP, CLAMP, LINEAR, LINEAR};
+    m_textures[BASIC_CIRCLE] = {"BasicCircle.png", true, CLAMP, CLAMP, LINEAR, LINEAR};
 #ifdef PERFORMANCE_TESTS
     }
 #endif
@@ -117,11 +123,23 @@ void RenderGame::load_textures()
 
 void RenderGame::load_entities()
 {
+#ifdef PERFORMANCE_TESTS
+    {
+    RAIITimer timer {"Loading entities"};
+#endif
     for(unsigned int i = 0; i < m_levels.size(); i++)
     {
         m_levels[i].init(m_textures, m_levels, m_cam_pos, m_programs);
     }
+#ifdef PERFORMANCE_TESTS
+    }
+    {
+    RAIITimer timer {"Loading light sources"};
+#endif
     load_light_sources();
+#ifdef PERFORMANCE_TESTS
+    }
+#endif
 }
 
 void RenderGame::load_light_sources()
@@ -163,6 +181,10 @@ void RenderGame::load_light_sources()
 
 void RenderGame::load_objects()
 {
+#ifdef PERFORMANCE_TESTS
+    {
+    RAIITimer timer {"Object loading"};
+#endif
     std::array<std::string, 6> textures;
     std::fill(textures.begin(), textures.end(), "Data/Textures/Skybox.png");
     m_skybox_cube_map.gen_cube_map(textures, CLAMP_TO_EDGE, CLAMP_TO_EDGE, CLAMP_TO_EDGE, LINEAR, LINEAR);
@@ -173,11 +195,19 @@ void RenderGame::load_objects()
     obj_loader.store_obj_file(File{"Data/Models/cube.obj"}, "cube");
     obj_loader.store_obj_file(File{"Data/Models/test.obj"}, "test");
 
+    obj_loader.store_obj_file(File{"HugeModelsTest/sponza_crytek.obj"}, "sponza");
+
     Model cube {obj_loader.objects["cube"]};
     Model test {obj_loader.objects["test"]};
 
+    Model sponza {obj_loader.objects["sponza"]};
+
     m_models["cube"] = cube;
     m_models["test"] = test;
+    m_models["sponza"] = sponza;
+#ifdef PERFORMANCE_TESTS
+    }
+#endif
 }
 
 
@@ -199,14 +229,14 @@ void RenderGame::render(Camera& camera, const bool& draw_normals)
     glEnable(GL_CULL_FACE);
     //m_image_drawer.render_cubes(m_textures, m_levels[m_current_lvl], m_programs["point"]);
     ObjRenderer::set_program(m_programs["test_model"]);
-    ObjRenderer::render(m_models["test"], m_textures[METAL_CUBE].id(), {10, 0, 10}, {1, 1});
+    ObjRenderer::render(m_models["sponza"], m_textures[METAL_CUBE].id(), {10, 0, 10}, {1, 1});
 
     //BasicRenderer::draw_texture(m_textures[METAL_CUBE].id());
 
     if(draw_normals)
     {
         ObjRenderer::set_program(m_programs["draw_normals"]);
-        ObjRenderer::render(m_models["test"], m_textures[METAL_CUBE].id(), {10, 0, 10}, {1, 1});
+        ObjRenderer::render(m_models["sponza"], m_textures[METAL_CUBE].id(), {10, 0, 10}, {1, 1});
     }
 }
 

@@ -25,26 +25,18 @@ void FontRenderer::font(conststrref font_path, const Alphabet& start, const Alph
         m_font.clear();
     }
 
-    m_start = start;
+    m_start = start - 1;
 
     if(!use_sheet)
     {
-        for(; m_start <= end; m_start++)
+        for(; ++m_start <= end;)
         {
-            GLTexture texture;
             std::string filename = m_start > FONT_SLASH_LEFT && m_start < FONT_SQUARE_BRCKT_OPEN 
                 ? font_path + "/" + m_start + ".png" 
                 : font_path + "/" + std::to_string((int)m_start) + ".png";
-            try
-            {
-                texture.create_texture(filename, false, CLAMP_TO_EDGE, CLAMP_TO_EDGE, NEAREST, NEAREST, false);
-            }
-            catch(std::runtime_error)
-            {
-                texture.destroy_texture();
-                continue;
-            }
-            m_font[m_start] = texture;
+            
+            if(file::exists(filename))
+                m_font[m_start] = {filename, false, CLAMP_TO_EDGE, CLAMP_TO_EDGE, NEAREST, NEAREST, false};
         }
     }
     else
@@ -75,7 +67,8 @@ void FontRenderer::load_other(conststrref font_path, const bool& erase_data, con
 
 void FontRenderer::draw(conststrref text, const glm::vec3& pos, const Vec2<float>& size, const float& yoffset, const glm::vec4& color)
 {
-    std::vector<std::string> split_by_newlines = utils::split(text, '\n');
+    std::vector<std::string> split_by_newlines;
+    utils::split(text, '\n', split_by_newlines);
 
     int j = 1;
     for(const auto& s : split_by_newlines)

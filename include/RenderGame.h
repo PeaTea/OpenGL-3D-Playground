@@ -30,7 +30,6 @@ enum Textures
     TRANSPARENCY_TEST,
     GLASS_LIGHT,
     BASIC_CIRCLE,
-    SUN,
     SKYBOX
 };
 

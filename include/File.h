@@ -14,12 +14,12 @@ const std::string FILE_FAILED_TO_OPEN = "Failed to open file: ";
 class File
 {
 public:
-    File(const std::string& filepath, bool create_new = false);
+    File(conststrref filepath, bool create_new = false);
     ~File();
     File(const File& o);
 
     std::string path() const;
-    void path(const std::string& filepath, bool create_new = false);
+    void path(conststrref filepath, bool create_new = false);
 
     std::string read(const bool& reset_fp = false);
     std::vector<std::string> read_lines(const bool& reset_fp = false);
@@ -27,7 +27,7 @@ public:
 
     uint lines();
 
-    void write(const std::string& txt, const bool& reset_fp = false);
+    void write(conststrref txt, const bool& reset_fp = false);
     void close();
     void open();
     void clear();
@@ -39,5 +39,11 @@ private:
     std::fstream m_file;
     int m_flags;
 };
+
+
+namespace file
+{
+    bool exists(conststrref filename);
+}
 
 #endif
